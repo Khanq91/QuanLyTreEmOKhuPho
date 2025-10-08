@@ -1,0 +1,106 @@
+﻿
+@{
+    ViewBag.Title = "VanDongTreEm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/Content/css/VanDongTreEm.css" />
+
+<div class="stats-grid">
+    <div class="stat-card primary">
+        <div class="stat-header">
+            <div class="stat-title">Tổng số trẻ đến tuổi</div>
+            <div class="stat-icon"><i class="fa-solid fa-children"></i></div>
+        </div>
+        <div class="stat-value">87</div>
+        <div class="stat-change">Trẻ sinh năm 2019 (6 tuổi)</div>
+    </div>
+
+    <div class="stat-card warning">
+        <div class="stat-header">
+            <div class="stat-title">Chưa vận động</div>
+            <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+        </div>
+        <div class="stat-value">23</div>
+        <div class="stat-change">Cần liên hệ gia đình</div>
+    </div>
+
+    <div class="stat-card success">
+        <div class="stat-header">
+            <div class="stat-title">Đã nhập học</div>
+            <div class="stat-icon"><i class="fa-solid fa-check-double"></i></div>
+        </div>
+        <div class="stat-value">56</div>
+        <div class="stat-change">64% hoàn thành</div>
+    </div>
+
+    <div class="stat-card danger">
+        <div class="stat-header">
+            <div class="stat-title">Từ chối/Hoãn</div>
+            <div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        </div>
+        <div class="stat-value">8</div>
+        <div class="stat-change">Cần theo dõi đặc biệt</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Danh sách trẻ đến tuổi vào lớp 1</h3>
+        <button class="btn btn-primary" onclick="openModal()"><i class="fa-solid fa-circle-plus"></i> Ghi nhận vận động</button>
+    </div>
+
+    <div class="filter-group">
+        <div class="filter-item">
+            <label>Năm học</label>
+            <select id="filterYear">
+                <option value="2025-2026">2025-2026</option>
+                <option value="2024-2025">2024-2025</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>Khu phố</label>
+            <select id="filterKhuPho">
+                <option value="">Tất cả</option>
+                <option value="KP1">KP1</option>
+                <option value="KP2">KP2</option>
+                <option value="KP3">KP3</option>
+                <option value="KP4">KP4</option>
+                <option value="KP5">KP5</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>Trạng thái</label>
+            <select id="filterStatus">
+                <option value="">Tất cả</option>
+                <option value="chua">Chưa vận động</option>
+                <option value="dang">Đang vận động</option>
+                <option value="hoan">Đã nhập học</option>
+                <option value="tu-choi">Từ chối</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>Tìm kiếm</label>
+            <input type="text" id="searchInput" placeholder="Tên trẻ, CCCD...">
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table id="childrenTable">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Họ và tên</th>
+                    <th>Ngày sinh</th>
+                    <th>Khu phố</th>
+                    <th>Hoàn cảnh</th>
+                    <th>Trạng thái</th>
+                    <th>Số lần VĐ</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </div>
+</div>
+

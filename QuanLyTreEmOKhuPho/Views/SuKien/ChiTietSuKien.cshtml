@@ -1,0 +1,529 @@
+﻿
+@{
+    ViewBag.Title = "ChiTietSuKien";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/css/media.css" rel="stylesheet" />
+<link href="~/Content/css/ChiTietSuKien.css" rel="stylesheet" />
+
+<div class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Ngày hội Trung thu 2025</h3>
+        </div>
+        <div class="modal-body">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab(0)">Thông tin chung</button>
+                <button class="tab" onclick="switchTab(1)">Đăng ký tham gia</button>
+                <button class="tab" onclick="switchTab(2)">Phân công TNV</button>
+                <button class="tab" onclick="switchTab(3)">Chi phí</button>
+                <button class="tab" onclick="switchTab(4)">Thông báo</button>
+            </div>
+
+            <!-- Tab 1: General Info -->
+            <div class="tab-content active">
+                <div class="section">
+                    <h4 class="section-title">Thông tin cơ bản</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Tên sự kiện</span>
+                            <span class="info-value">Ngày hội Trung thu 2025</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Người chịu trách nhiệm</span>
+                            <span class="info-value">Nguyễn Thị Hương</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Ngày bắt đầu</span>
+                            <span class="info-value">15/10/2025 - 08:00 AM</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Ngày kết thúc</span>
+                            <span class="info-value">15/10/2025 - 18:00 PM</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Địa điểm</span>
+                            <span class="info-value">Sân trường Tiểu học Khu phố 2</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Khu phố</span>
+                            <span class="info-value">Khu phố 2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="info-item">
+                        <span class="info-label">Mô tả</span>
+                        <span class="info-value">Tổ chức lễ hội Trung thu cho các em thiếu nhi tại khu phố với nhiều hoạt động vui chơi, văn nghệ và trao quà. Chương trình dành cho 120 trẻ em từ 3-15 tuổi với sự hỗ trợ của 25 tình nguyện viên.</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h4 class="section-title">Chương trình sự kiện</h4>
+                    <table class="program-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 150px;">Thời gian</th>
+                                <th>Nội dung</th>
+                                <th style="width: 200px;">Tiết mục/Người thực hiện</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>08:00 - 08:30</td>
+                                <td>Lễ khai mạc</td>
+                                <td>Ban tổ chức</td>
+                            </tr>
+                            <tr>
+                                <td>08:30 - 09:30</td>
+                                <td>Múa lân, trống</td>
+                                <td>Đoàn múa lân Thanh Bình</td>
+                            </tr>
+                            <tr>
+                                <td>09:30 - 10:30</td>
+                                <td>Trò chơi dân gian</td>
+                                <td>Nhóm TNV 1</td>
+                            </tr>
+                            <tr>
+                                <td>10:30 - 11:00</td>
+                                <td>Nghỉ giải lao, ăn nhẹ</td>
+                                <td>Nhóm TNV 2</td>
+                            </tr>
+                            <tr>
+                                <td>11:00 - 12:00</td>
+                                <td>Thi vẽ tranh, làm lồng đèn</td>
+                                <td>Nhóm TNV 3</td>
+                            </tr>
+                            <tr>
+                                <td>14:00 - 16:00</td>
+                                <td>Văn nghệ, ca hát</td>
+                                <td>Các em thiếu nhi</td>
+                            </tr>
+                            <tr>
+                                <td>16:00 - 17:00</td>
+                                <td>Phá cỗ Trung thu</td>
+                                <td>Tất cả</td>
+                            </tr>
+                            <tr>
+                                <td>17:00 - 18:00</td>
+                                <td>Trao quà và bế mạc</td>
+                                <td>Ban tổ chức</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 2: Registration -->
+            <div class="tab-content">
+                <div class="registration-container">
+                    <!-- Volunteers Registration -->
+                    <div class="registration-panel">
+                        <div class="panel-header">Tình nguyện viên đăng ký (15)</div>
+                        <table class="reg-table">
+                            <thead>
+                                <tr>
+                                    <th>Họ tên</th>
+                                    <th>SĐT</th>
+                                    <th>Trạng thái</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Nguyễn Văn An</td>
+                                    <td>0901234567</td>
+                                    <td><span class="badge badge-pending">Chờ duyệt</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="btn-sm btn-approve">Duyệt</button>
+                                            <button class="btn-sm btn-reject">Từ chối</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Trần Thị Bình</td>
+                                    <td>0912345678</td>
+                                    <td><span class="badge badge-approved">Đã duyệt</span></td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>Lê Hoàng Cường</td>
+                                    <td>0923456789</td>
+                                    <td><span class="badge badge-approved">Đã duyệt</span></td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>Phạm Thị Dung</td>
+                                    <td>0934567890</td>
+                                    <td><span class="badge badge-rejected">Từ chối</span></td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Children/Parents Registration -->
+                    <div class="registration-panel">
+                        <div class="panel-header">Phụ huynh/Trẻ em đăng ký (45)</div>
+                        <table class="reg-table">
+                            <thead>
+                                <tr>
+                                    <th>Tên trẻ</th>
+                                    <th>Phụ huynh</th>
+                                    <th>Trạng thái</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Nguyễn Minh Anh</td>
+                                    <td>Nguyễn Văn A</td>
+                                    <td><span class="badge badge-pending">Chờ duyệt</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="btn-sm btn-approve">Duyệt</button>
+                                            <button class="btn-sm btn-reject">Từ chối</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Trần Bảo Ngọc</td>
+                                    <td>Trần Thị B</td>
+                                    <td><span class="badge badge-approved">Đã duyệt</span></td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>Lê Đức Duy</td>
+                                    <td>Lê Văn C</td>
+                                    <td><span class="badge badge-approved">Đã duyệt</span></td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Assignment -->
+            <div class="tab-content">
+                <div class="assignment-info">
+                    <strong>Lưu ý:</strong> Kiểm tra lịch trống của tình nguyện viên trước khi phân công. Nhấn vào tên TNV để xem lịch chi tiết.
+                </div>
+
+                <div class="section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h4 class="section-title" style="margin-bottom: 0;">Danh sách phân công</h4>
+                        <button class="btn btn-primary" onclick="showAddVolunteerModal()">
+                            <i class="fa-solid fa-circle-plus"></i> Thêm tình nguyện viên
+                        </button>
+                    </div>
+                    <div class="volunteer-list">
+                        <div class="volunteer-item">
+                            <div class="volunteer-info">
+                                <div class="volunteer-avatar">NA</div>
+                                <div class="volunteer-details">
+                                    <div class="volunteer-name">Nguyễn Văn An</div>
+                                    <div class="volunteer-task">Nhiệm vụ: Chủ trì chương trình, điều phối chung</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div class="schedule-badge">Rảnh: Thứ 2-6 (Sáng)</div>
+                                <button class="btn-sm" style="background: var(--primary); color: white;" onclick="editAssignment(0)">Sửa</button>
+                                <button class="btn-sm" style="background: var(--danger); color: white;" onclick="removeAssignment(0)">Xóa</button>
+                            </div>
+                        </div>
+                        <div class="volunteer-item">
+                            <div class="volunteer-info">
+                                <div class="volunteer-avatar">TB</div>
+                                <div class="volunteer-details">
+                                    <div class="volunteer-name">Trần Thị Bình</div>
+                                    <div class="volunteer-task">Nhiệm vụ: Tổ chức trò chơi, phát quà</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div class="schedule-badge">Rảnh: Thứ 3, 5 (Cả ngày)</div>
+                                <button class="btn-sm" style="background: var(--primary); color: white;" onclick="editAssignment(1)">Sửa</button>
+                                <button class="btn-sm" style="background: var(--danger); color: white;" onclick="removeAssignment(1)">Xóa</button>
+                            </div>
+                        </div>
+                        <div class="volunteer-item">
+                            <div class="volunteer-info">
+                                <div class="volunteer-avatar">LC</div>
+                                <div class="volunteer-details">
+                                    <div class="volunteer-name">Lê Hoàng Cường</div>
+                                    <div class="volunteer-task">Nhiệm vụ: Hỗ trợ âm thanh, ánh sáng</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div class="schedule-badge">Rảnh: Thứ 2, 4, 6 (Chiều)</div>
+                                <button class="btn-sm" style="background: var(--primary); color: white;" onclick="editAssignment(2)">Sửa</button>
+                                <button class="btn-sm" style="background: var(--danger); color: white;" onclick="removeAssignment(2)">Xóa</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="exportAssignment()">Xuất bảng phân công (Excel)</button>
+                </div>
+            </div>
+
+            <!-- Tab 4: Expenses -->
+            <div class="tab-content">
+                <div class="expense-summary">
+                    <div class="expense-total">25.500.000 VNĐ</div>
+                    <div class="expense-label">Tổng chi phí sự kiện</div>
+                </div>
+
+                <div class="section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h4 class="section-title" style="margin-bottom: 0;">Chi tiết chi phí</h4>
+                        <button class="btn btn-primary" onclick="showAddExpenseModal()">
+                            <i class="fa-solid fa-circle-plus"></i> Thêm khoản chi
+                        </button>
+                    </div>
+                    <table class="expense-table">
+                        <thead>
+                            <tr>
+                                <th>Khoản chi</th>
+                                <th>Số tiền</th>
+                                <th>Ghi chú</th>
+                                <th style="width: 120px;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Trang trí sân khấu</td>
+                                <td class="expense-amount">5.000.000 VNĐ</td>
+                                <td>Bóng bay, băng rôn, backdrop</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn-sm" style="background: var(--primary); color: white;" onclick="editExpense(0)">Sửa</button>
+                                        <button class="btn-sm" style="background: var(--danger); color: white;" onclick="deleteExpense(0)">Xóa</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Âm thanh, ánh sáng</td>
+                                <td class="expense-amount">3.500.000 VNĐ</td>
+                                <td>Thuê hệ thống âm thanh chuyên nghiệp</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn-sm" style="background: var(--primary); color: white;" onclick="editExpense(1)">Sửa</button>
+                                        <button class="btn-sm" style="background: var(--danger); color: white;" onclick="deleteExpense(1)">Xóa</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Múa lân, trống</td>
+                                <td class="expense-amount">4.000.000 VNĐ</td>
+                                <td>Đoàn múa lân Thanh Bình</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn-sm" style="background: var(--primary); color: white;" onclick="editExpense(2)">Sửa</button>
+                                        <button class="btn-sm" style="background: var(--danger); color: white;" onclick="deleteExpense(2)">Xóa</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Quà tặng trẻ em</td>
+                                <td class="expense-amount">8.000.000 VNĐ</td>
+                                <td>120 phần quà x 65.000 VNĐ</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn-sm" style="background: var(--primary); color: white;" onclick="editExpense(3)">Sửa</button>
+                                        <button class="btn-sm" style="background: var(--danger); color: white;" onclick="deleteExpense(3)">Xóa</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Đồ ăn, nước uống</td>
+                                <td class="expense-amount">3.000.000 VNĐ</td>
+                                <td>Bánh kẹo, nước ngọt</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn-sm" style="background: var(--primary); color: white;" onclick="editExpense(4)">Sửa</button>
+                                        <button class="btn-sm" style="background: var(--danger); color: white;" onclick="deleteExpense(4)">Xóa</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Dụng cụ trò chơi</td>
+                                <td class="expense-amount">1.500.000 VNĐ</td>
+                                <td>Vật liệu làm lồng đèn, vẽ tranh</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn-sm" style="background: var(--primary); color: white;" onclick="editExpense(5)">Sửa</button>
+                                        <button class="btn-sm" style="background: var(--danger); color: white;" onclick="deleteExpense(5)">Xóa</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Chi phí khác</td>
+                                <td class="expense-amount">500.000 VNĐ</td>
+                                <td>Dự phòng</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn-sm" style="background: var(--primary); color: white;" onclick="editExpense(6)">Sửa</button>
+                                        <button class="btn-sm" style="background: var(--danger); color: white;" onclick="deleteExpense(6)">Xóa</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="chart-container">
+                    <h4 class="section-title">Biểu đồ phân bổ chi phí</h4>
+                    <div class="chart-item">
+                        <div class="chart-label">
+                            <span>Quà tặng trẻ em</span>
+                            <span>8.000.000 VNĐ (31%)</span>
+                        </div>
+                        <div class="chart-bar-bg">
+                            <div class="chart-bar" style="width: 31%;">31%</div>
+                        </div>
+                    </div>
+                    <div class="chart-item">
+                        <div class="chart-label">
+                            <span>Trang trí sân khấu</span>
+                            <span>5.000.000 VNĐ (20%)</span>
+                        </div>
+                        <div class="chart-bar-bg">
+                            <div class="chart-bar" style="width: 20%;">20%</div>
+                        </div>
+                    </div>
+                    <div class="chart-item">
+                        <div class="chart-label">
+                            <span>Múa lân, trống</span>
+                            <span>4.000.000 VNĐ (16%)</span>
+                        </div>
+                        <div class="chart-bar-bg">
+                            <div class="chart-bar" style="width: 16%;">16%</div>
+                        </div>
+                    </div>
+                    <div class="chart-item">
+                        <div class="chart-label">
+                            <span>Âm thanh, ánh sáng</span>
+                            <span>3.500.000 VNĐ (14%)</span>
+                        </div>
+                        <div class="chart-bar-bg">
+                            <div class="chart-bar" style="width: 14%;">14%</div>
+                        </div>
+                    </div>
+                    <div class="chart-item">
+                        <div class="chart-label">
+                            <span>Đồ ăn, nước uống</span>
+                            <span>3.000.000 VNĐ (12%)</span>
+                        </div>
+                        <div class="chart-bar-bg">
+                            <div class="chart-bar" style="width: 12%;">12%</div>
+                        </div>
+                    </div>
+                    <div class="chart-item">
+                        <div class="chart-label">
+                            <span>Dụng cụ trò chơi</span>
+                            <span>1.500.000 VNĐ (6%)</span>
+                        </div>
+                        <div class="chart-bar-bg">
+                            <div class="chart-bar" style="width: 6%;">6%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 5: Notifications -->
+            <div class="tab-content">
+                <div class="section">
+                    <h4 class="section-title">Gửi thông báo mới</h4>
+                    <div class="notification-form">
+                        <div class="form-group">
+                            <label class="form-label">Người nhận</label>
+                            <select class="form-select" id="notificationRecipient">
+                                <option value="all">Tất cả người đã đăng ký</option>
+                                <option value="volunteers">Chỉ tình nguyện viên</option>
+                                <option value="parents">Chỉ phụ huynh</option>
+                                <option value="approved">Chỉ người đã duyệt</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tiêu đề</label>
+                            <input type="text" class="form-input" id="notificationTitle"
+                                   placeholder="Ví dụ: Thông báo thay đổi thời gian">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nội dung</label>
+                            <textarea class="form-textarea" id="notificationContent"
+                                      placeholder="Nhập nội dung thông báo..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="sendNotification()">
+                            Gửi thông báo
+                        </button>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h4 class="section-title">Lịch sử thông báo</h4>
+                    <div class="notification-history">
+                        <div class="notification-item">
+                            <div class="notification-header">
+                                <div class="notification-title">Xác nhận đăng ký thành công</div>
+                                <div class="notification-date">10/10/2025 - 14:30</div>
+                            </div>
+                            <div class="notification-content">
+                                Kính gửi quý phụ huynh và các em thiếu nhi,
+
+                                Chúng tôi xin xác nhận đã nhận được đăng ký tham gia Ngày hội Trung thu 2025.
+                                Sự kiện sẽ diễn ra vào ngày 15/10/2025 tại Sân trường Tiểu học Khu phố 2.
+
+                                Vui lòng có mặt trước 8:00 AM. Trân trọng!
+                            </div>
+                        </div>
+                        <div class="notification-item">
+                            <div class="notification-header">
+                                <div class="notification-title">Nhắc nhở chuẩn bị</div>
+                                <div class="notification-date">12/10/2025 - 09:00</div>
+                            </div>
+                            <div class="notification-content">
+                                Xin nhắc các em nhớ mang theo:
+                                - Mũ, nước uống
+                                - Tinh thần vui vẻ, hào hứng
+
+                                Phụ huynh lưu ý đưa đón đúng giờ. Cảm ơn!
+                            </div>
+                        </div>
+                        <div class="notification-item">
+                            <div class="notification-header">
+                                <div class="notification-title">Phân công nhiệm vụ TNV</div>
+                                <div class="notification-date">13/10/2025 - 16:45</div>
+                            </div>
+                            <div class="notification-content">
+                                Kính gửi các tình nguyện viên,
+
+                                Bảng phân công nhiệm vụ đã được cập nhật. Vui lòng kiểm tra và xác nhận
+                                nhiệm vụ của mình trước ngày 14/10. Liên hệ ban tổ chức nếu có thắc mắc.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab Management
+    function switchTab(index) {
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => tab.classList.remove('active'));
+        contents.forEach(content => content.classList.remove('active'));
+
+        tabs[index].classList.add('active');
+        contents[index].classList.add('active');
+    }
+</script>

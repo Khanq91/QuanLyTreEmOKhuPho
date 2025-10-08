@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewBag.Title = "QuanLyTaiKhoan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Content/css/QuanLyTaiKhoan.css" />
+<div class="alert alert-warning">
+    <span><i class="fa-solid fa-triangle-exclamation" style="color: var(--warning);"></i></span>
+    <div>
+        <strong>Lưu ý bảo mật:</strong> Chỉ quản trị viên cấp cao mới có quyền truy cập trang này. Vui lòng cẩn thận khi thao tác với tài khoản người dùng.
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card primary">
+        <div class="stat-header">
+            <div class="stat-title">Tổng người dùng</div>
+            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+        </div>
+        <div class="stat-value">248</div>
+        <div class="stat-change">12 Admin, 186 TNV, 50 Phụ huynh</div>
+    </div>
+
+    <div class="stat-card success">
+        <div class="stat-header">
+            <div class="stat-title">Đang hoạt động</div>
+            <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+        </div>
+        <div class="stat-value">235</div>
+        <div class="stat-change">94.8% tổng số tài khoản</div>
+    </div>
+
+    <div class="stat-card warning">
+        <div class="stat-header">
+            <div class="stat-title">Chưa kích hoạt</div>
+            <div class="stat-icon"><i class="fa-solid fa-user-clock"></i></div>
+        </div>
+        <div class="stat-value">8</div>
+        <div class="stat-change">Tài khoản mới tạo</div>
+    </div>
+
+    <div class="stat-card danger">
+        <div class="stat-header">
+            <div class="stat-title">Bị khóa</div>
+            <div class="stat-icon"><i class="fa-solid fa-user-lock"></i></div>
+        </div>
+        <div class="stat-value">5</div>
+        <div class="stat-change">Vi phạm quy định</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Danh sách người dùng</h3>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-success" onclick="openImportModal()"><i class="fa-solid fa-upload"></i> Import Excel</button>
+            <button class="btn btn-success" onclick="openCreateUserModal()"><i class="fa-solid fa-circle-plus"></i> Tạo tài khoản</button>
+            <button class="btn btn-primary" onclick="resetAllPasswords()"><i class="fa-solid fa-arrows-rotate"></i> Reset tất cả mật khẩu</button>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        <span><i class="fa-solid fa-circle-info" style="color: var(--primary);"></i></span>
+        <div>
+            
+            <strong>Mật khẩu mặc định:</strong> <code>MatKhau123</code> (Người dùng nên đổi mật khẩu sau lần đăng nhập đầu tiên)
+        </div>
+    </div>
+
+    <div class="filter-group">
+        <div class="filter-item">
+            <label>Vai trò</label>
+            <select id="filterRole" onchange="filterTable()">
+                <option value="">Tất cả</option>
+                <option value="admin">Quản trị viên</option>
+                <option value="volunteer">Tình nguyện viên</option>
+                <option value="parent">Phụ huynh</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>Trạng thái</label>
+            <select id="filterStatus" onchange="filterTable()">
+                <option value="">Tất cả</option>
+                <option value="active">Hoạt động</option>
+                <option value="inactive">Chưa kích hoạt</option>
+                <option value="locked">Bị khóa</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>Tìm kiếm</label>
+            <input type="text" id="searchInput" placeholder="Tên, Email, SĐT..." onkeyup="filterTable()">
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Họ tên</th>
+                    <th>Email</th>
+                    <th>Số điện thoại</th>
+                    <th>Vai trò</th>
+                    <th>Trạng thái</th>
+                    <th>Lần đăng nhập cuối</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </div>
+</div>

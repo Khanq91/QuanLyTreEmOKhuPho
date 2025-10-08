@@ -1,0 +1,374 @@
+﻿
+@{
+    ViewBag.Title = "TreEm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/Content/css/TreEm.css" />
+    <title>Quản Lý Trẻ Em - Hệ Thống Quản Lý Khu Phố</title>
+
+</head>
+<body>
+    <div class="filter-section">
+        <div class="filter-header">
+            <h3 class="filter-title"><i class="fa-solid fa-magnifying-glass"></i> Bộ lọc tìm kiếm</h3>
+            <button class="btn btn-primary btn-sm" onclick="applyFilters()">Áp dụng</button>
+
+        </div>
+        <div class="filter-grid">
+            <div class="form-group search-bar">
+                <label class="form-label">Tìm kiếm</label>
+                <span class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" class="form-control" placeholder="Tìm theo tên, ID..." id="searchInput">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Khu phố</label>
+                <select class="form-control" id="filterKhuPho">
+                    <option value="">Tất cả khu phố</option>
+                    <option value="kp1">Khu phố 1</option>
+                    <option value="kp2">Khu phố 2</option>
+                    <option value="kp3">Khu phố 3</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Giới tính</label>
+                <select class="form-control" id="filterGender">
+                    <option value="">Tất cả</option>
+                    <option value="male">Nam</option>
+                    <option value="female">Nữ</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+
+        <div class="table-header">
+            <h3 class="table-title">Danh sách trẻ em (<span id="totalChildren">8</span>)</h3>
+            <div class="table-actions">
+                <button class="btn-icon"><i class="fa-solid fa-chart-area"></i></button>
+                <button class="btn-icon"><i class="fa-solid fa-print"></i></button>
+                <a href="@Url.Action("ThemTreEm_v1", "QuanLyTreEm")" class="btn btn-primary">
+                    <i class="fa-solid fa-circle-plus"></i> Thêm trẻ em mới
+                </a>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Thông tin trẻ</th>
+                    <th>Khu phố</th>
+                    <th>Hoàn cảnh</th>
+                    <th>Học lực</th>
+                    <th>Ưu tiên</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="childrenTableBody"></tbody>
+        </table>
+        <div class="pagination">
+            <div class="pagination-info">Hiển thị <strong>1-8</strong> trong tổng số <strong>8</strong> trẻ em</div>
+            <div class="pagination-buttons">
+                <button class="page-btn">❮</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">❯</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="childDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Chi tiết hồ sơ trẻ em</h3>
+                <button class="close-btn" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p>Thông tin chi tiết trẻ em sẽ hiển thị ở đây</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const childrenData = [
+            {
+                id: 'TE001',
+                name: 'Nguyễn Văn A',
+                age: 10,
+                gender: 'male',
+                khuPho: 'Khu phố 2',
+                circumstance: 'Mồ côi cha',
+                performance: 'good',
+                priority: 'high'
+            },
+            {
+                id: 'TE002',
+                name: 'Trần Thị B',
+                age: 8,
+                gender: 'female',
+                khuPho: 'Khu phố 1',
+                circumstance: 'Hộ nghèo',
+                performance: 'average',
+                priority: 'high'
+            },
+            {
+                id: 'TE003',
+                name: 'Lê Văn C',
+                age: 12,
+                gender: 'male',
+                khuPho: 'Khu phố 3',
+                circumstance: 'Khuyết tật',
+                performance: 'excellent',
+                priority: 'medium'
+            },
+            {
+                id: 'TE004',
+                name: 'Phạm Thị D',
+                age: 9,
+                gender: 'female',
+                khuPho: 'Khu phố 5',
+                circumstance: 'Khó khăn',
+                performance: 'good',
+                priority: 'medium'
+            },
+            {
+                id: 'TE005',
+                name: 'Hoàng Văn E',
+                age: 7,
+                gender: 'male',
+                khuPho: 'Khu phố 4',
+                circumstance: 'Bình thường',
+                performance: 'weak',
+                priority: 'low'
+            },
+            {
+                id: 'TE006',
+                name: 'Võ Thị F',
+                age: 11,
+                gender: 'female',
+                khuPho: 'Khu phố 2',
+                circumstance: 'Mồ côi',
+                performance: 'excellent',
+                priority: 'high'
+            },
+            {
+                id: 'TE007',
+                name: 'Đặng Văn G',
+                age: 6,
+                gender: 'male',
+                khuPho: 'Khu phố 1',
+                circumstance: 'Hộ nghèo',
+                performance: 'average',
+                priority: 'medium'
+            },
+            {
+                id: 'TE008',
+                name: 'Bùi Thị H',
+                age: 10,
+                gender: 'female',
+                khuPho: 'Khu phố 3',
+                circumstance: 'Khó khăn',
+                performance: 'good',
+                priority: 'low'
+            }
+        ];
+
+        // Render table
+        function renderTable(data = childrenData) {
+            const tbody = document.getElementById('childrenTableBody');
+            tbody.innerHTML = '';
+
+            data.forEach(child => {
+                const row = document.createElement('tr');
+
+                const performanceClass = {
+                    'excellent': 'badge-excellent',
+                    'good': 'badge-good',
+                    'average': 'badge-average',
+                    'weak': 'badge-weak'
+                }[child.performance];
+
+                const priorityClass = {
+                    'high': 'badge-high',
+                    'medium': 'badge-medium',
+                    'low': 'badge-low'
+                }[child.priority];
+
+                const performanceText = {
+                    'excellent': 'Giỏi',
+                    'good': 'Khá',
+                    'average': 'Trung bình',
+                    'weak': 'Yếu'
+                }[child.performance];
+
+                const priorityText = {
+                    'high': 'Cao',
+                    'medium': 'Trung bình',
+                    'low': 'Thấp'
+                }[child.priority];
+
+                row.innerHTML = `
+                    <td style="font-weight: 600; color: var(--primary);">${child.id}</td>
+                    <td>
+                        <div class="child-info">
+                            <div class="child-avatar ${child.gender}">${child.name.charAt(0)}</div>
+                            <div class="child-details">
+                                <h4>${child.name}</h4>
+                                <p>${child.age} tuổi • ${child.gender === 'male' ? 'Nam' : 'Nữ'}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${child.khuPho}</td>
+                    <td>${child.circumstance}</td>
+                    <td><span class="badge ${performanceClass}">${performanceText}</span></td>
+                    <td><span class="badge ${priorityClass}">${priorityText}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-view" onclick="viewChild('${child.id}')">Xem</button>
+                            <button class="btn btn-sm btn-edit" onclick="editChild('${child.id}')">Sửa</button>
+                            <button class="btn btn-sm btn-delete" onclick="deleteChild('${child.id}')">Xóa</button>
+                        </div>
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('totalChildren').textContent = data.length;
+        }
+
+        // Filter function
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const khuPho = document.getElementById('filterKhuPho').value;
+            const gender = document.getElementById('filterGender').value;
+            const performance = document.getElementById('filterPerformance').value;
+            const priority = document.getElementById('filterPriority').value;
+
+            let filtered = childrenData.filter(child => {
+                const matchSearch = !search || child.name.toLowerCase().includes(search) || child.id.toLowerCase().includes(search);
+                const matchKhuPho = !khuPho || child.khuPho.toLowerCase().includes(khuPho);
+                const matchGender = !gender || child.gender === gender;
+                const matchPerformance = !performance || child.performance === performance;
+                const matchPriority = !priority || child.priority === priority;
+
+                return matchSearch && matchKhuPho && matchGender && matchPerformance && matchPriority;
+            });
+
+            renderTable(filtered);
+            showNotification(`Tìm thấy ${filtered.length} trẻ em`, 'success');
+        }
+
+        // Search on typing
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+        // View child detail
+        function viewChild(id) {
+            document.getElementById('childDetailModal').classList.add('active');
+            showNotification('Đang tải thông tin chi tiết...', 'info');
+        }
+
+        // Edit child
+        function editChild(id) {
+            showNotification(`Chỉnh sửa thông tin trẻ ${id}`, 'info');
+        }
+
+        // Delete child
+        function deleteChild(id) {
+            if (confirm(`Bạn có chắc chắn muốn xóa trẻ ${id}?`)) {
+                showNotification(`Đã xóa trẻ ${id}`, 'success');
+            }
+        }
+
+        // Modal functions
+        function closeModal() {
+            document.getElementById('childDetailModal').classList.remove('active');
+        }
+
+        function openAddChildModal() {
+            showNotification('Mở form thêm trẻ em mới', 'info');
+        }
+
+        // Tab switching
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+
+            tabs[index].classList.add('active');
+            contents[index].classList.add('active');
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const icons = { success: '✓', warning: '⚠', info: 'ℹ', danger: '✕' };
+            const colors = {
+                success: 'var(--success)',
+                warning: 'var(--warning)',
+                info: 'var(--primary)',
+                danger: 'var(--danger)'
+            };
+
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 20px;">${icons[type]}</span>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                border-left: 4px solid ${colors[type]};
+                max-width: 400px;
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @@keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @@keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Close modal on outside click
+        document.getElementById('childDetailModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Initialize
+        renderTable();
+    </script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+﻿
+@{
+    ViewBag.Title = "TrangChu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/Content/css/trangchu.css" />
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-title">Tổng số trẻ em</div>
+            <div class="stat-icon"><i class="fa-solid fa-children"></i></div>
+        </div>
+        <div class="stat-value">1,247</div>
+        <div class="stat-change">
+            ↑ 12% so với tháng trước
+        </div>
+    </div>
+
+    <div class="stat-card success">
+        <div class="stat-header">
+            <div class="stat-title">Sự kiện trong tháng</div>
+            <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+        </div>
+        <div class="stat-value">18</div>
+        <div class="stat-change">
+            6 sự kiện sắp diễn ra
+        </div>
+    </div>
+
+    <div class="stat-card warning">
+        <div class="stat-header">
+            <div class="stat-title">Tình nguyện viên</div>
+            <div class="stat-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+        </div>
+        <div class="stat-value">156</div>
+        <div class="stat-change">
+            89 đang hoạt động
+        </div>
+    </div>
+
+    <div class="stat-card danger">
+        <div class="stat-header">
+            <div class="stat-title">Ủng hộ trong tháng</div>
+            <div class="stat-icon"><i class="fa-solid fa-comments-dollar"></i></div>
+        </div>
+        <div class="stat-value">48.5M</div>
+        <div class="stat-change">
+            ↑ 8% so với tháng trước
+        </div>
+    </div>
+</div>
+
+<!-- Content Grid -->
+<div class="content-grid">
+    <!-- Chart -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Tổng số trẻ em theo khu phố</h3>
+            <button class="btn btn-outline">Xem chi tiết</button>
+        </div>
+        <div class="chart-container">
+            <div class="chart-bar" style="height: 85%;">
+                <div class="chart-value">215</div>
+                <div class="chart-label">KP1</div>
+            </div>
+            <div class="chart-bar" style="height: 92%;">
+                <div class="chart-value">234</div>
+                <div class="chart-label">KP2</div>
+            </div>
+            <div class="chart-bar" style="height: 68%;">
+                <div class="chart-value">172</div>
+                <div class="chart-label">KP3</div>
+            </div>
+            <div class="chart-bar" style="height: 76%;">
+                <div class="chart-value">193</div>
+                <div class="chart-label">KP4</div>
+            </div>
+            <div class="chart-bar" style="height: 88%;">
+                <div class="chart-value">224</div>
+                <div class="chart-label">KP5</div>
+            </div>
+            <div class="chart-bar" style="height: 81%;">
+                <div class="chart-value">209</div>
+                <div class="chart-label">KP6</div>
+            </div>
+        </div>
+    </div>
+    <!-- Priority Children -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Trẻ cần ưu tiên hỗ trợ</h3>
+            <button class="btn btn-outline">Xem tất cả</button>
+        </div>
+        <ul class="priority-list">
+            <li class="priority-item">
+                <div class="priority-info">
+                    <div class="priority-name">Nguyễn Văn A</div>
+                    <div class="priority-details">8 tuổi • KP2 • Mồ côi</div>
+                </div>
+                <span class="priority-badge badge-high">Cao</span>
+            </li>
+            <li class="priority-item">
+                <div class="priority-info">
+                    <div class="priority-name">Trần Thị B</div>
+                    <div class="priority-details">10 tuổi • KP1 • Khó khăn</div>
+                </div>
+                <span class="priority-badge badge-high">Cao</span>
+            </li>
+            <li class="priority-item">
+                <div class="priority-info">
+                    <div class="priority-name">Lê Văn C</div>
+                    <div class="priority-details">7 tuổi • KP5 • Khuyết tật</div>
+                </div>
+                <span class="priority-badge badge-medium">TB</span>
+            </li>
+            <li class="priority-item">
+                <div class="priority-info">
+                    <div class="priority-name">Phạm Thị D</div>
+                    <div class="priority-details">9 tuổi • KP3 • Hộ nghèo</div>
+                </div>
+                <span class="priority-badge badge-medium">TB</span>
+            </li>
+            <li class="priority-item">
+                <div class="priority-info">
+                    <div class="priority-name">Hoàng Văn E</div>
+                    <div class="priority-details">6 tuổi • KP4 • Học yếu</div>
+                </div>
+                <span class="priority-badge badge-low">Thấp</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Events Timeline -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Sự kiện sắp diễn ra</h3>
+        <button class="btn btn-primary"><i class="fa-solid fa-circle-plus"></i> Tạo sự kiện mới</button>
+    </div>
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <div class="timeline-title">Ngày hội Trung thu 2025</div>
+                <div class="timeline-date"><i class="fa-solid fa-calendar-days"></i> 15/10/2025 - 08:00 AM</div>
+                <div class="timeline-desc">Sân trường Tiểu học Khu phố 2 • 120 trẻ đã đăng ký</div>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <div class="timeline-title">Khám sức khỏe định kỳ</div>
+                <div class="timeline-date"><i class="fa-solid fa-calendar-days"></i> 22/10/2025 - 07:30 AM</div>
+                <div class="timeline-desc">Trạm y tế Khu phố 5 • 85 trẻ đã đăng ký</div>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <div class="timeline-title">Trao học bổng học kỳ I</div>
+                <div class="timeline-date"><i class="fa-solid fa-calendar-days"></i> 28/10/2025 - 09:00 AM</div>
+                <div class="timeline-desc">Hội trường Ủy ban Khu phố • 45 học sinh nhận học bổng</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alerts -->
+<div class="alerts-section">
+    <div class="alert alert-warning">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-content">
+            <div class="alert-title">Cảnh báo: Trẻ nghỉ học nhiều</div>
+            <div class="alert-text">Có 15 trẻ em nghỉ học quá 5 ngày trong tháng này. Cần liên hệ phụ huynh để nắm tình hình.</div>
+        </div>
+        <button class="btn btn-outline">Xem chi tiết</button>
+    </div>
+    <div class="alert alert-danger">
+        <div class="alert-icon">🚨</div>
+        <div class="alert-content">
+            <div class="alert-title">Trẻ đến tuổi nhưng chưa vào lớp 1</div>
+            <div class="alert-text">Có 8 trẻ em đủ 6 tuổi nhưng chưa đăng ký vào lớp 1. Cần vận động gia đình.</div>
+        </div>
+        <button class="btn btn-outline">Xem chi tiết</button>
+    </div>
+</div>
+
+<script>
+        // App State Management
+        const appState = {
+            currentPage: 'dashboard',
+            children: [],
+            events: [],
+            volunteers: [],
+            sponsors: []
+        };
+
+        //// Navigation
+        //const navLinks = document.querySelectorAll('.nav-link');
+        //navLinks.forEach(link => {
+        //    link.addEventListener('click', function(e) {
+        //        e.preventDefault();
+        //        navLinks.forEach(l => l.classList.remove('active'));
+        //        this.classList.add('active');
+
+        //        const linkText = this.textContent.trim();
+        //        console.log('Navigating to:', linkText);
+
+        //        // Show notification
+        //        showNotification('Đang chuyển trang...', 'info');
+        //    });
+        //});
+
+        // Chart animation
+        window.addEventListener('load', function() {
+            const bars = document.querySelectorAll('.chart-bar');
+            bars.forEach((bar, index) => {
+                const originalHeight = bar.style.height;
+                bar.style.height = '0';
+                setTimeout(() => {
+                    bar.style.transition = 'height 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+                    bar.style.height = originalHeight;
+                }, index * 150);
+            });
+        });
+
+        // Button interactions
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (!this.closest('.nav-link')) {
+                    e.preventDefault();
+                    const btnText = this.textContent.trim();
+                    showNotification(`Đã nhấn: ${btnText}`, 'success');
+                }
+            });
+        });
+
+        // Priority list interaction
+        document.querySelectorAll('.priority-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const name = this.querySelector('.priority-name').textContent;
+                showNotification(`Đang xem hồ sơ: ${name}`, 'info');
+            });
+        });
+
+        // Timeline interaction
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const title = this.querySelector('.timeline-title').textContent;
+                showNotification(`Chi tiết sự kiện: ${title}`, 'info');
+            });
+        });
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 20px;">${type === 'success' ? '✓' : type === 'warning' ? '⚠' : 'ℹ'}</span>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                border-left: 4px solid ${type === 'success' ? 'var(--success)' : type === 'warning' ? 'var(--warning)' : 'var(--primary)'};
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Add animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @@keyframes slideIn {
+                from {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @@keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Live data update simulation
+        let updateInterval;
+        function startLiveUpdates() {
+            updateInterval = setInterval(() => {
+                const stats = [
+                    { selector: '.stat-card:nth-child(1) .stat-value', base: 1247, range: 5 },
+                    { selector: '.stat-card:nth-child(2) .stat-value', base: 18, range: 2 },
+                    { selector: '.stat-card:nth-child(3) .stat-value', base: 156, range: 3 },
+                ];
+
+                stats.forEach(stat => {
+                    const element = document.querySelector(stat.selector);
+                    if (element && Math.random() > 0.7) {
+                        const change = Math.floor(Math.random() * stat.range) - Math.floor(stat.range / 2);
+                        const currentValue = parseInt(element.textContent.replace(/[^0-9]/g, ''));
+                        const newValue = currentValue + change;
+
+                        element.style.transition = 'transform 0.3s ease';
+                        element.style.transform = 'scale(1.15)';
+
+                        setTimeout(() => {
+                            element.textContent = newValue.toLocaleString('vi-VN');
+                            element.style.transform = 'scale(1)';
+                        }, 150);
+                    }
+                });
+            }, 8000);
+        }
+
+        // Initialize
+        startLiveUpdates();
+
+        // User info dropdown
+        document.querySelector('.user-info').addEventListener('click', function() {
+            showNotification('Chức năng quản lý tài khoản', 'info');
+        });
+
+        // Cleanup
+        window.addEventListener('beforeunload', () => {
+            if (updateInterval) clearInterval(updateInterval);
+        });
+</script>

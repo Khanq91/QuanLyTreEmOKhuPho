@@ -1,0 +1,189 @@
+﻿
+@{
+    ViewBag.Title = "BaoCaoThongKe";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/Content/css/BaoCaoThongKe.css" />
+
+<div class="stats-grid">
+    <div class="stat-card primary">
+        <div class="stat-header">
+            <div class="stat-title">Tổng số sự kiện</div>
+            <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+        </div>
+        <div class="stat-value">48</div>
+        <div class="stat-change up">
+            <span>↑ 12%</span>
+            <span style="color: var(--gray-600);">so với tháng trước</span>
+        </div>
+    </div>
+
+    <div class="stat-card success">
+        <div class="stat-header">
+            <div class="stat-title">Trẻ được hỗ trợ</div>
+            <div class="stat-icon"><i class="fa-solid fa-children"></i></div>
+        </div>
+        <div class="stat-value">1,245</div>
+        <div class="stat-change up">
+            <span>↑ 8%</span>
+            <span style="color: var(--gray-600);">so với tháng trước</span>
+        </div>
+    </div>
+
+    <div class="stat-card warning">
+        <div class="stat-header">
+            <div class="stat-title">Tổng tiền ủng hộ</div>
+            <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+        </div>
+        <div class="stat-value">845M</div>
+        <div class="stat-change up">
+            <span>↑ 15%</span>
+            <span style="color: var(--gray-600);">so với tháng trước</span>
+        </div>
+    </div>
+
+    <div class="stat-card danger">
+        <div class="stat-header">
+            <div class="stat-title">Hiện vật ủng hộ</div>
+            <div class="stat-icon"><i class="fa-solid fa-gift"></i></div>
+        </div>
+        <div class="stat-value">2,340</div>
+        <div class="stat-change down">
+            <span>↓ 3%</span>
+            <span style="color: var(--gray-600);">so với tháng trước</span>
+        </div>
+    </div>
+
+    <div class="stat-card purple">
+        <div class="stat-header">
+            <div class="stat-title">Tình nguyện viên</div>
+            <div class="stat-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+        </div>
+        <div class="stat-value">186</div>
+        <div class="stat-change up">
+            <span>↑ 22%</span>
+            <span style="color: var(--gray-600);">so với tháng trước</span>
+        </div>
+    </div>
+
+    <div class="stat-card pink">
+        <div class="stat-header">
+            <div class="stat-title">Giờ tình nguyện</div>
+            <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+        </div>
+        <div class="stat-value">3,420</div>
+        <div class="stat-change up">
+            <span>↑ 18%</span>
+            <span style="color: var(--gray-600);">so với tháng trước</span>
+        </div>
+    </div>
+</div>
+
+<div class="chart-grid">
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3 class="chart-title">Sự kiện theo thời gian</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="eventsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3 class="chart-title">Trẻ em được hỗ trợ</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="childrenChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3 class="chart-title">Nguồn ủng hộ</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="donationsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3 class="chart-title">Tình nguyện viên tham gia</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="volunteersChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-card full-width">
+        <div class="chart-header">
+            <h3 class="chart-title">So sánh hiệu suất theo tháng</h3>
+        </div>
+        <div class="chart-container" style="height: 350px;">
+            <canvas id="comparisonChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3 class="chart-title">Phân loại sự kiện</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="eventTypeChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="chart-header">
+            <h3 class="chart-title">Tỷ lệ hoàn thành mục tiêu</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="goalChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="chart-card">
+    <div class="chart-header">
+        <h3 class="chart-title">Chi tiết hoạt động theo tuần</h3>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tuần</th>
+                    <th>Số sự kiện</th>
+                    <th>Trẻ tham gia</th>
+                    <th>Tiền ủng hộ</th>
+                    <th>Hiện vật</th>
+                    <th>Tình nguyện viên</th>
+                    <th>Giờ tình nguyện</th>
+                </tr>
+            </thead>
+            <tbody id="weeklyTable">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="chart-card">
+    <div class="chart-header">
+        <h3 class="chart-title">Top 10 tình nguyện viên tích cực nhất</h3>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Họ tên</th>
+                    <th>Số sự kiện</th>
+                    <th>Giờ tình nguyện</th>
+                    <th>Đánh giá</th>
+                </tr>
+            </thead>
+            <tbody id="topVolunteersTable">
+            </tbody>
+        </table>
+    </div>
+</div>

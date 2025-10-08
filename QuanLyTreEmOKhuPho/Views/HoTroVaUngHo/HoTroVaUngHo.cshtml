@@ -1,0 +1,964 @@
+﻿
+@{
+    ViewBag.Title = "HoTroVaUngHo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="~/Content/css/HoTroVaUngHo.css" />
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="page-title">
+        <h1><i class="fa-solid fa-heart-pulse"></i> Quản Lý Hỗ Trợ & Ủng Hộ</h1>
+        <p>Quản lý hỗ trợ phúc lợi và theo dõi ủng hộ từ mạnh thường quân</p>
+    </div>
+    <button class="btn btn-white" onclick="openCreateSupportModal()">
+        <i class="fa-solid fa-circle-plus"></i> Tạo đợt hỗ trợ mới
+    </button>
+</div>
+
+<!-- Main Tabs -->
+<div class="main-tabs">
+    <div class="tab-buttons">
+        <button class="tab-btn active" onclick="switchMainTab(0)">
+            <i class="fa-solid fa-heart-pulse"></i> Hỗ trợ & Phúc lợi
+        </button>
+        <button class="tab-btn" onclick="switchMainTab(1)">
+            <i class="fa-solid fa-sack-dollar"></i> Mạnh thường quân
+        </button>
+        <button class="tab-btn" onclick="switchMainTab(2)">
+            <i class="fa-solid fa-clipboard"></i> Lịch sử ủng hộ
+        </button>
+    </div>
+
+    <!-- Tab 1: Support & Welfare -->
+    <div class="tab-content active">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(236, 72, 153, 0.1); color: var(--pink);"><i class="fa-solid fa-heart-pulse"></i></div>
+                <div class="stat-content">
+                    <h3>342</h3>
+                    <p>Tổng lượt hỗ trợ</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fa-solid fa-sack-dollar"></i></div>
+                <div class="stat-content">
+                    <h3>485M</h3>
+                    <p>Tổng giá trị</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(37, 99, 235, 0.1); color: var(--primary);"><i class="fa-solid fa-children"></i></div>
+                <div class="stat-content">
+                    <h3>856</h3>
+                    <p>Trẻ được hỗ trợ</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--purple);"><i class="fa-solid fa-calendar-days"></i></div>
+                <div class="stat-content">
+                    <h3>28</h3>
+                    <p>Đợt hỗ trợ tháng này</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="filter-section">
+            <div class="form-group">
+                <label class="form-label">Tìm kiếm</label>
+                <input type="text" class="form-control" placeholder="Tìm theo tên đợt hỗ trợ..." id="searchSupport">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Loại hỗ trợ</label>
+                <select class="form-control" id="filterSupportType">
+                    <option value="">Tất cả</option>
+                    <option value="scholarship">Học bổng</option>
+                    <option value="gift">Quà tặng</option>
+                    <option value="health">Khám sức khỏe</option>
+                    <option value="food">Hỗ trợ lương thực</option>
+                    <option value="other">Khác</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Khu phố</label>
+                <select class="form-control" id="filterKhuPho">
+                    <option value="">Tất cả</option>
+                    <option value="kp1">Khu phố 1</option>
+                    <option value="kp2">Khu phố 2</option>
+                    <option value="kp3">Khu phố 3</option>
+                    <option value="kp4">Khu phố 4</option>
+                    <option value="kp5">Khu phố 5</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Thời gian</label>
+                <input type="date" class="form-control" id="filterDate">
+            </div>
+            <button class="btn btn-primary" onclick="applyFilters()">Lọc</button>
+            <button class="btn btn-success" onclick="exportData()"><i class="fa-solid fa-chart-area"></i> Xuất Excel</button>
+        </div>
+
+        <!-- Support List -->
+        <div class="support-grid" id="supportList">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Tab 2: Sponsors -->
+    <div class="tab-content">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--purple);"><i class="fa-solid fa-users-line"></i></div>
+                <div class="stat-content">
+                    <h3>48</h3>
+                    <p>Tổng mạnh thường quân</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fa-solid fa-sack-dollar"></i></div>
+                <div class="stat-content">
+                    <h3>485M</h3>
+                    <p>Tổng ủng hộ</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(37, 99, 235, 0.1); color: var(--primary);"><i class="fa-solid fa-user"></i></div>
+                <div class="stat-content">
+                    <h3>32</h3>
+                    <p>Cá nhân</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);"><i class="fa-solid fa-building"></i></div>
+                <div class="stat-content">
+                    <h3>16</h3>
+                    <p>Tổ chức</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sponsor Actions -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div class="form-group" style="max-width: 400px; margin: 0;">
+                <input type="text" class="form-control" placeholder="Tìm kiếm mạnh thường quân..." id="searchSponsor">
+            </div>
+            <button class="btn btn-primary" onclick="openAddSponsorModal()"><i class="fa-solid fa-circle-plus"></i> Thêm MTQ mới</button>
+        </div>
+
+        <!-- Sponsor Grid -->
+        <div class="sponsor-grid" id="sponsorList">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Tab 3: Donation History -->
+    <div class="tab-content">
+        <div style="background: white; border-radius: 12px; padding: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-clipboard"></i> Lịch sử ủng hộ chi tiết</h3>
+
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead style="background: var(--gray-50);">
+                    <tr>
+                        <th style="padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600;">Ngày</th>
+                        <th style="padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600;">Mạnh thường quân</th>
+                        <th style="padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600;">Loại</th>
+                        <th style="padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600;">Giá trị</th>
+                        <th style="padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600;">Đối tượng</th>
+                        <th style="padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="donationHistory">
+                    <!-- Will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Create Support Modal -->
+<div class="modal" id="createSupportModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fa-solid fa-circle-plus"></i> Tạo đợt hỗ trợ mới</h3>
+            <button class="close-btn" onclick="closeModal('createSupportModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="createSupportForm">
+                <!-- Basic Info -->
+                <div class="form-section">
+                    <h4 class="section-title"><i class="fa-solid fa-clipboard"></i> Thông tin cơ bản</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Tên đợt hỗ trợ *</label>
+                            <input type="text" class="form-control" placeholder="VD: Học bổng học kỳ I năm 2025" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Loại hỗ trợ *</label>
+                            <select class="form-control" required>
+                                <option value="">-- Chọn loại --</option>
+                                <option value="scholarship">Học bổng</option>
+                                <option value="gift">Quà tặng</option>
+                                <option value="health">Khám sức khỏe</option>
+                                <option value="food">Hỗ trợ lương thực</option>
+                                <option value="other">Khác</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Ngày cấp *</label>
+                            <input type="date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Người chịu trách nhiệm *</label>
+                            <input type="text" class="form-control" placeholder="Họ tên người phụ trách" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label class="form-label">Mô tả chi tiết</label>
+                            <textarea class="form-control" placeholder="Mô tả chi tiết về đợt hỗ trợ..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Select Children -->
+                <div class="form-section">
+                    <h4 class="section-title"><i class="fa-solid fa-children"></i> Danh sách trẻ nhận hỗ trợ</h4>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <button type="button" class="btn btn-primary" onclick="openSelectChildrenModal()">
+                            <i class="fa-solid fa-circle-plus"></i> Chọn từ danh sách
+                        </button>
+                        <button type="button" class="btn btn-success">
+                            <i class="fa-solid fa-chart-area"></i> Import Excel
+                        </button>
+                    </div>
+
+                    <div class="selection-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tên trẻ</th>
+                                    <th>Khu phố</th>
+                                    <th>Hoàn cảnh</th>
+                                    <th>Giá trị</th>
+                                    <th>Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="selectedChildren">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; color: var(--gray-600); padding: 30px;">
+                                        Chưa có trẻ em nào được chọn
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Upload Evidence -->
+                <div class="form-section">
+                    <h4 class="section-title"><i class="fa-solid fa-paperclip"></i> Upload minh chứng</h4>
+                    <div class="file-upload-area" onclick="document.getElementById('fileInput').click()">
+                        <div class="upload-icon"><i class="fa-solid fa-file"></i></div>
+                        <p style="color: var(--gray-700); font-weight: 600; margin-bottom: 5px;">
+                            Click để chọn file hoặc kéo thả vào đây
+                        </p>
+                        <p style="color: var(--gray-600); font-size: 13px;">
+                            Hỗ trợ: PDF, DOC, DOCX, JPG, PNG (Tối đa 10MB)
+                        </p>
+                        <input type="file" id="fileInput" style="display: none;" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                    </div>
+
+                    <div class="uploaded-files" id="uploadedFiles"></div>
+                </div>
+
+                <!-- Form Actions -->
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn" style="background: var(--gray-200); color: var(--gray-700);" onclick="closeModal('createSupportModal')">
+                        Hủy
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        ✓ Lưu đợt hỗ trợ
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Select Children Modal -->
+<div class="modal" id="selectChildrenModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fa-solid fa-children"></i> Chọn trẻ em nhận hỗ trợ</h3>
+            <button class="close-btn" onclick="closeModal('selectChildrenModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 20px;">
+                <input type="text" class="form-control" placeholder="Tìm kiếm trẻ em..." id="searchChildForSupport">
+            </div>
+
+            <div class="selection-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll"></th>
+                            <th>Họ tên</th>
+                            <th>Tuổi</th>
+                            <th>Khu phố</th>
+                            <th>Hoàn cảnh</th>
+                            <th>Giá trị</th>
+                        </tr>
+                    </thead>
+                    <tbody id="childrenSelectList">
+                        <!-- Sample data -->
+                        <tr>
+                            <td><input type="checkbox" class="child-checkbox" data-id="1"></td>
+                            <td>Nguyễn Văn A</td>
+                            <td>10 tuổi</td>
+                            <td>Khu phố 2</td>
+                            <td>Mồ côi cha</td>
+                            <td><input type="number" class="form-control" placeholder="Số tiền" style="width: 120px;"></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="child-checkbox" data-id="2"></td>
+                            <td>Trần Thị B</td>
+                            <td>8 tuổi</td>
+                            <td>Khu phố 1</td>
+                            <td>Hộ nghèo</td>
+                            <td><input type="number" class="form-control" placeholder="Số tiền" style="width: 120px;"></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="child-checkbox" data-id="3"></td>
+                            <td>Lê Văn C</td>
+                            <td>12 tuổi</td>
+                            <td>Khu phố 5</td>
+                            <td>Khuyết tật</td>
+                            <td><input type="number" class="form-control" placeholder="Số tiền" style="width: 120px;"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                <button type="button" class="btn" style="background: var(--gray-200); color: var(--gray-700);" onclick="closeModal('selectChildrenModal')">
+                    Hủy
+                </button>
+                <button type="button" class="btn btn-primary" onclick="confirmChildSelection()">
+                    ✓ Xác nhận (<span id="selectedCount">0</span> trẻ)
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Sponsor Modal -->
+<div class="modal" id="addSponsorModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="fa-solid fa-sack-dollar"></i> Thêm mạnh thường quân</h3>
+            <button class="close-btn" onclick="closeModal('addSponsorModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="addSponsorForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Tên MTQ *</label>
+                        <input type="text" class="form-control" placeholder="Họ tên / Tên tổ chức" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Loại *</label>
+                        <select class="form-control" required>
+                            <option value="">-- Chọn loại --</option>
+                            <option value="individual"><i class="fa-solid fa-user"></i> Cá nhân</option>
+                            <option value="organization"><i class="fa-solid fa-building"></i> Tổ chức</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Số điện thoại</label>
+                        <input type="tel" class="form-control" placeholder="0901234567">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" placeholder="email@example.com">
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label class="form-label">Địa chỉ</label>
+                        <input type="text" class="form-control" placeholder="Địa chỉ đầy đủ">
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label class="form-label">Ghi chú</label>
+                        <textarea class="form-control" placeholder="Ghi chú thêm..."></textarea>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn" style="background: var(--gray-200); color: var(--gray-700);" onclick="closeModal('addSponsorModal')">
+                        Hủy
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-circle-plus"></i> Thêm MTQ
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Record Donation Modal -->
+<div class="modal" id="recordDonationModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">📝 Ghi nhận ủng hộ</h3>
+            <button class="close-btn" onclick="closeModal('recordDonationModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="recordDonationForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Chọn MTQ *</label>
+                        <select class="form-control" required>
+                            <option value="">-- Chọn mạnh thường quân --</option>
+                            <option value="1">Nguyễn Văn A (Cá nhân)</option>
+                            <option value="2">Công ty ABC (Tổ chức)</option>
+                            <option value="3">Trần Thị B (Cá nhân)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ngày ủng hộ *</label>
+                        <input type="date" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Loại ủng hộ *</label>
+                        <select class="form-control" id="donationType" required onchange="toggleDonationType()">
+                            <option value="">-- Chọn loại --</option>
+                            <option value="money"><i class="fa-solid fa-sack-dollar"></i> Tiền mặt</option>
+                            <option value="goods">📦 Hiện vật</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="moneyAmount">
+                        <label class="form-label">Số tiền *</label>
+                        <input type="number" class="form-control" placeholder="VND">
+                    </div>
+                </div>
+
+                <div class="form-row full" id="goodsDescription" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Mô tả hiện vật *</label>
+                        <textarea class="form-control" placeholder="Mô tả chi tiết về hiện vật..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label class="form-label">Liên kết với</label>
+                        <select class="form-control">
+                            <option value="">-- Không liên kết --</option>
+                            <option value="child"><i class="fa-solid fa-children"></i> Trẻ em cụ thể</option>
+                            <option value="event"><i class="fa-solid fa-star"></i> Sự kiện</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="section-title"><i class="fa-solid fa-paperclip"></i> Upload chứng từ (không bắt buộc)</h4>
+                    <div class="file-upload-area" onclick="document.getElementById('donationFile').click()">
+                        <div class="upload-icon"><i class="fa-solid fa-file"></i></div>
+                        <p style="color: var(--gray-700); font-weight: 600;">
+                            Tải lên chứng từ ủng hộ
+                        </p>
+                        <input type="file" id="donationFile" style="display: none;" multiple>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" class="btn" style="background: var(--gray-200); color: var(--gray-700);" onclick="closeModal('recordDonationModal')">
+                        Hủy
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        ✓ Ghi nhận ủng hộ
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+        // Sample data
+        const supportsData = [
+            {
+                id: 1,
+                name: 'Học bổng học kỳ I năm 2025',
+                type: 'scholarship',
+                typeName: 'Học bổng',
+                date: '01/09/2025',
+                responsible: 'Nguyễn Thị Hương',
+                value: 45000000,
+                recipients: 45,
+                khuPho: 'Khu phố 2'
+            },
+            {
+                id: 2,
+                name: 'Quà Trung thu 2025',
+                type: 'gift',
+                typeName: 'Quà tặng',
+                date: '15/09/2025',
+                responsible: 'Trần Văn Nam',
+                value: 25000000,
+                recipients: 120,
+                khuPho: 'Tất cả'
+            },
+            {
+                id: 3,
+                name: 'Khám sức khỏe định kỳ',
+                type: 'health',
+                typeName: 'Khám sức khỏe',
+                date: '20/08/2025',
+                responsible: 'Lê Thị Mai',
+                value: 18000000,
+                recipients: 85,
+                khuPho: 'Khu phố 1, 3'
+            }
+        ];
+
+        const sponsorsData = [
+            {
+                id: 1,
+                name: 'Nguyễn Văn A',
+                type: 'individual',
+                typeName: 'Cá nhân',
+                phone: '0901234567',
+                totalDonation: 15000000,
+                donationCount: 8
+            },
+            {
+                id: 2,
+                name: 'Công ty TNHH ABC',
+                type: 'organization',
+                typeName: 'Tổ chức',
+                phone: '0287654321',
+                totalDonation: 50000000,
+                donationCount: 5
+            },
+            {
+                id: 3,
+                name: 'Trần Thị B',
+                type: 'individual',
+                typeName: 'Cá nhân',
+                phone: '0912345678',
+                totalDonation: 8000000,
+                donationCount: 12
+            }
+        ];
+
+        const donationHistoryData = [
+            {
+                date: '05/10/2025',
+                sponsor: 'Nguyễn Văn A',
+                type: 'Tiền mặt',
+                value: '5,000,000 VNĐ',
+                target: 'Học bổng - Trẻ em Nguyễn Văn C'
+            },
+            {
+                date: '01/10/2025',
+                sponsor: 'Công ty ABC',
+                type: 'Hiện vật',
+                value: '20,000,000 VNĐ',
+                target: 'Sự kiện Trung thu 2025'
+            }
+        ];
+
+        // Render support list
+        function renderSupportList() {
+            const container = document.getElementById('supportList');
+            container.innerHTML = '';
+
+            supportsData.forEach(support => {
+                const card = document.createElement('div');
+                card.className = 'support-card';
+                card.onclick = () => viewSupportDetail(support.id);
+
+                card.innerHTML = `
+                    <div class="support-header">
+                        <div>
+                            <h3 class="support-title">${support.name}</h3>
+                            <span class="support-type">${support.typeName}</span>
+                        </div>
+                    </div>
+
+                    <div class="support-meta">
+                        <div class="meta-item">
+                            <span><i class="fa-solid fa-calendar-days"></i></span>
+                            <span>${support.date}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span><i class="fa-solid fa-user"></i></span>
+                            <span>${support.responsible}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span><i class="fa-solid fa-house-medical-circle-check"></i></span>
+                            <span>${support.khuPho}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="support-value">${formatMoney(support.value)}</div>
+                        <div class="support-recipients">${support.recipients} trẻ em nhận hỗ trợ</div>
+                    </div>
+
+                    <div class="support-actions">
+                        <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); viewSupportDetail(${support.id})">
+                            Chi tiết
+                        </button>
+                        <button class="btn btn-sm" style="background: var(--warning); color: white;" onclick="event.stopPropagation(); editSupport(${support.id})">
+                            Sửa
+                        </button>
+                        <button class="btn btn-sm" style="background: var(--danger); color: white;" onclick="event.stopPropagation(); deleteSupport(${support.id})">
+                            Xóa
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Render sponsor list
+        function renderSponsorList() {
+            const container = document.getElementById('sponsorList');
+            container.innerHTML = '';
+
+            sponsorsData.forEach(sponsor => {
+                const card = document.createElement('div');
+                card.className = 'sponsor-card';
+                card.onclick = () => viewSponsorDetail(sponsor.id);
+
+                const typeColor = sponsor.type === 'individual' ? 'var(--purple)' : 'var(--warning)';
+
+                card.innerHTML = `
+                    <div class="sponsor-header">
+                        <div class="sponsor-avatar">${sponsor.name.charAt(0)}</div>
+                        <div class="sponsor-info">
+                            <h3>${sponsor.name}</h3>
+                            <span class="sponsor-type">${sponsor.typeName}</span>
+                            <div style="font-size: 13px; color: var(--gray-600); margin-top: 5px;">
+                                <i class="fa-solid fa-phone"></i> ${sponsor.phone}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sponsor-stats">
+                        <div class="sponsor-stat">
+                            <span class="sponsor-stat-value">${formatMoney(sponsor.totalDonation)}</span>
+                            <span class="sponsor-stat-label">Tổng ủng hộ</span>
+                        </div>
+                        <div class="sponsor-stat">
+                            <span class="sponsor-stat-value">${sponsor.donationCount}</span>
+                            <span class="sponsor-stat-label">Số lần</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-sm btn-primary" style="flex: 1;" onclick="event.stopPropagation(); openRecordDonationModal()">
+                            <i class="fa-solid fa-sack-dollar"></i> Ghi nhận ủng hộ
+                        </button>
+                        <button class="btn btn-sm" style="background: var(--warning); color: white;" onclick="event.stopPropagation(); editSponsor(${sponsor.id})">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Render donation history
+        function renderDonationHistory() {
+            const tbody = document.getElementById('donationHistory');
+            tbody.innerHTML = '';
+
+            donationHistoryData.forEach(donation => {
+                const row = document.createElement('tr');
+                row.style.borderTop = '1px solid var(--gray-200)';
+                row.innerHTML = `
+                    <td style="padding: 15px;">${donation.date}</td>
+                    <td style="padding: 15px;">${donation.sponsor}</td>
+                    <td style="padding: 15px;">${donation.type}</td>
+                    <td style="padding: 15px; font-weight: 700; color: var(--success);">${donation.value}</td>
+                    <td style="padding: 15px;">${donation.target}</td>
+                    <td style="padding: 15px;">
+                        <button class="btn btn-sm btn-primary">Xem</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Format money
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+
+        // Switch main tabs
+        function switchMainTab(index) {
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            tabButtons[index].classList.add('active');
+            tabContents[index].classList.add('active');
+        }
+
+        // Modal functions
+        function openCreateSupportModal() {
+            document.getElementById('createSupportModal').classList.add('active');
+        }
+
+        function openSelectChildrenModal() {
+            document.getElementById('selectChildrenModal').classList.add('active');
+        }
+
+        function openAddSponsorModal() {
+            document.getElementById('addSponsorModal').classList.add('active');
+        }
+
+        function openRecordDonationModal() {
+            document.getElementById('recordDonationModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Toggle donation type
+        function toggleDonationType() {
+            const type = document.getElementById('donationType').value;
+            const moneyAmount = document.getElementById('moneyAmount');
+            const goodsDescription = document.getElementById('goodsDescription');
+
+            if (type === 'money') {
+                moneyAmount.style.display = 'block';
+                goodsDescription.style.display = 'none';
+            } else if (type === 'goods') {
+                moneyAmount.style.display = 'none';
+                goodsDescription.style.display = 'block';
+            }
+        }
+
+        // File upload handling
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            const container = document.getElementById('uploadedFiles');
+            container.innerHTML = '';
+
+            files.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-info">
+                        <span class="file-icon"><i class="fa-solid fa-file"></i></span>
+                        <div>
+                            <div style="font-weight: 600;">${file.name}</div>
+                            <div style="font-size: 12px; color: var(--gray-600);">
+                                ${(file.size / 1024 / 1024).toFixed(2)} MB
+                            </div>
+                        </div>
+                    </div>
+                    <button class="remove-file" onclick="removeFile(${index})">✕</button>
+                `;
+                container.appendChild(fileItem);
+            });
+        });
+
+        // Select all children
+        document.getElementById('selectAll').addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.child-checkbox');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+            updateSelectedCount();
+        });
+
+        // Update selected count
+        document.querySelectorAll('.child-checkbox').forEach(cb => {
+            cb.addEventListener('change', updateSelectedCount);
+        });
+
+        function updateSelectedCount() {
+            const count = document.querySelectorAll('.child-checkbox:checked').length;
+            document.getElementById('selectedCount').textContent = count;
+        }
+
+        // Confirm child selection
+        function confirmChildSelection() {
+            const selected = document.querySelectorAll('.child-checkbox:checked');
+            if (selected.length === 0) {
+                showNotification('Vui lòng chọn ít nhất 1 trẻ em', 'warning');
+                return;
+            }
+
+            // Add to table
+            const tbody = document.getElementById('selectedChildren');
+            tbody.innerHTML = '';
+
+            selected.forEach(cb => {
+                const row = cb.closest('tr');
+                const name = row.cells[1].textContent;
+                const khuPho = row.cells[3].textContent;
+                const circumstance = row.cells[4].textContent;
+                const value = row.querySelector('input[type="number"]').value || '0';
+
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td style="padding: 12px 15px;">${name}</td>
+                    <td style="padding: 12px 15px;">${khuPho}</td>
+                    <td style="padding: 12px 15px;">${circumstance}</td>
+                    <td style="padding: 12px 15px;">${formatMoney(value)}</td>
+                    <td style="padding: 12px 15px;">
+                        <button class="remove-file" onclick="this.closest('tr').remove()">✕</button>
+                    </td>
+                `;
+                tbody.appendChild(newRow);
+            });
+
+            closeModal('selectChildrenModal');
+            showNotification(`Đã thêm ${selected.length} trẻ em`, 'success');
+        }
+
+        // Form submissions
+        document.getElementById('createSupportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Đang tạo đợt hỗ trợ...', 'info');
+            setTimeout(() => {
+                showNotification('Tạo đợt hỗ trợ thành công!', 'success');
+                closeModal('createSupportModal');
+                this.reset();
+            }, 1500);
+        });
+
+        document.getElementById('addSponsorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Đang thêm mạnh thường quân...', 'info');
+            setTimeout(() => {
+                showNotification('Thêm mạnh thường quân thành công!', 'success');
+                closeModal('addSponsorModal');
+                this.reset();
+            }, 1500);
+        });
+
+        document.getElementById('recordDonationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Đang ghi nhận ủng hộ...', 'info');
+            setTimeout(() => {
+                showNotification('Ghi nhận ủng hộ thành công!', 'success');
+                closeModal('recordDonationModal');
+                this.reset();
+            }, 1500);
+        });
+
+        // Notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const icons = { success: '✓', warning: '⚠', info: 'ℹ' };
+            const colors = { success: '#10b981', warning: '#f59e0b', info: '#ec4899' };
+
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                z-index: 10001;
+                border-left: 4px solid ${colors[type]};
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                animation: slideIn 0.3s ease;
+            `;
+
+            notification.innerHTML = `
+                <span style="font-size: 20px;">${icons[type]}</span>
+                <span>${message}</span>
+            `;
+
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @@keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @@keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Filter & Export
+        function applyFilters() {
+            showNotification('Đang áp dụng bộ lọc...', 'info');
+        }
+
+        function exportData() {
+            showNotification('Đang xuất báo cáo Excel...', 'info');
+            setTimeout(() => {
+                showNotification('Xuất báo cáo thành công!', 'success');
+            }, 1500);
+        }
+
+        // View details
+        function viewSupportDetail(id) {
+            showNotification(`Xem chi tiết đợt hỗ trợ #${id}`, 'info');
+        }
+
+        function viewSponsorDetail(id) {
+            showNotification(`Xem chi tiết MTQ #${id}`, 'info');
+        }
+
+        // Initialize
+        renderSupportList();
+        renderSponsorList();
+        renderDonationHistory();
+
+        // Close modals on outside click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+</script>

@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewBag.Title = "ThemTreEm_v2";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/ThemTreEm.css" rel="stylesheet" />
+<main class="main-content">
+    <div class="header">
+        <div class="header-left">
+            <h1>Thêm Phụ Huynh</h1>
+            <p>Tìm kiếm phụ huynh có sẵn hoặc thêm mới vào hệ thống</p>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar">AD</div>
+            <div>
+                <div style="font-weight: 600; font-size: 14px;">Admin</div>
+                <div style="font-size: 12px; color: var(--gray-600);">Quản trị viên</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="step-container">
+        <div class="step-progress">
+            <div class="step-item completed">
+                <div class="step-circle">✓</div>
+                <div class="step-label">Thông tin cơ bản</div>
+            </div>
+            <div class="step-item active">
+                <div class="step-circle">2</div>
+                <div class="step-label">Phụ huynh</div>
+            </div>
+            <div class="step-item">
+                <div class="step-circle">3</div>
+                <div class="step-label">Học tập</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-section">
+        <h3 class="section-title">🔍 Tìm kiếm phụ huynh có sẵn</h3>
+        <div class="search-header">
+            <input type="text" class="search-input" id="searchInput"
+                   placeholder="Tìm theo tên, số điện thoại hoặc địa chỉ..." />
+            <button class="btn btn-primary" onclick="searchParents()">Tìm kiếm</button>
+        </div>
+        <div class="search-results" id="searchResults"></div>
+    </div>
+
+    <div class="form-container">
+        <h3 class="section-title">📝 Thông tin phụ huynh mới</h3>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label required">Họ và tên</label>
+                <input type="text" class="form-control" id="hoTen" placeholder="Nhập họ tên đầy đủ" />
+            </div>
+            <div class="form-group">
+                <label class="form-label required">Số điện thoại</label>
+                <input type="tel" class="form-control" id="sdt" placeholder="0912345678" maxlength="15" />
+            </div>
+            <div class="form-group">
+                <label class="form-label required">Ngày sinh</label>
+                <input type="date" class="form-control" id="ngaySinh" />
+            </div>
+            <div class="form-group">
+                <label class="form-label required">Nghề nghiệp</label>
+                <input type="text" class="form-control" id="ngheNghiep" placeholder="VD: Giáo viên, Công nhân..." />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Dân tộc</label>
+                <input type="text" class="form-control" id="danToc" value="Kinh" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tôn giáo</label>
+                <input type="text" class="form-control" id="tonGiao" placeholder="Không" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Quốc tịch</label>
+                <input type="text" class="form-control" id="quocTich" value="Việt Nam" />
+            </div>
+        </div>
+
+        <div class="form-grid full">
+            <div class="form-group">
+                <label class="form-label required">Địa chỉ</label>
+                <input type="text" class="form-control" id="diaChi" placeholder="Số nhà, đường, phường/xã, quận/huyện..." />
+            </div>
+        </div>
+
+        <div class="form-actions" style="justify-content:flex-end">
+            <button class="btn btn-secondary" onclick="resetAll()">Hủy bỏ</button>
+            <button class="btn btn-secondary">Làm mới</button>
+            <button class="btn btn-success">💾 Lưu phụ huynh</button>
+            <a href="@Url.Action("ThemTreEm_v3", "QuanLyTreEm")" class="btn btn-primary">
+                Tiếp theo
+            </a>
+        </div>
+    </div>
+
+    <div class="result-section" id="resultSection" style="display: none;">
+        <h3 style="margin-bottom: 20px;">Danh sách đã chọn (<span id="totalCount">0</span>)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Họ tên</th>
+                    <th>SĐT</th>
+                    <th>Nghề nghiệp</th>
+                    <th>Địa chỉ</th>
+                    <th>Nguồn</th>
+                </tr>
+            </thead>
+            <tbody id="parentsTableBody"></tbody>
+        </table>
+    </div>
+</main>
+

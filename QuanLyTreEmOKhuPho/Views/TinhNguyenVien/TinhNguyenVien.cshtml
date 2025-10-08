@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "TinhNguyenVien";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/Content/css/media.css" />
+<link rel="stylesheet" href="~/Content/css/TinhNguyenVien.css" />
+
+
+<div class="filter-section">
+    <div class="filter-grid">
+        <div class="filter-item">
+            <label class="filter-label">Tìm kiếm</label>
+            <input type="text" class="filter-input" id="searchInput"
+                   placeholder="Tìm theo tên, SĐT...">
+        </div>
+        <div class="filter-item">
+            <label class="filter-label">Khu phố</label>
+            <select class="filter-select" id="filterKhuPho">
+                <option value="">Tất cả khu phố</option>
+                <option value="1">Khu phố 1</option>
+                <option value="2">Khu phố 2</option>
+                <option value="3">Khu phố 3</option>
+                <option value="4">Khu phố 4</option>
+                <option value="5">Khu phố 5</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label class="filter-label">Chức vụ</label>
+            <select class="filter-select" id="filterChucVu">
+                <option value="">Tất cả chức vụ</option>
+                <option value="Trưởng nhóm">Trưởng nhóm</option>
+                <option value="Phó nhóm">Phó nhóm</option>
+                <option value="Thành viên">Thành viên</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label class="filter-label">Trạng thái</label>
+            <select class="filter-select" id="filterTrangThai">
+                <option value="">Tất cả</option>
+                <option value="active">Đang hoạt động</option>
+                <option value="inactive">Ngừng hoạt động</option>
+            </select>
+        </div>
+    </div>
+    <div class="filter-actions">
+        <button class="btn btn-primary" onclick="applyFilters()">Áp dụng</button>
+        <button class="btn btn-secondary" onclick="resetFilters()">Đặt lại</button>
+    </div>
+</div>
+
+<!-- View Toggle -->
+<div class="view-toggle">
+    <button class="toggle-btn active" onclick="switchView('card')">Dạng thẻ</button>
+    <button class="toggle-btn" onclick="switchView('table')">Dạng bảng</button>
+</div>
+
+<!-- Card View -->
+<div class="volunteers-grid" id="cardView"></div>
+
+<!-- Table View -->
+<div class="volunteers-table" id="tableView">
+    <table>
+        <thead>
+            <tr>
+                <th>Họ tên</th>
+                <th>Chức vụ</th>
+                <th>Khu phố</th>
+                <th>Số điện thoại</th>
+                <th>Số sự kiện</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+        </main>

@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewBag.Title = "ManhThuongQuan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/Content/css/ManhThuongQuan.css" />
+<div class="stats-grid">
+    <div class="stat-card primary">
+        <div class="stat-header">
+            <div class="stat-title">Tổng mạnh thường quân</div>
+            <div class="stat-icon"><i class="fa-solid fa-users-line"></i></div>
+        </div>
+        <div class="stat-value" id="totalDonors">0</div>
+        <div class="stat-change" id="donorBreakdown">0 cá nhân, 0 tổ chức</div>
+    </div>
+
+    <div class="stat-card success">
+        <div class="stat-header">
+            <div class="stat-title">Tổng tiền ủng hộ</div>
+            <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+        </div>
+        <div class="stat-value" id="totalAmount">0</div>
+        <div class="stat-change">Tính đến tháng 10/2025</div>
+    </div>
+
+    <div class="stat-card warning">
+        <div class="stat-header">
+            <div class="stat-title">Ủng hộ tháng này</div>
+            <div class="stat-icon"><i class="fa-solid fa-calendar-days"></i></div>
+        </div>
+        <div class="stat-value" id="monthAmount">0</div>
+        <div class="stat-change" id="monthCount">0 lượt ủng hộ</div>
+    </div>
+
+    <div class="stat-card danger">
+        <div class="stat-header">
+            <div class="stat-title">Nhà tài trợ thường xuyên</div>
+            <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+        </div>
+        <div class="stat-value" id="regularDonors">0</div>
+        <div class="stat-change">Ủng hộ hơn 3 lần/năm</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Danh sách mạnh thường quân</h3>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-success" onclick="openDonationModal()"><i class="fa-solid fa-circle-plus"></i> Ghi nhận ủng hộ</button>
+            <button class="btn btn-primary" onclick="openDonorModal()"><i class="fa-solid fa-circle-plus"></i> Thêm mạnh thường quân</button>
+        </div>
+    </div>
+
+    <div class="filter-group">
+        <div class="filter-item">
+            <label>Loại</label>
+            <select id="filterType" onchange="filterTable()">
+                <option value="">Tất cả</option>
+                <option value="canhan">Cá nhân</option>
+                <option value="tochuc">Tổ chức</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>Sắp xếp</label>
+            <select id="filterSort" onchange="filterTable()">
+                <option value="name">Tên A-Z</option>
+                <option value="amount">Số tiền giảm dần</option>
+                <option value="recent">Mới nhất</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label>Tìm kiếm</label>
+            <input type="text" id="searchInput" placeholder="Tên, SĐT, Email..." onkeyup="filterTable()">
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên</th>
+                    <th>Loại</th>
+                    <th>Số điện thoại</th>
+                    <th>Email</th>
+                    <th>Địa chỉ</th>
+                    <th>Tổng ủng hộ</th>
+                    <th>Số lần</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </div>
+</div>
+

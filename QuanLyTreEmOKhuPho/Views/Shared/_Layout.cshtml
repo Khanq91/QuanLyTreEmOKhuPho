@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/Content/css/Site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Hệ Thống Quản Lý Trẻ Em Khu Phố</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>
+                    <div class="logo-icon"><i class="fa-solid fa-person-breastfeeding"></i></div>
+                    <span>Quản Lý Trẻ Em</span>
+                </h2>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="@Url.Action("TrangChu", "Home")" class="nav-link @(ViewBag.ActivePage == "TrangChu" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-table-columns"></i></span>
+                            <span>Trang chủ</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("TreEm", "QuanLytreEm")" class="nav-link @(ViewBag.ActivePage == "TreEm" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-children"></i></span>
+                            <span>Quản lý trẻ em</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("SuKien", "SuKien")" class="nav-link @(ViewBag.ActivePage == "SuKien" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-star"></i></span>
+                            <span>Sự kiện</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("TinhNguyenVien", "TinhNguyenVien")" class="nav-link @(ViewBag.ActivePage == "TinhNguyenVien" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-hand-holding-heart"></i></span>
+                            <span>Tình nguyện viên</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("HoTroVaUngHo", "HoTroVaUngHo")" class="nav-link @(ViewBag.ActivePage == "HoTroVaUngHo" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-heart-circle-check"></i></span>
+                            <span>Hỗ trợ & Phúc lợi</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("VanDongTreEm", "VanDongTreEm")" class="nav-link @(ViewBag.ActivePage == "VanDongTreEm" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-school"></i></span>
+                            <span>Vận động trẻ</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("ManhThuongQuan", "ManhThuongQuan")" class="nav-link @(ViewBag.ActivePage == "ManhThuongQuan" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-comments-dollar"></i></span>
+                            <span>Mạnh thường quân</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("BaoCaoThongKe", "BaoCaoThongKe")" class="nav-link @(ViewBag.ActivePage == "BaoCaoThongKe" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-chart-area"></i></span>
+                            <span>Báo cáo & Thống kê</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("QuanLyTaiKhoan","QuanLyTaiKhoan")" class="nav-link @(ViewBag.ActivePage == "QuanLyTaiKhoan" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+                            <span>Quản trị hệ thống</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-left">
+                    <h1>@ViewBag.PageTitle</h1>
+                    <p>@ViewBag.PageDescription</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-avatar">AD</div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 14px;">Admin</div>
+                            <div style="font-size: 12px; color: var(--gray-600);">Quản trị viên</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @RenderBody()
+        </main>
+    </div>
+</body>
+</html>

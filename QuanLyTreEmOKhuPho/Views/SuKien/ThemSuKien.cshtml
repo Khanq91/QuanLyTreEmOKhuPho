@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewBag.Title = "ThemSuKien";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/css/media.css" rel="stylesheet" />
+<link href="~/Content/css/ThemSuKien.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<div id="alertContainer"></div>
+
+<form id="eventForm" class="form-container" novalidate>
+    <!-- Thông tin cơ bản -->
+    <div class="form-section">
+        <h3 class="section-title"><i class="fa-solid fa-clipboard-list"></i> Thông tin cơ bản</h3>
+        <div class="form-grid">
+            <div class="form-group full-width">
+                <label class="form-label required" for="tenSuKien">Tên sự kiện</label>
+                <input type="text" id="tenSuKien" class="form-input"
+                       placeholder="Ví dụ: Ngày hội Trung thu 2025">
+                <span class="error-message" id="errorTenSuKien"></span>
+            </div>
+
+            <div class="form-group full-width">
+                <label class="form-label required" for="moTa">Mô tả</label>
+                <textarea id="moTa" class="form-textarea"
+                          placeholder="Mô tả chi tiết về sự kiện"></textarea>
+                <span class="error-message" id="errorMoTa"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required" for="nguoiChiuTrachNhiem">Người chịu trách nhiệm</label>
+                <input type="text" id="nguoiChiuTrachNhiem" class="form-input" placeholder="Họ và tên">
+                <span class="error-message" id="errorNguoiChiuTrachNhiem"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required" for="diaDiem">Địa điểm</label>
+                <input type="text" id="diaDiem" class="form-input"
+                       placeholder="Ví dụ: Sân trường TH Khu phố 2">
+                <span class="error-message" id="errorDiaDiem"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required" for="ngayBatDau">Ngày bắt đầu</label>
+                <input type="date" id="ngayBatDau" class="form-input">
+                <span class="error-message" id="errorNgayBatDau"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required" for="ngayKetThuc">Ngày kết thúc</label>
+                <input type="date" id="ngayKetThuc" class="form-input">
+                <span class="error-message" id="errorNgayKetThuc"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="soLuongTinhNguyenVien">Số lượng tình nguyện viên</label>
+                <input type="number" id="soLuongTinhNguyenVien" class="form-input" min="0" value="0">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="soLuongTreEm">Số lượng trẻ em</label>
+                <input type="number" id="soLuongTreEm" class="form-input" min="0" value="0">
+            </div>
+        </div>
+    </div>
+
+    <!-- Thời gian chi tiết -->
+    <div class="form-section">
+        <h3 class="section-title"><i class="fa-solid fa-clock"></i> Thời gian chi tiết sự kiện</h3>
+        <div id="thoiGianChiTietList" class="dynamic-list"></div>
+        <button type="button" class="btn btn-add" onclick="addThoiGianChiTiet()">
+            + Thêm thời gian chi tiết
+        </button>
+    </div>
+
+    <!-- Tiết mục -->
+    <div class="form-section">
+        <h3 class="section-title"><i class="fa-solid fa-masks-theater"></i> Tiết mục sự kiện</h3>
+        <div id="tietMucList" class="dynamic-list"></div>
+        <button type="button" class="btn btn-add" onclick="addTietMuc()">
+            + Thêm tiết mục
+        </button>
+    </div>
+
+    <!-- Chi phí -->
+    <div class="form-section">
+        <h3 class="section-title"><i class="fa-solid fa-sack-dollar"></i> Chi phí sự kiện</h3>
+        <div id="chiPhiList" class="dynamic-list"></div>
+        <button type="button" class="btn btn-add" onclick="addChiPhi()">
+            + Thêm khoản chi
+        </button>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='sukien.html'">
+            Hủy bỏ
+        </button>
+        <button type="submit" class="btn btn-primary">
+            Lưu sự kiện
+        </button>
+    </div>
+</form>
