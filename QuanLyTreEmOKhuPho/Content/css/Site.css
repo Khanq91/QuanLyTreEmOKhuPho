@@ -30,6 +30,7 @@ body {
     display: flex;
     min-height: 100vh;
 }
+
 .btn-primary:hover {
     background: var(--primary-dark);
     transform: translateY(-1px);
@@ -135,6 +136,8 @@ body {
     align-items: center;
 }
 
+
+
 .header-left h1 {
     font-size: 24px;
     color: var(--gray-900);
@@ -150,6 +153,28 @@ body {
     display: flex;
     align-items: center;
     gap: 20px;
+}
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    background: var(--gray-50);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), #3b82f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
 }
 /* Main Content */
 .main-content {

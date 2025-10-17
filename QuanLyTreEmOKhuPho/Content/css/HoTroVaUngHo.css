@@ -1,31 +1,4 @@
-﻿/*
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}*/
-
-:root {
-    --primary: #2563eb;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --purple: #8b5cf6;
-    --pink: #ec4899;
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-600: #4b5563;
-    --gray-700: #374151;
-    --gray-900: #111827;
-}
-/*
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--gray-50);
-    color: var(--gray-900);
-    padding: 20px;
-}*/
+﻿
 
 .page-header {
     background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);

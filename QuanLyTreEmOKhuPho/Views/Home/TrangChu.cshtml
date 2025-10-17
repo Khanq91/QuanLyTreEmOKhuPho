@@ -2,8 +2,84 @@
 @{
     ViewBag.Title = "TrangChu";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var KhuPho = ViewBag.KhuPho;
+    var TongTreEmTungKhuPho = ViewBag.TongTreEmTungKhuPho as IEnumerable<dynamic>;
+    int TongTreEm = ViewBag.TongTreEm;
+
 }
 <link rel="stylesheet" href="~/Content/css/trangchu.css" />
+
+<style>
+    /* Khu Pho Grid Styles */
+    .khu-pho-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        padding: 20px;
+    }
+
+    /* Select Dropdown Styles */
+    .select-wrapper {
+        position: relative;
+        min-width: 250px;
+    }
+
+    .khu-pho-select {
+        width: 100%;
+        padding: 10px 40px 10px 16px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        background: white;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1e293b;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+        .khu-pho-select:hover {
+            border-color: #4f46e5;
+        }
+
+        .khu-pho-select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+    .select-icon {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        pointer-events: none;
+        font-size: 12px;
+    }
+</style>
+<form method="get" action="@Url.Action("TrangChu", "Home")">
+    <div class="card-header">
+        <h3 class="card-title">Chọn khu phố</h3>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <div class="select-wrapper">
+                <select name="KhuPhoID" class="khu-pho-select">
+                    <option value="">-- Chọn nhanh khu phố --</option>
+                    @*@foreach (var kp in ViewBag.KhuPho)
+                    {
+                        <option value="@kp.KhuPhoID" @(Request.QueryString["KhuPhoID"] == kp.KhuPhoID.ToString() ? "selected" : "")>
+                            @kp.TenKhuPho
+                        </option>
+                    }*@
+                </select>
+            </div>
+            <button type="submit" class="btn btn-outline">Chọn</button>
+        </div>
+    </div>
+</form>
+
 
 <!-- Stats Cards -->
 <div class="stats-grid">
@@ -12,7 +88,7 @@
             <div class="stat-title">Tổng số trẻ em</div>
             <div class="stat-icon"><i class="fa-solid fa-children"></i></div>
         </div>
-        <div class="stat-value">1,247</div>
+        @*<div class="stat-value">@ViewBag.TongTreEm</div>*@
         <div class="stat-change">
             ↑ 12% so với tháng trước
         </div>
@@ -23,7 +99,7 @@
             <div class="stat-title">Sự kiện trong tháng</div>
             <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
         </div>
-        <div class="stat-value">18</div>
+        @*<div class="stat-value">@ViewBag.TongSuKien</div>*@
         <div class="stat-change">
             6 sự kiện sắp diễn ra
         </div>
@@ -34,7 +110,7 @@
             <div class="stat-title">Tình nguyện viên</div>
             <div class="stat-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
         </div>
-        <div class="stat-value">156</div>
+        @*<div class="stat-value">@ViewBag.TongTNV</div>*@
         <div class="stat-change">
             89 đang hoạt động
         </div>
@@ -45,7 +121,7 @@
             <div class="stat-title">Ủng hộ trong tháng</div>
             <div class="stat-icon"><i class="fa-solid fa-comments-dollar"></i></div>
         </div>
-        <div class="stat-value">48.5M</div>
+        @*<div class="stat-value">@String.Format("{0:N0} VNĐ", ViewBag.TongSoTien)</div>*@
         <div class="stat-change">
             ↑ 8% so với tháng trước
         </div>
@@ -58,40 +134,27 @@
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Tổng số trẻ em theo khu phố</h3>
-            <button class="btn btn-outline">Xem chi tiết</button>
+            <button class="btn btn-outline" onclick="location.href='@Url.Action("TreEm", "QuanLyTreEm")'">
+                Xem chi tiết
+            </button>
         </div>
         <div class="chart-container">
-            <div class="chart-bar" style="height: 85%;">
-                <div class="chart-value">215</div>
-                <div class="chart-label">KP1</div>
-            </div>
-            <div class="chart-bar" style="height: 92%;">
-                <div class="chart-value">234</div>
-                <div class="chart-label">KP2</div>
-            </div>
-            <div class="chart-bar" style="height: 68%;">
-                <div class="chart-value">172</div>
-                <div class="chart-label">KP3</div>
-            </div>
-            <div class="chart-bar" style="height: 76%;">
-                <div class="chart-value">193</div>
-                <div class="chart-label">KP4</div>
-            </div>
-            <div class="chart-bar" style="height: 88%;">
-                <div class="chart-value">224</div>
-                <div class="chart-label">KP5</div>
-            </div>
-            <div class="chart-bar" style="height: 81%;">
-                <div class="chart-value">209</div>
-                <div class="chart-label">KP6</div>
-            </div>
+            @*@foreach (var item in TongTreEmTungKhuPho)
+            {
+                double heightPercent = (double)item.SoLuongTreEm / TongTreEm * 100;
+                <div class="chart-bar" style="height: @heightPercent%;">
+                    <div class="chart-value">@item.SoLuongTreEm</div>
+                    <div class="chart-label">@item.TenKhuPho</div>
+                </div>
+            }*@
+
         </div>
     </div>
     <!-- Priority Children -->
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Trẻ cần ưu tiên hỗ trợ</h3>
-            <button class="btn btn-outline">Xem tất cả</button>
+            <button class="btn btn-outline" onclick="location.href='@Url.Action("VanDongTreEm", "VanDongTreEm")'">Xem tất cả</button>
         </div>
         <ul class="priority-list">
             <li class="priority-item">
@@ -137,31 +200,29 @@
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Sự kiện sắp diễn ra</h3>
-        <button class="btn btn-primary"><i class="fa-solid fa-circle-plus"></i> Tạo sự kiện mới</button>
+        <button class="btn btn-primary" onclick="location.href='@Url.Action("ThemSuKien", "SuKien")'">
+            <i class="fa-solid fa-circle-plus"></i> Tạo sự kiện mới
+        </button>
     </div>
-    <div class="timeline">
-        <div class="timeline-item">
-            <div class="timeline-content">
-                <div class="timeline-title">Ngày hội Trung thu 2025</div>
-                <div class="timeline-date"><i class="fa-solid fa-calendar-days"></i> 15/10/2025 - 08:00 AM</div>
-                <div class="timeline-desc">Sân trường Tiểu học Khu phố 2 • 120 trẻ đã đăng ký</div>
+    @*@foreach (var item in ViewBag.SuKienSapToi)
+    {
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-title">@item.TenSuKien</div>
+                    <div class="timeline-date"><i class="fa-solid fa-calendar-days"></i> @item.NgayBatDau</div>
+                    <div class="timeline-desc">@item.DiaDiem • @item.SoLuongTinhNguyenVien Tình nguyện viên •@item.SoLuongTreEm Số lượng trẻ em</div>
+                    <button class="btn btn-primary"
+                            onclick="location.href='@Url.Action("ChiTietSuKien", "SuKien", new { id = item.SuKienID })'"
+                            style="margin-top:12px">
+                        Xem chi tiết
+                    </button>
+                </div>
+
             </div>
         </div>
-        <div class="timeline-item">
-            <div class="timeline-content">
-                <div class="timeline-title">Khám sức khỏe định kỳ</div>
-                <div class="timeline-date"><i class="fa-solid fa-calendar-days"></i> 22/10/2025 - 07:30 AM</div>
-                <div class="timeline-desc">Trạm y tế Khu phố 5 • 85 trẻ đã đăng ký</div>
-            </div>
-        </div>
-        <div class="timeline-item">
-            <div class="timeline-content">
-                <div class="timeline-title">Trao học bổng học kỳ I</div>
-                <div class="timeline-date"><i class="fa-solid fa-calendar-days"></i> 28/10/2025 - 09:00 AM</div>
-                <div class="timeline-desc">Hội trường Ủy ban Khu phố • 45 học sinh nhận học bổng</div>
-            </div>
-        </div>
-    </div>
+    }*@
+
 </div>
 
 <!-- Alerts -->
@@ -185,168 +246,90 @@
 </div>
 
 <script>
-        // App State Management
-        const appState = {
-            currentPage: 'dashboard',
-            children: [],
-            events: [],
-            volunteers: [],
-            sponsors: []
-        };
 
-        //// Navigation
-        //const navLinks = document.querySelectorAll('.nav-link');
-        //navLinks.forEach(link => {
-        //    link.addEventListener('click', function(e) {
-        //        e.preventDefault();
-        //        navLinks.forEach(l => l.classList.remove('active'));
-        //        this.classList.add('active');
-
-        //        const linkText = this.textContent.trim();
-        //        console.log('Navigating to:', linkText);
-
-        //        // Show notification
-        //        showNotification('Đang chuyển trang...', 'info');
-        //    });
-        //});
-
-        // Chart animation
-        window.addEventListener('load', function() {
-            const bars = document.querySelectorAll('.chart-bar');
-            bars.forEach((bar, index) => {
-                const originalHeight = bar.style.height;
-                bar.style.height = '0';
-                setTimeout(() => {
-                    bar.style.transition = 'height 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-                    bar.style.height = originalHeight;
-                }, index * 150);
-            });
+    // Priority list interaction
+    document.querySelectorAll('.priority-item').forEach(item => {
+        item.addEventListener('click', function () {
+            const name = this.querySelector('.priority-name').textContent;
+            showNotification(`Đang xem hồ sơ: ${name}`, 'info');
         });
+    });
 
-        // Button interactions
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                if (!this.closest('.nav-link')) {
-                    e.preventDefault();
-                    const btnText = this.textContent.trim();
-                    showNotification(`Đã nhấn: ${btnText}`, 'success');
-                }
-            });
+    // Timeline interaction
+    document.querySelectorAll('.timeline-item').forEach(item => {
+        item.addEventListener('click', function () {
+            const title = this.querySelector('.timeline-title').textContent;
+            showNotification(`Chi tiết sự kiện: ${title}`, 'info');
         });
+    });
 
-        // Priority list interaction
-        document.querySelectorAll('.priority-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const name = this.querySelector('.priority-name').textContent;
-                showNotification(`Đang xem hồ sơ: ${name}`, 'info');
-            });
-        });
+    // Notification system
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 20px;">${type === 'success' ? '✓' : type === 'warning' ? '⚠' : 'ℹ'}</span>
+                            <span>${message}</span>
+                        </div>
+                    `;
 
-        // Timeline interaction
-        document.querySelectorAll('.timeline-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const title = this.querySelector('.timeline-title').textContent;
-                showNotification(`Chi tiết sự kiện: ${title}`, 'info');
-            });
-        });
+        notification.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: white;
+                        padding: 16px 24px;
+                        border-radius: 12px;
+                        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                        z-index: 10000;
+                        animation: slideIn 0.3s ease;
+                        border-left: 4px solid ${type === 'success' ? 'var(--success)' : type === 'warning' ? 'var(--warning)' : 'var(--primary)'};
+                    `;
 
-        // Notification system
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            notification.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span style="font-size: 20px;">${type === 'success' ? '✓' : type === 'warning' ? '⚠' : 'ℹ'}</span>
-                    <span>${message}</span>
-                </div>
-            `;
+        document.body.appendChild(notification);
 
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: white;
-                padding: 16px 24px;
-                border-radius: 12px;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-                z-index: 10000;
-                animation: slideIn 0.3s ease;
-                border-left: 4px solid ${type === 'success' ? 'var(--success)' : type === 'warning' ? 'var(--warning)' : 'var(--primary)'};
-            `;
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
 
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-
-        // Add animation keyframes
-        const style = document.createElement('style');
-        style.textContent = `
-            @@keyframes slideIn {
-                from {
-                    transform: translateX(400px);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-            @@keyframes slideOut {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-                to {
-                    transform: translateX(400px);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Live data update simulation
-        let updateInterval;
-        function startLiveUpdates() {
-            updateInterval = setInterval(() => {
-                const stats = [
-                    { selector: '.stat-card:nth-child(1) .stat-value', base: 1247, range: 5 },
-                    { selector: '.stat-card:nth-child(2) .stat-value', base: 18, range: 2 },
-                    { selector: '.stat-card:nth-child(3) .stat-value', base: 156, range: 3 },
-                ];
-
-                stats.forEach(stat => {
-                    const element = document.querySelector(stat.selector);
-                    if (element && Math.random() > 0.7) {
-                        const change = Math.floor(Math.random() * stat.range) - Math.floor(stat.range / 2);
-                        const currentValue = parseInt(element.textContent.replace(/[^0-9]/g, ''));
-                        const newValue = currentValue + change;
-
-                        element.style.transition = 'transform 0.3s ease';
-                        element.style.transform = 'scale(1.15)';
-
-                        setTimeout(() => {
-                            element.textContent = newValue.toLocaleString('vi-VN');
-                            element.style.transform = 'scale(1)';
-                        }, 150);
+    // Add animation keyframes
+    const style = document.createElement('style');
+    style.textContent = `
+                    @@keyframes slideIn {
+                        from {
+                            transform: translateX(400px);
+                            opacity: 0;
+                        }
+                        to {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
                     }
-                });
-            }, 8000);
-        }
+                    @@keyframes slideOut {
+                        from {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+                        to {
+                            transform: translateX(400px);
+                            opacity: 0;
+                        }
+                    }
+                `;
+    document.head.appendChild(style);
 
-        // Initialize
-        startLiveUpdates();
+    // Live data update simulation
+    let updateInterval;
+    // User info dropdown
+    document.querySelector('.user-info').addEventListener('click', function () {
+        showNotification('Chức năng quản lý tài khoản', 'info');
+    });
 
-        // User info dropdown
-        document.querySelector('.user-info').addEventListener('click', function() {
-            showNotification('Chức năng quản lý tài khoản', 'info');
-        });
-
-        // Cleanup
-        window.addEventListener('beforeunload', () => {
-            if (updateInterval) clearInterval(updateInterval);
-        });
+    // Cleanup
+    window.addEventListener('beforeunload', () => {
+        if (updateInterval) clearInterval(updateInterval);
+    });
 </script>

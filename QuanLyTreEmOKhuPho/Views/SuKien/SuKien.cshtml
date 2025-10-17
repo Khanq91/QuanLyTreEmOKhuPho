@@ -3,10 +3,39 @@
     ViewBag.Title = "SuKien";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="~/Content/css/media.css" rel="stylesheet" />
 <link href="~/Content/css/SuKien.css" rel="stylesheet" />
 
+<link rel="stylesheet" href="~/Content/css/media.css" />
+<style>
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
 
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 16px;
+        background: var(--gray-50);
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), #3b82f6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+    }
+</style>
 
 
 <!-- Page Header -->
@@ -43,125 +72,125 @@
 
 
 <script>
-        // Sample events data
-        const eventsData = [
-            {
-                id: 1,
-                title: 'Ngày hội Trung thu 2025',
-                date: '15/10/2025',
-                time: '08:00 AM',
-                location: 'Sân trường TH Khu phố 2',
-                status: 'upcoming',
-                volunteers: 25,
-                children: 120,
-                icon: '🏮'
-            },
-            {
-                id: 2,
-                title: 'Khám sức khỏe định kỳ',
-                date: '22/10/2025',
-                time: '07:30 AM',
-                location: 'Trạm y tế Khu phố 5',
-                status: 'upcoming',
-                volunteers: 15,
-                children: 85,
-                icon: '🏥'
-            },
-            {
-                id: 3,
-                title: 'Trao học bổng học kỳ I',
-                date: '28/10/2025',
-                time: '09:00 AM',
-                location: 'Hội trường Ủy ban',
-                status: 'upcoming',
-                volunteers: 10,
-                children: 45,
-                icon: '🎓'
-            },
-            {
-                id: 4,
-                title: 'Ngày hội thể thao',
-                date: '05/10/2025',
-                time: '08:00 AM',
-                location: 'Sân vận động KP',
-                status: 'ongoing',
-                volunteers: 30,
-                children: 150,
-                icon: '⚽'
-            },
-            {
-                id: 5,
-                title: 'Workshop kỹ năng sống',
-                date: '04/10/2025',
-                time: '14:00 PM',
-                location: 'Trung tâm văn hóa',
-                status: 'ongoing',
-                volunteers: 8,
-                children: 40,
-                icon: '📚'
-            },
-            {
-                id: 6,
-                title: 'Ngày hội môi trường',
-                date: '15/09/2025',
-                time: '07:00 AM',
-                location: 'Công viên KP2',
-                status: 'completed',
-                volunteers: 35,
-                children: 180,
-                icon: '🌱'
-            },
-            {
-                id: 7,
-                title: 'Đêm hội trăng rằm tháng 8',
-                date: '01/09/2025',
-                time: '18:00 PM',
-                location: 'Sân trường TH KP1',
-                status: 'completed',
-                volunteers: 20,
-                children: 100,
-                icon: '🌕'
-            },
-            {
-                id: 8,
-                title: 'Hè vui khỏe 2025',
-                date: '15/07/2025',
-                time: '08:00 AM',
-                location: 'Hồ bơi KP',
-                status: 'completed',
-                volunteers: 25,
-                children: 95,
-                icon: '🏊'
-            }
-        ];
+    // Sample events data
+    const eventsData = [
+        {
+            id: 1,
+            title: 'Ngày hội Trung thu 2025',
+            date: '15/10/2025',
+            time: '08:00 AM',
+            location: 'Sân trường TH Khu phố 2',
+            status: 'upcoming',
+            volunteers: 25,
+            children: 120,
+            icon: '🏮'
+        },
+        {
+            id: 2,
+            title: 'Khám sức khỏe định kỳ',
+            date: '22/10/2025',
+            time: '07:30 AM',
+            location: 'Trạm y tế Khu phố 5',
+            status: 'upcoming',
+            volunteers: 15,
+            children: 85,
+            icon: '🏥'
+        },
+        {
+            id: 3,
+            title: 'Trao học bổng học kỳ I',
+            date: '28/10/2025',
+            time: '09:00 AM',
+            location: 'Hội trường Ủy ban',
+            status: 'upcoming',
+            volunteers: 10,
+            children: 45,
+            icon: '🎓'
+        },
+        {
+            id: 4,
+            title: 'Ngày hội thể thao',
+            date: '05/10/2025',
+            time: '08:00 AM',
+            location: 'Sân vận động KP',
+            status: 'ongoing',
+            volunteers: 30,
+            children: 150,
+            icon: '⚽'
+        },
+        {
+            id: 5,
+            title: 'Workshop kỹ năng sống',
+            date: '04/10/2025',
+            time: '14:00 PM',
+            location: 'Trung tâm văn hóa',
+            status: 'ongoing',
+            volunteers: 8,
+            children: 40,
+            icon: '📚'
+        },
+        {
+            id: 6,
+            title: 'Ngày hội môi trường',
+            date: '15/09/2025',
+            time: '07:00 AM',
+            location: 'Công viên KP2',
+            status: 'completed',
+            volunteers: 35,
+            children: 180,
+            icon: '🌱'
+        },
+        {
+            id: 7,
+            title: 'Đêm hội trăng rằm tháng 8',
+            date: '01/09/2025',
+            time: '18:00 PM',
+            location: 'Sân trường TH KP1',
+            status: 'completed',
+            volunteers: 20,
+            children: 100,
+            icon: '🌕'
+        },
+        {
+            id: 8,
+            title: 'Hè vui khỏe 2025',
+            date: '15/07/2025',
+            time: '08:00 AM',
+            location: 'Hồ bơi KP',
+            status: 'completed',
+            volunteers: 25,
+            children: 95,
+            icon: '🏊'
+        }
+    ];
 
-        // Render events
-        function renderEvents(filter = 'all') {
-            const grid = document.getElementById('eventsGrid');
-            grid.innerHTML = '';
+    // Render events
+    function renderEvents(filter = 'all') {
+        const grid = document.getElementById('eventsGrid');
+        grid.innerHTML = '';
 
-            const filtered = filter === 'all'
-                ? eventsData
-                : eventsData.filter(e => e.status === filter);
+        const filtered = filter === 'all'
+            ? eventsData
+            : eventsData.filter(e => e.status === filter);
 
-            filtered.forEach(event => {
-                const statusText = {
-                    'upcoming': 'Sắp diễn ra',
-                    'ongoing': 'Đang diễn ra',
-                    'completed': 'Đã kết thúc'
-                }[event.status];
+        filtered.forEach(event => {
+            const statusText = {
+                'upcoming': 'Sắp diễn ra',
+                'ongoing': 'Đang diễn ra',
+                'completed': 'Đã kết thúc'
+            }[event.status];
 
-                const statusClass = {
-                    'upcoming': 'status-upcoming',
-                    'ongoing': 'status-ongoing',
-                    'completed': 'status-completed'
-                }[event.status];
+            const statusClass = {
+                'upcoming': 'status-upcoming',
+                'ongoing': 'status-ongoing',
+                'completed': 'status-completed'
+            }[event.status];
 
-                const card = document.createElement('div');
-                card.className = 'event-card';
-                card.onclick = () => viewEvent(event.id);
+            const card = document.createElement('div');
+            card.className = 'event-card';
+            card.onclick = () => viewEvent(event.id);
 
-                card.innerHTML = `
+            card.innerHTML = `
                     <div class="event-image">
                         <span style="font-size: 80px;">${event.icon}</span>
                         <div class="event-status ${statusClass}">${statusText}</div>
@@ -195,70 +224,70 @@
                     </div>
                 `;
 
-                grid.appendChild(card);
-            });
-        }
+            grid.appendChild(card);
+        });
+    }
 
-        // Filter events
-        function filterEvents(status) {
-            const tabs = document.querySelectorAll('.filter-tab');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
-            renderEvents(status);
-        }
+    // Filter events
+    function filterEvents(status) {
+        const tabs = document.querySelectorAll('.filter-tab');
+        tabs.forEach(tab => tab.classList.remove('active'));
+        event.target.classList.add('active');
+        renderEvents(status);
+    }
 
-        // View event detail
-        function viewEvent(id) {
-            document.getElementById('eventDetailModal').classList.add('active');
-            showNotification('Đang tải thông tin sự kiện...', 'info');
-        }
+    // View event detail
+    function viewEvent(id) {
+        document.getElementById('eventDetailModal').classList.add('active');
+        showNotification('Đang tải thông tin sự kiện...', 'info');
+    }
 
-        // Edit event
-        function editEvent(id) {
-            showNotification(`Chỉnh sửa sự kiện #${id}`, 'info');
-        }
+    // Edit event
+    function editEvent(id) {
+        showNotification(`Chỉnh sửa sự kiện #${id}`, 'info');
+    }
 
-        // Close modal
-        function closeModal() {
-            document.getElementById('eventDetailModal').classList.remove('active');
-        }
+    // Close modal
+    function closeModal() {
+        document.getElementById('eventDetailModal').classList.remove('active');
+    }
 
-        // Open create event modal
-        function openCreateEventModal() {
-            showNotification('Mở form tạo sự kiện mới', 'info');
-        }
+    // Open create event modal
+    function openCreateEventModal() {
+        showNotification('Mở form tạo sự kiện mới', 'info');
+    }
 
-        // Switch tabs
-        function switchTab(index) {
-            const tabs = document.querySelectorAll('.tab');
-            const contents = document.querySelectorAll('.tab-content');
+    // Switch tabs
+    function switchTab(index) {
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.tab-content');
 
-            tabs.forEach(tab => tab.classList.remove('active'));
-            contents.forEach(content => content.classList.remove('active'));
+        tabs.forEach(tab => tab.classList.remove('active'));
+        contents.forEach(content => content.classList.remove('active'));
 
-            tabs[index].classList.add('active');
-            contents[index].classList.add('active');
-        }
+        tabs[index].classList.add('active');
+        contents[index].classList.add('active');
+    }
 
-        // Notification system
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            const icons = { success: '✓', warning: '⚠', info: 'ℹ', danger: '✕' };
-            const colors = {
-                success: 'var(--success)',
-                warning: 'var(--warning)',
-                info: 'var(--primary)',
-                danger: 'var(--danger)'
-            };
+    // Notification system
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        const icons = { success: '✓', warning: '⚠', info: 'ℹ', danger: '✕' };
+        const colors = {
+            success: 'var(--success)',
+            warning: 'var(--warning)',
+            info: 'var(--primary)',
+            danger: 'var(--danger)'
+        };
 
-            notification.innerHTML = `
+        notification.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <span style="font-size: 20px;">${icons[type]}</span>
                     <span>${message}</span>
                 </div>
             `;
 
-            notification.style.cssText = `
+        notification.style.cssText = `
                 position: fixed;
                 top: 20px;
                 right: 20px;
@@ -272,17 +301,17 @@
                 max-width: 400px;
             `;
 
-            document.body.appendChild(notification);
+        document.body.appendChild(notification);
 
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
 
-        // Animation styles
-        const style = document.createElement('style');
-        style.textContent = `
+    // Animation styles
+    const style = document.createElement('style');
+    style.textContent = `
             @@keyframes slideIn {
                 from { transform: translateX(400px); opacity: 0; }
                 to { transform: translateX(0); opacity: 1; }
@@ -292,28 +321,28 @@
                 to { transform: translateX(400px); opacity: 0; }
             }
         `;
-        document.head.appendChild(style);
+    document.head.appendChild(style);
 
-        // Close modal on outside click
-        document.getElementById('eventDetailModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
+    // Close modal on outside click
+    document.getElementById('eventDetailModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
 
-        // Initialize
-        renderEvents();
+    // Initialize
+    renderEvents();
 
-        // Animate expense bars
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.querySelectorAll('.expense-fill').forEach(fill => {
-                    const width = fill.style.width;
-                    fill.style.width = '0';
-                    setTimeout(() => {
-                        fill.style.width = width;
-                    }, 100);
-                });
-            }, 500);
-        });
+    // Animate expense bars
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.querySelectorAll('.expense-fill').forEach(fill => {
+                const width = fill.style.width;
+                fill.style.width = '0';
+                setTimeout(() => {
+                    fill.style.width = width;
+                }, 100);
+            });
+        }, 500);
+    });
 </script>

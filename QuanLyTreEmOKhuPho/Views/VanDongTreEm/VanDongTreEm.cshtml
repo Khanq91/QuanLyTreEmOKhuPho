@@ -3,8 +3,39 @@
     ViewBag.Title = "VanDongTreEm";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link rel="stylesheet" href="~/Content/css/VanDongTreEm.css" />
 
+<link rel="stylesheet" href="~/Content/css/VanDongTreEm.css" />
+<link rel="stylesheet" href="~/Content/css/media.css" />
+<style>
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 16px;
+        background: var(--gray-50);
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), #3b82f6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+    }
+</style>
 <div class="stats-grid">
     <div class="stat-card primary">
         <div class="stat-header">

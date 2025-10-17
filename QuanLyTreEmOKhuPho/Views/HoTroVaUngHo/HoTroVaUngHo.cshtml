@@ -5,8 +5,40 @@
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" href="~/Content/css/HoTroVaUngHo.css" />
 
+
+<link rel="stylesheet" href="~/Content/css/HoTroVaUngHo.css" />
+<link rel="stylesheet" href="~/Content/css/media.css" />
+<style>
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 16px;
+        background: var(--gray-50);
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), #3b82f6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+    }
+</style>
 <!-- Page Header -->
 <div class="page-header">
     <div class="page-title">
@@ -505,101 +537,101 @@
 </div>
 
 <script>
-        // Sample data
-        const supportsData = [
-            {
-                id: 1,
-                name: 'Học bổng học kỳ I năm 2025',
-                type: 'scholarship',
-                typeName: 'Học bổng',
-                date: '01/09/2025',
-                responsible: 'Nguyễn Thị Hương',
-                value: 45000000,
-                recipients: 45,
-                khuPho: 'Khu phố 2'
-            },
-            {
-                id: 2,
-                name: 'Quà Trung thu 2025',
-                type: 'gift',
-                typeName: 'Quà tặng',
-                date: '15/09/2025',
-                responsible: 'Trần Văn Nam',
-                value: 25000000,
-                recipients: 120,
-                khuPho: 'Tất cả'
-            },
-            {
-                id: 3,
-                name: 'Khám sức khỏe định kỳ',
-                type: 'health',
-                typeName: 'Khám sức khỏe',
-                date: '20/08/2025',
-                responsible: 'Lê Thị Mai',
-                value: 18000000,
-                recipients: 85,
-                khuPho: 'Khu phố 1, 3'
-            }
-        ];
+    // Sample data
+    const supportsData = [
+        {
+            id: 1,
+            name: 'Học bổng học kỳ I năm 2025',
+            type: 'scholarship',
+            typeName: 'Học bổng',
+            date: '01/09/2025',
+            responsible: 'Nguyễn Thị Hương',
+            value: 45000000,
+            recipients: 45,
+            khuPho: 'Khu phố 2'
+        },
+        {
+            id: 2,
+            name: 'Quà Trung thu 2025',
+            type: 'gift',
+            typeName: 'Quà tặng',
+            date: '15/09/2025',
+            responsible: 'Trần Văn Nam',
+            value: 25000000,
+            recipients: 120,
+            khuPho: 'Tất cả'
+        },
+        {
+            id: 3,
+            name: 'Khám sức khỏe định kỳ',
+            type: 'health',
+            typeName: 'Khám sức khỏe',
+            date: '20/08/2025',
+            responsible: 'Lê Thị Mai',
+            value: 18000000,
+            recipients: 85,
+            khuPho: 'Khu phố 1, 3'
+        }
+    ];
 
-        const sponsorsData = [
-            {
-                id: 1,
-                name: 'Nguyễn Văn A',
-                type: 'individual',
-                typeName: 'Cá nhân',
-                phone: '0901234567',
-                totalDonation: 15000000,
-                donationCount: 8
-            },
-            {
-                id: 2,
-                name: 'Công ty TNHH ABC',
-                type: 'organization',
-                typeName: 'Tổ chức',
-                phone: '0287654321',
-                totalDonation: 50000000,
-                donationCount: 5
-            },
-            {
-                id: 3,
-                name: 'Trần Thị B',
-                type: 'individual',
-                typeName: 'Cá nhân',
-                phone: '0912345678',
-                totalDonation: 8000000,
-                donationCount: 12
-            }
-        ];
+    const sponsorsData = [
+        {
+            id: 1,
+            name: 'Nguyễn Văn A',
+            type: 'individual',
+            typeName: 'Cá nhân',
+            phone: '0901234567',
+            totalDonation: 15000000,
+            donationCount: 8
+        },
+        {
+            id: 2,
+            name: 'Công ty TNHH ABC',
+            type: 'organization',
+            typeName: 'Tổ chức',
+            phone: '0287654321',
+            totalDonation: 50000000,
+            donationCount: 5
+        },
+        {
+            id: 3,
+            name: 'Trần Thị B',
+            type: 'individual',
+            typeName: 'Cá nhân',
+            phone: '0912345678',
+            totalDonation: 8000000,
+            donationCount: 12
+        }
+    ];
 
-        const donationHistoryData = [
-            {
-                date: '05/10/2025',
-                sponsor: 'Nguyễn Văn A',
-                type: 'Tiền mặt',
-                value: '5,000,000 VNĐ',
-                target: 'Học bổng - Trẻ em Nguyễn Văn C'
-            },
-            {
-                date: '01/10/2025',
-                sponsor: 'Công ty ABC',
-                type: 'Hiện vật',
-                value: '20,000,000 VNĐ',
-                target: 'Sự kiện Trung thu 2025'
-            }
-        ];
+    const donationHistoryData = [
+        {
+            date: '05/10/2025',
+            sponsor: 'Nguyễn Văn A',
+            type: 'Tiền mặt',
+            value: '5,000,000 VNĐ',
+            target: 'Học bổng - Trẻ em Nguyễn Văn C'
+        },
+        {
+            date: '01/10/2025',
+            sponsor: 'Công ty ABC',
+            type: 'Hiện vật',
+            value: '20,000,000 VNĐ',
+            target: 'Sự kiện Trung thu 2025'
+        }
+    ];
 
-        // Render support list
-        function renderSupportList() {
-            const container = document.getElementById('supportList');
-            container.innerHTML = '';
+    // Render support list
+    function renderSupportList() {
+        const container = document.getElementById('supportList');
+        container.innerHTML = '';
 
-            supportsData.forEach(support => {
-                const card = document.createElement('div');
-                card.className = 'support-card';
-                card.onclick = () => viewSupportDetail(support.id);
+        supportsData.forEach(support => {
+            const card = document.createElement('div');
+            card.className = 'support-card';
+            card.onclick = () => viewSupportDetail(support.id);
 
-                card.innerHTML = `
+            card.innerHTML = `
                     <div class="support-header">
                         <div>
                             <h3 class="support-title">${support.name}</h3>
@@ -640,23 +672,23 @@
                     </div>
                 `;
 
-                container.appendChild(card);
-            });
-        }
+            container.appendChild(card);
+        });
+    }
 
-        // Render sponsor list
-        function renderSponsorList() {
-            const container = document.getElementById('sponsorList');
-            container.innerHTML = '';
+    // Render sponsor list
+    function renderSponsorList() {
+        const container = document.getElementById('sponsorList');
+        container.innerHTML = '';
 
-            sponsorsData.forEach(sponsor => {
-                const card = document.createElement('div');
-                card.className = 'sponsor-card';
-                card.onclick = () => viewSponsorDetail(sponsor.id);
+        sponsorsData.forEach(sponsor => {
+            const card = document.createElement('div');
+            card.className = 'sponsor-card';
+            card.onclick = () => viewSponsorDetail(sponsor.id);
 
-                const typeColor = sponsor.type === 'individual' ? 'var(--purple)' : 'var(--warning)';
+            const typeColor = sponsor.type === 'individual' ? 'var(--purple)' : 'var(--warning)';
 
-                card.innerHTML = `
+            card.innerHTML = `
                     <div class="sponsor-header">
                         <div class="sponsor-avatar">${sponsor.name.charAt(0)}</div>
                         <div class="sponsor-info">
@@ -689,19 +721,19 @@
                     </div>
                 `;
 
-                container.appendChild(card);
-            });
-        }
+            container.appendChild(card);
+        });
+    }
 
-        // Render donation history
-        function renderDonationHistory() {
-            const tbody = document.getElementById('donationHistory');
-            tbody.innerHTML = '';
+    // Render donation history
+    function renderDonationHistory() {
+        const tbody = document.getElementById('donationHistory');
+        tbody.innerHTML = '';
 
-            donationHistoryData.forEach(donation => {
-                const row = document.createElement('tr');
-                row.style.borderTop = '1px solid var(--gray-200)';
-                row.innerHTML = `
+        donationHistoryData.forEach(donation => {
+            const row = document.createElement('tr');
+            row.style.borderTop = '1px solid var(--gray-200)';
+            row.innerHTML = `
                     <td style="padding: 15px;">${donation.date}</td>
                     <td style="padding: 15px;">${donation.sponsor}</td>
                     <td style="padding: 15px;">${donation.type}</td>
@@ -711,76 +743,76 @@
                         <button class="btn btn-sm btn-primary">Xem</button>
                     </td>
                 `;
-                tbody.appendChild(row);
-            });
+            tbody.appendChild(row);
+        });
+    }
+
+    // Format money
+    function formatMoney(amount) {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(amount);
+    }
+
+    // Switch main tabs
+    function switchMainTab(index) {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+
+        tabButtons[index].classList.add('active');
+        tabContents[index].classList.add('active');
+    }
+
+    // Modal functions
+    function openCreateSupportModal() {
+        document.getElementById('createSupportModal').classList.add('active');
+    }
+
+    function openSelectChildrenModal() {
+        document.getElementById('selectChildrenModal').classList.add('active');
+    }
+
+    function openAddSponsorModal() {
+        document.getElementById('addSponsorModal').classList.add('active');
+    }
+
+    function openRecordDonationModal() {
+        document.getElementById('recordDonationModal').classList.add('active');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Toggle donation type
+    function toggleDonationType() {
+        const type = document.getElementById('donationType').value;
+        const moneyAmount = document.getElementById('moneyAmount');
+        const goodsDescription = document.getElementById('goodsDescription');
+
+        if (type === 'money') {
+            moneyAmount.style.display = 'block';
+            goodsDescription.style.display = 'none';
+        } else if (type === 'goods') {
+            moneyAmount.style.display = 'none';
+            goodsDescription.style.display = 'block';
         }
+    }
 
-        // Format money
-        function formatMoney(amount) {
-            return new Intl.NumberFormat('vi-VN', {
-                style: 'currency',
-                currency: 'VND'
-            }).format(amount);
-        }
+    // File upload handling
+    document.getElementById('fileInput').addEventListener('change', function (e) {
+        const files = Array.from(e.target.files);
+        const container = document.getElementById('uploadedFiles');
+        container.innerHTML = '';
 
-        // Switch main tabs
-        function switchMainTab(index) {
-            const tabButtons = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-
-            tabButtons[index].classList.add('active');
-            tabContents[index].classList.add('active');
-        }
-
-        // Modal functions
-        function openCreateSupportModal() {
-            document.getElementById('createSupportModal').classList.add('active');
-        }
-
-        function openSelectChildrenModal() {
-            document.getElementById('selectChildrenModal').classList.add('active');
-        }
-
-        function openAddSponsorModal() {
-            document.getElementById('addSponsorModal').classList.add('active');
-        }
-
-        function openRecordDonationModal() {
-            document.getElementById('recordDonationModal').classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        // Toggle donation type
-        function toggleDonationType() {
-            const type = document.getElementById('donationType').value;
-            const moneyAmount = document.getElementById('moneyAmount');
-            const goodsDescription = document.getElementById('goodsDescription');
-
-            if (type === 'money') {
-                moneyAmount.style.display = 'block';
-                goodsDescription.style.display = 'none';
-            } else if (type === 'goods') {
-                moneyAmount.style.display = 'none';
-                goodsDescription.style.display = 'block';
-            }
-        }
-
-        // File upload handling
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            const container = document.getElementById('uploadedFiles');
-            container.innerHTML = '';
-
-            files.forEach((file, index) => {
-                const fileItem = document.createElement('div');
-                fileItem.className = 'file-item';
-                fileItem.innerHTML = `
+        files.forEach((file, index) => {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
                     <div class="file-info">
                         <span class="file-icon"><i class="fa-solid fa-file"></i></span>
                         <div>
@@ -792,48 +824,48 @@
                     </div>
                     <button class="remove-file" onclick="removeFile(${index})">✕</button>
                 `;
-                container.appendChild(fileItem);
-            });
+            container.appendChild(fileItem);
         });
+    });
 
-        // Select all children
-        document.getElementById('selectAll').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.child-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-            updateSelectedCount();
-        });
+    // Select all children
+    document.getElementById('selectAll').addEventListener('change', function () {
+        const checkboxes = document.querySelectorAll('.child-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+        updateSelectedCount();
+    });
 
-        // Update selected count
-        document.querySelectorAll('.child-checkbox').forEach(cb => {
-            cb.addEventListener('change', updateSelectedCount);
-        });
+    // Update selected count
+    document.querySelectorAll('.child-checkbox').forEach(cb => {
+        cb.addEventListener('change', updateSelectedCount);
+    });
 
-        function updateSelectedCount() {
-            const count = document.querySelectorAll('.child-checkbox:checked').length;
-            document.getElementById('selectedCount').textContent = count;
+    function updateSelectedCount() {
+        const count = document.querySelectorAll('.child-checkbox:checked').length;
+        document.getElementById('selectedCount').textContent = count;
+    }
+
+    // Confirm child selection
+    function confirmChildSelection() {
+        const selected = document.querySelectorAll('.child-checkbox:checked');
+        if (selected.length === 0) {
+            showNotification('Vui lòng chọn ít nhất 1 trẻ em', 'warning');
+            return;
         }
 
-        // Confirm child selection
-        function confirmChildSelection() {
-            const selected = document.querySelectorAll('.child-checkbox:checked');
-            if (selected.length === 0) {
-                showNotification('Vui lòng chọn ít nhất 1 trẻ em', 'warning');
-                return;
-            }
+        // Add to table
+        const tbody = document.getElementById('selectedChildren');
+        tbody.innerHTML = '';
 
-            // Add to table
-            const tbody = document.getElementById('selectedChildren');
-            tbody.innerHTML = '';
+        selected.forEach(cb => {
+            const row = cb.closest('tr');
+            const name = row.cells[1].textContent;
+            const khuPho = row.cells[3].textContent;
+            const circumstance = row.cells[4].textContent;
+            const value = row.querySelector('input[type="number"]').value || '0';
 
-            selected.forEach(cb => {
-                const row = cb.closest('tr');
-                const name = row.cells[1].textContent;
-                const khuPho = row.cells[3].textContent;
-                const circumstance = row.cells[4].textContent;
-                const value = row.querySelector('input[type="number"]').value || '0';
-
-                const newRow = document.createElement('tr');
-                newRow.innerHTML = `
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
                     <td style="padding: 12px 15px;">${name}</td>
                     <td style="padding: 12px 15px;">${khuPho}</td>
                     <td style="padding: 12px 15px;">${circumstance}</td>
@@ -842,51 +874,51 @@
                         <button class="remove-file" onclick="this.closest('tr').remove()">✕</button>
                     </td>
                 `;
-                tbody.appendChild(newRow);
-            });
-
-            closeModal('selectChildrenModal');
-            showNotification(`Đã thêm ${selected.length} trẻ em`, 'success');
-        }
-
-        // Form submissions
-        document.getElementById('createSupportForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            showNotification('Đang tạo đợt hỗ trợ...', 'info');
-            setTimeout(() => {
-                showNotification('Tạo đợt hỗ trợ thành công!', 'success');
-                closeModal('createSupportModal');
-                this.reset();
-            }, 1500);
+            tbody.appendChild(newRow);
         });
 
-        document.getElementById('addSponsorForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            showNotification('Đang thêm mạnh thường quân...', 'info');
-            setTimeout(() => {
-                showNotification('Thêm mạnh thường quân thành công!', 'success');
-                closeModal('addSponsorModal');
-                this.reset();
-            }, 1500);
-        });
+        closeModal('selectChildrenModal');
+        showNotification(`Đã thêm ${selected.length} trẻ em`, 'success');
+    }
 
-        document.getElementById('recordDonationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            showNotification('Đang ghi nhận ủng hộ...', 'info');
-            setTimeout(() => {
-                showNotification('Ghi nhận ủng hộ thành công!', 'success');
-                closeModal('recordDonationModal');
-                this.reset();
-            }, 1500);
-        });
+    // Form submissions
+    document.getElementById('createSupportForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        showNotification('Đang tạo đợt hỗ trợ...', 'info');
+        setTimeout(() => {
+            showNotification('Tạo đợt hỗ trợ thành công!', 'success');
+            closeModal('createSupportModal');
+            this.reset();
+        }, 1500);
+    });
 
-        // Notification
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            const icons = { success: '✓', warning: '⚠', info: 'ℹ' };
-            const colors = { success: '#10b981', warning: '#f59e0b', info: '#ec4899' };
+    document.getElementById('addSponsorForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        showNotification('Đang thêm mạnh thường quân...', 'info');
+        setTimeout(() => {
+            showNotification('Thêm mạnh thường quân thành công!', 'success');
+            closeModal('addSponsorModal');
+            this.reset();
+        }, 1500);
+    });
 
-            notification.style.cssText = `
+    document.getElementById('recordDonationForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        showNotification('Đang ghi nhận ủng hộ...', 'info');
+        setTimeout(() => {
+            showNotification('Ghi nhận ủng hộ thành công!', 'success');
+            closeModal('recordDonationModal');
+            this.reset();
+        }, 1500);
+    });
+
+    // Notification
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        const icons = { success: '✓', warning: '⚠', info: 'ℹ' };
+        const colors = { success: '#10b981', warning: '#f59e0b', info: '#ec4899' };
+
+        notification.style.cssText = `
                 position: fixed;
                 top: 20px;
                 right: 20px;
@@ -902,20 +934,20 @@
                 animation: slideIn 0.3s ease;
             `;
 
-            notification.innerHTML = `
+        notification.innerHTML = `
                 <span style="font-size: 20px;">${icons[type]}</span>
                 <span>${message}</span>
             `;
 
-            document.body.appendChild(notification);
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
 
-        const style = document.createElement('style');
-        style.textContent = `
+    const style = document.createElement('style');
+    style.textContent = `
             @@keyframes slideIn {
                 from { transform: translateX(400px); opacity: 0; }
                 to { transform: translateX(0); opacity: 1; }
@@ -925,40 +957,40 @@
                 to { transform: translateX(400px); opacity: 0; }
             }
         `;
-        document.head.appendChild(style);
+    document.head.appendChild(style);
 
-        // Filter & Export
-        function applyFilters() {
-            showNotification('Đang áp dụng bộ lọc...', 'info');
-        }
+    // Filter & Export
+    function applyFilters() {
+        showNotification('Đang áp dụng bộ lọc...', 'info');
+    }
 
-        function exportData() {
-            showNotification('Đang xuất báo cáo Excel...', 'info');
-            setTimeout(() => {
-                showNotification('Xuất báo cáo thành công!', 'success');
-            }, 1500);
-        }
+    function exportData() {
+        showNotification('Đang xuất báo cáo Excel...', 'info');
+        setTimeout(() => {
+            showNotification('Xuất báo cáo thành công!', 'success');
+        }, 1500);
+    }
 
-        // View details
-        function viewSupportDetail(id) {
-            showNotification(`Xem chi tiết đợt hỗ trợ #${id}`, 'info');
-        }
+    // View details
+    function viewSupportDetail(id) {
+        showNotification(`Xem chi tiết đợt hỗ trợ #${id}`, 'info');
+    }
 
-        function viewSponsorDetail(id) {
-            showNotification(`Xem chi tiết MTQ #${id}`, 'info');
-        }
+    function viewSponsorDetail(id) {
+        showNotification(`Xem chi tiết MTQ #${id}`, 'info');
+    }
 
-        // Initialize
-        renderSupportList();
-        renderSponsorList();
-        renderDonationHistory();
+    // Initialize
+    renderSupportList();
+    renderSponsorList();
+    renderDonationHistory();
 
-        // Close modals on outside click
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('active');
-                }
-            });
+    // Close modals on outside click
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', function (e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
         });
+    });
 </script>

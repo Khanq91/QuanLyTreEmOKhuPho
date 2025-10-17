@@ -2,10 +2,56 @@
 @{
     ViewBag.Title = "TinhNguyenVien";
     Layout = "~/Views/Shared/_Layout.cshtml";
-}
-<link rel="stylesheet" href="~/Content/css/media.css" />
-<link rel="stylesheet" href="~/Content/css/TinhNguyenVien.css" />
+    var KhuPho = ViewBag.KhuPho;
+    var listTNV = ViewBag.listTNV;
 
+}
+
+<link rel="stylesheet" href="~/Content/css/TinhNguyenVien.css" />
+<link rel="stylesheet" href="~/Content/css/media.css" />
+<style>
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 16px;
+        background: var(--gray-50);
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), #3b82f6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+    }
+    /* Khu Pho Grid Styles */
+    .khu-pho-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        padding: 20px;
+    }
+
+    /* Select Dropdown Styles */
+    .select-wrapper {
+        position: relative;
+        min-width: 250px;
+    }
+</style>
 
 <div class="filter-section">
     <div class="filter-grid">
@@ -18,11 +64,11 @@
             <label class="filter-label">Khu phố</label>
             <select class="filter-select" id="filterKhuPho">
                 <option value="">Tất cả khu phố</option>
-                <option value="1">Khu phố 1</option>
-                <option value="2">Khu phố 2</option>
-                <option value="3">Khu phố 3</option>
-                <option value="4">Khu phố 4</option>
-                <option value="5">Khu phố 5</option>
+                @foreach (var item in KhuPho)
+                {
+                    <option value="@item.KhuPhoID">@item.TenKhuPho</option>
+
+                }
             </select>
         </div>
         <div class="filter-item">
@@ -56,7 +102,38 @@
 </div>
 
 <!-- Card View -->
-<div class="volunteers-grid" id="cardView"></div>
+<div class="volunteers-grid" id="cardView" style="display: grid;">
+    @foreach (var item in listTNV)
+    {
+        <div class="volunteer-card">
+            <div class="card-header">
+                <div class="avatar">@item.TenTinhNguyenVien.Substring(0, 1)</div>
+                <div class="card-info">
+                    <div class="volunteer-name">@item.TenTinhNguyenVien </div>
+                    <div class="volunteer-position">@item.ChucVu</div>
+                    <div class="volunteer-location">📍 @item.KhuPho</div>
+                </div>
+            </div>
+            <div class="card-stats">
+                <div class="stat-item">
+                    <div class="stat-value">@item.SuKien</div>
+                    <div class="stat-label">Sự kiện</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">@item.CaRanh</div>
+                    <div class="stat-label">Ca rảnh</div>
+                </div>
+            </div>
+            <div class="card-status">
+                <span class="status-badge status-active">@item.TrangThai</span>
+                <button class="btn-view-detail" onclick="openDetailModal(@item.ID)">
+                    Xem chi tiết
+                </button>
+
+            </div>
+        </div>
+    }
+</div>
 
 <!-- Table View -->
 <div class="volunteers-table" id="tableView">
@@ -72,7 +149,181 @@
                 <th>Hành động</th>
             </tr>
         </thead>
-        <tbody id="tableBody"></tbody>
+        <tbody id="tableBody">
+            @foreach (var item in listTNV)
+            {
+                <tr>
+                    <td>
+                        <div class="table-avatar">
+                            <div class="table-avatar-img">@item.TenTinhNguyenVien.Substring(0, 1)</div>
+                            <span>@item.TenTinhNguyenVien </span>
+                        </div>
+                    </td>
+                    <td>@item.ChucVu</td>
+                    <td>@item.KhuPho</td>
+                    <td>@item.SDT</td>
+                    <td><strong>@item.SuKien</strong> sự kiện</td>
+                    <td><span class="status-badge">@item.TrangThai</span></td>
+                    <td>
+                        <button class="btn-view-detail" onclick="openDetailModal(@item.ID)">
+                            Xem chi tiết
+                        </button>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
     </table>
 </div>
-        </main>
+<!--<div class="modal" id="detailModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modalVolunteerName">Chi tiết TNV</h3>
+            <button class="close-btn" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab(0)">Thông tin cá nhân</button>
+                <button class="tab" onclick="switchTab(1)">Lịch trống</button>
+                <button class="tab" onclick="switchTab(2)">Sự kiện tham gia</button>
+                <button class="tab" onclick="switchTab(3)">Hỗ trợ & Vận động</button>
+            </div>-->
+<!--<div class="tab-content active" id="tabPersonal">
+    <div class="detail-section">
+        <h4 class="section-title">Thông tin cơ bản</h4>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Họ và tên</span>
+                <span class="info-value" id="detailHoTen">-</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Số điện thoại</span>
+                <span class="info-value" id="detailSDT">-</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Ngày sinh</span>
+                <span class="info-value" id="detailNgaySinh">-</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Chức vụ</span>
+                <span class="info-value" id="detailChucVu">-</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Khu phố</span>
+                <span class="info-value" id="detailKhuPho">-</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Trạng thái</span>
+                <span class="info-value" id="detailTrangThai">-</span>
+            </div>
+        </div>
+    </div>
+</div>-->
+<!--<div class="tab-content" id="tabSchedule">
+    <div class="detail-section">
+        <h4 class="section-title">Lịch trống (Ca có thể tham gia)</h4>
+        <div class="schedule-grid">
+            <div class="schedule-header">Thứ / Buổi</div>
+            <div class="schedule-header">Sáng</div>
+            <div class="schedule-header">Chiều</div>
+
+            <div class="schedule-day">Thứ 2</div>
+            <div class="schedule-cell" data-day="2" data-shift="Sáng">-</div>
+            <div class="schedule-cell" data-day="2" data-shift="Chiều">-</div>
+
+            <div class="schedule-day">Thứ 3</div>
+            <div class="schedule-cell" data-day="3" data-shift="Sáng">-</div>
+            <div class="schedule-cell" data-day="3" data-shift="Chiều">-</div>
+
+            <div class="schedule-day">Thứ 4</div>
+            <div class="schedule-cell" data-day="4" data-shift="Sáng">-</div>
+            <div class="schedule-cell" data-day="4" data-shift="Chiều">-</div>
+
+            <div class="schedule-day">Thứ 5</div>
+            <div class="schedule-cell" data-day="5" data-shift="Sáng">-</div>
+            <div class="schedule-cell" data-day="5" data-shift="Chiều">-</div>
+
+            <div class="schedule-day">Thứ 6</div>
+            <div class="schedule-cell" data-day="6" data-shift="Sáng">-</div>
+            <div class="schedule-cell" data-day="6" data-shift="Chiều">-</div>
+
+            <div class="schedule-day">Thứ 7</div>
+            <div class="schedule-cell" data-day="7" data-shift="Sáng">-</div>
+            <div class="schedule-cell" data-day="7" data-shift="Chiều">-</div>
+
+            <div class="schedule-day">Chủ nhật</div>
+            <div class="schedule-cell" data-day="CN" data-shift="Sáng">-</div>
+            <div class="schedule-cell" data-day="CN" data-shift="Chiều">-</div>
+        </div>
+    </div>
+</div>-->
+<!--<div class="tab-content" id="tabEvents">
+    <div class="detail-section">
+        <h4 class="section-title">Sự kiện đã tham gia</h4>
+        <div class="events-list" id="eventsList"></div>
+    </div>
+</div>-->
+<!--<div class="tab-content" id="tabSupport">
+                <div class="detail-section">
+                    <h4 class="section-title">Hỗ trợ & Vận động đã thực hiện</h4>
+                    <div id="supportList">
+                        <p style="color: var(--gray-600);">Chức năng đang phát triển...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+<script>
+    function switchView(view) {
+        currentView = view;
+
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        if (view === 'card') {
+            document.getElementById('cardView').style.display = 'grid';
+            document.getElementById('tableView').classList.remove('active');
+        } else {
+            document.getElementById('cardView').style.display = 'none';
+            document.getElementById('tableView').classList.add('active');
+        }
+
+        renderVolunteers();
+    }
+    function openDetailModal(id) {
+        fetch(`/TinhNguyenVien/Detail?id=${id}`)
+            .then(res => res.text())
+            .then(html => {
+                // Chèn vào container
+                const container = document.createElement('div');
+                container.innerHTML = html;
+                document.body.appendChild(container);
+
+                // Hiển thị modal
+                const modal = container.querySelector('#detailModal');
+                modal.classList.add('active');
+
+                // Đóng modal
+                modal.querySelector('.close-btn').addEventListener('click', () => {
+                    modal.remove();
+                });
+            });
+    }
+
+    // Tab
+    function switchTab(index) {
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => tab.classList.remove('active'));
+        contents.forEach(content => content.classList.remove('active'));
+
+        tabs[index].classList.add('active');
+        contents[index].classList.add('active');
+    }
+
+</script>

@@ -60,7 +60,55 @@
     color: white;
     font-weight: bold;
 }
+/* Khu Pho Grid Styles */
+.khu-pho-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 20px;
+}
 
+/* Select Dropdown Styles */
+.select-wrapper {
+    position: relative;
+    min-width: 250px;
+}
+
+.khu-pho-select {
+    width: 100%;
+    padding: 10px 40px 10px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1e293b;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+    .khu-pho-select:hover {
+        border-color: #4f46e5;
+    }
+
+    .khu-pho-select:focus {
+        outline: none;
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+.select-icon {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    pointer-events: none;
+    font-size: 12px;
+}
 /* Stats Cards */
 .stats-grid {
     display: grid;
@@ -449,4 +497,4 @@
         gap: 15px;
     }
 }
-
+}

@@ -85,10 +85,21 @@
                 </div>
                 <div class="header-right">
                     <div class="user-info">
+                        @*@if (Session["VaiTro"] != null && Session["VaiTro"].ToString() == "Cán bộ")
+                            {
+                                <div class="user-avatar">CB</div>
+                            }
+                            @if (Session["VaiTro"] != null && Session["VaiTro"].ToString() == "Admin")
+                            {
+                                <div class="user-avatar">AD</div>
+                            }*@
                         <div class="user-avatar">AD</div>
+
                         <div>
-                            <div style="font-weight: 600; font-size: 14px;">Admin</div>
-                            <div style="font-size: 12px; color: var(--gray-600);">Quản trị viên</div>
+                            @*<div style="font-weight: 600; font-size: 14px;">@Session["TenHienThi"]</div>
+                            <div style="font-size: 12px; color: var(--gray-600);">@Session["VaiTro"]</div>*@
+                            <div style="font-weight: 600; font-size: 14px;">Nguyễn Văn D</div>
+                            <div style="font-size: 12px; color: var(--gray-600);">Cán bộ</div>
                         </div>
                     </div>
                 </div>

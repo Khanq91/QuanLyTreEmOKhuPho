@@ -134,11 +134,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\QuanLyTreEm.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>QuanLyTreEm.dbml</DependentUpon>
-    </Compile>
+    <Compile Include="Models\ApiHelper.cs" />
+    <Compile Include="Models\KhuPho.cs" />
+    <Compile Include="Models\NguoiDung.cs" />
+    <Compile Include="Models\SuKien.cs" />
+    <Compile Include="Models\TongTreEmTheoKhuPho.cs" />
+    <Compile Include="Models\TreEm.cs" />
+    <Compile Include="Models\TreEmTheoTungKhoPho.cs" />
+    <Compile Include="Models\TT_TNV.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -212,9 +215,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\TrangChu.cshtml" />
     <Content Include="Views\BaoCaoThongKe\BaoCaoThongKe.cshtml" />
     <Content Include="Views\DangNhap\DangNhap.cshtml" />
@@ -230,6 +230,7 @@
     <Content Include="Views\SuKien\ChiTietSuKien.cshtml" />
     <Content Include="Views\TinhNguyenVien\TinhNguyenVien.cshtml" />
     <Content Include="Views\VanDongTreEm\VanDongTreEm.cshtml" />
+    <Content Include="Views\TinhNguyenVien\_DetailModal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

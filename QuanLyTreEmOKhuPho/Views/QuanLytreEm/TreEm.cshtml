@@ -3,6 +3,7 @@
     ViewBag.Title = "TreEm";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -12,6 +13,37 @@
     <title>Quản Lý Trẻ Em - Hệ Thống Quản Lý Khu Phố</title>
 
 </head>
+<link rel="stylesheet" href="~/Content/css/media.css" />
+<style>
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 16px;
+        background: var(--gray-50);
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), #3b82f6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+    }
+</style>
 <body>
     <div class="filter-section">
         <div class="filter-header">
@@ -213,28 +245,28 @@
                 }[child.priority];
 
                 row.innerHTML = `
-                    <td style="font-weight: 600; color: var(--primary);">${child.id}</td>
-                    <td>
-                        <div class="child-info">
-                            <div class="child-avatar ${child.gender}">${child.name.charAt(0)}</div>
-                            <div class="child-details">
-                                <h4>${child.name}</h4>
-                                <p>${child.age} tuổi • ${child.gender === 'male' ? 'Nam' : 'Nữ'}</p>
+                        <td style="font-weight: 600; color: var(--primary);">${child.id}</td>
+                        <td>
+                            <div class="child-info">
+                                <div class="child-avatar ${child.gender}">${child.name.charAt(0)}</div>
+                                <div class="child-details">
+                                    <h4>${child.name}</h4>
+                                    <p>${child.age} tuổi • ${child.gender === 'male' ? 'Nam' : 'Nữ'}</p>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                    <td>${child.khuPho}</td>
-                    <td>${child.circumstance}</td>
-                    <td><span class="badge ${performanceClass}">${performanceText}</span></td>
-                    <td><span class="badge ${priorityClass}">${priorityText}</span></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-view" onclick="viewChild('${child.id}')">Xem</button>
-                            <button class="btn btn-sm btn-edit" onclick="editChild('${child.id}')">Sửa</button>
-                            <button class="btn btn-sm btn-delete" onclick="deleteChild('${child.id}')">Xóa</button>
-                        </div>
-                    </td>
-                `;
+                        </td>
+                        <td>${child.khuPho}</td>
+                        <td>${child.circumstance}</td>
+                        <td><span class="badge ${performanceClass}">${performanceText}</span></td>
+                        <td><span class="badge ${priorityClass}">${priorityText}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-view" onclick="viewChild('${child.id}')">Xem</button>
+                                <button class="btn btn-sm btn-edit" onclick="editChild('${child.id}')">Sửa</button>
+                                <button class="btn btn-sm btn-delete" onclick="deleteChild('${child.id}')">Xóa</button>
+                            </div>
+                        </td>
+                    `;
 
                 tbody.appendChild(row);
             });
@@ -318,25 +350,25 @@
             };
 
             notification.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span style="font-size: 20px;">${icons[type]}</span>
-                    <span>${message}</span>
-                </div>
-            `;
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 20px;">${icons[type]}</span>
+                        <span>${message}</span>
+                    </div>
+                `;
 
             notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: white;
-                padding: 16px 24px;
-                border-radius: 12px;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-                z-index: 10000;
-                animation: slideIn 0.3s ease;
-                border-left: 4px solid ${colors[type]};
-                max-width: 400px;
-            `;
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: white;
+                    padding: 16px 24px;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                    z-index: 10000;
+                    animation: slideIn 0.3s ease;
+                    border-left: 4px solid ${colors[type]};
+                    max-width: 400px;
+                `;
 
             document.body.appendChild(notification);
 
@@ -349,19 +381,19 @@
         // Animation keyframes
         const style = document.createElement('style');
         style.textContent = `
-            @@keyframes slideIn {
-                from { transform: translateX(400px); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @@keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(400px); opacity: 0; }
-            }
-        `;
+                @@keyframes slideIn {
+                    from { transform: translateX(400px); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @@keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(400px); opacity: 0; }
+                }
+            `;
         document.head.appendChild(style);
 
         // Close modal on outside click
-        document.getElementById('childDetailModal').addEventListener('click', function(e) {
+        document.getElementById('childDetailModal').addEventListener('click', function (e) {
             if (e.target === this) {
                 closeModal();
             }
