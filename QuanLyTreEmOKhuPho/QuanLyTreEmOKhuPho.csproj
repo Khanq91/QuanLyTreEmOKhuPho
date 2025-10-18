@@ -141,7 +141,11 @@
     <Compile Include="Models\TongTreEmTheoKhuPho.cs" />
     <Compile Include="Models\TreEm.cs" />
     <Compile Include="Models\TreEmTheoTungKhoPho.cs" />
+    <Compile Include="Models\TTCB_ChiTietSuKien.cs" />
+    <Compile Include="Models\TTCT_ChiTietSuKien.cs" />
+    <Compile Include="Models\TT_ThanhVienSuKien.cs" />
     <Compile Include="Models\TT_TNV.cs" />
+    <Compile Include="Models\UngHo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

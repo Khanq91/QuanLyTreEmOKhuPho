@@ -67,12 +67,12 @@
             <div class="select-wrapper">
                 <select name="KhuPhoID" class="khu-pho-select">
                     <option value="">-- Chọn nhanh khu phố --</option>
-                    @*@foreach (var kp in ViewBag.KhuPho)
+                    @foreach (var kp in ViewBag.KhuPho)
                     {
                         <option value="@kp.KhuPhoID" @(Request.QueryString["KhuPhoID"] == kp.KhuPhoID.ToString() ? "selected" : "")>
                             @kp.TenKhuPho
                         </option>
-                    }*@
+                    }
                 </select>
             </div>
             <button type="submit" class="btn btn-outline">Chọn</button>
@@ -88,9 +88,9 @@
             <div class="stat-title">Tổng số trẻ em</div>
             <div class="stat-icon"><i class="fa-solid fa-children"></i></div>
         </div>
-        @*<div class="stat-value">@ViewBag.TongTreEm</div>*@
+        <div class="stat-value">@ViewBag.TongTreEm</div>
         <div class="stat-change">
-            ↑ 12% so với tháng trước
+            @*↑ 12% so với tháng trước*@
         </div>
     </div>
 
@@ -99,9 +99,9 @@
             <div class="stat-title">Sự kiện trong tháng</div>
             <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
         </div>
-        @*<div class="stat-value">@ViewBag.TongSuKien</div>*@
+        <div class="stat-value">@ViewBag.TongSuKien</div>
         <div class="stat-change">
-            6 sự kiện sắp diễn ra
+            @*6 sự kiện sắp diễn ra*@
         </div>
     </div>
 
@@ -110,9 +110,9 @@
             <div class="stat-title">Tình nguyện viên</div>
             <div class="stat-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
         </div>
-        @*<div class="stat-value">@ViewBag.TongTNV</div>*@
+        <div class="stat-value">@ViewBag.TongTNV</div>
         <div class="stat-change">
-            89 đang hoạt động
+            @*89 đang hoạt động*@
         </div>
     </div>
 
@@ -121,9 +121,9 @@
             <div class="stat-title">Ủng hộ trong tháng</div>
             <div class="stat-icon"><i class="fa-solid fa-comments-dollar"></i></div>
         </div>
-        @*<div class="stat-value">@String.Format("{0:N0} VNĐ", ViewBag.TongSoTien)</div>*@
+        <div class="stat-value">@String.Format("{0:N0} VNĐ", ViewBag.TongSoTien)</div>
         <div class="stat-change">
-            ↑ 8% so với tháng trước
+            @*↑ 8% so với tháng trước*@
         </div>
     </div>
 </div>
@@ -139,14 +139,14 @@
             </button>
         </div>
         <div class="chart-container">
-            @*@foreach (var item in TongTreEmTungKhuPho)
+            @foreach (var item in TongTreEmTungKhuPho)
             {
                 double heightPercent = (double)item.SoLuongTreEm / TongTreEm * 100;
                 <div class="chart-bar" style="height: @heightPercent%;">
                     <div class="chart-value">@item.SoLuongTreEm</div>
                     <div class="chart-label">@item.TenKhuPho</div>
                 </div>
-            }*@
+            }
 
         </div>
     </div>
@@ -204,7 +204,7 @@
             <i class="fa-solid fa-circle-plus"></i> Tạo sự kiện mới
         </button>
     </div>
-    @*@foreach (var item in ViewBag.SuKienSapToi)
+    @foreach (var item in ViewBag.SuKienSapToi)
     {
         <div class="timeline">
             <div class="timeline-item">
@@ -213,20 +213,19 @@
                     <div class="timeline-date"><i class="fa-solid fa-calendar-days"></i> @item.NgayBatDau</div>
                     <div class="timeline-desc">@item.DiaDiem • @item.SoLuongTinhNguyenVien Tình nguyện viên •@item.SoLuongTreEm Số lượng trẻ em</div>
                     <button class="btn btn-primary"
-                            onclick="location.href='@Url.Action("ChiTietSuKien", "SuKien", new { id = item.SuKienID })'"
+                            onclick="location.href='@Url.Action("ChiTietSuKien", "SuKien", new { SuKienID  = item.SuKienId })'"
                             style="margin-top:12px">
                         Xem chi tiết
                     </button>
                 </div>
-
             </div>
         </div>
-    }*@
+    }
 
 </div>
 
 <!-- Alerts -->
-<div class="alerts-section">
+<!--<div class="alerts-section">
     <div class="alert alert-warning">
         <div class="alert-icon">⚠️</div>
         <div class="alert-content">
@@ -243,7 +242,7 @@
         </div>
         <button class="btn btn-outline">Xem chi tiết</button>
     </div>
-</div>
+</div>-->
 
 <script>
 

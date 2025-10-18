@@ -1,62 +1,58 @@
-﻿using QuanLyTreEmOKhuPho.Models;
+﻿using Newtonsoft.Json;
+using QuanLyTreEmOKhuPho.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Globalization;
 namespace QuanLyTreEmOKhuPho.Controllers
 {
     public class TinhNguyenVienController : Controller
     {
-        //QuanLyTreEmDataContext db = new QuanLyTreEmDataContext();
+        private readonly HttpClient _client;
         // GET: TinhNguyenVien
         public ActionResult Index()
         {
             return View();
         }
-        public ActionResult TinhNguyenVien()
+        public TinhNguyenVienController()
         {
-            //var listKhuPho = db.KhuPhos.ToList();
-            //ViewBag.KhuPho = listKhuPho;
 
+            _client = new HttpClient();
+            _client.BaseAddress = new Uri("https://localhost:44362/api/");
+        }
+        public async Task<List<T>> GetDataAsync<T>(string endpoint)
+        {
+            List<T> result = new List<T>();
+            HttpResponseMessage response = await _client.GetAsync(endpoint);
 
-            //// truy xuất thông tin tình nguyện viên
-            //var listTNV = db.TinhNguyenViens
-            //.Select(tnv => new TT_TNV
-            //{
-            //    ID = tnv.TinhNguyenVienID,
-            //    TenTinhNguyenVien = tnv.NguoiDung.HoTen,
-            //    ChucVu = tnv.ChucVu,
-            //    KhuPho = tnv.KhuPho.TenKhuPho,
-            //    SDT = tnv.SDT,
-            //    CaRanh = tnv.LichTrongs
-            //                .SelectMany(l => l.ChiTietLichTrongs)
-            //                .Count(),
-            //    SuKien = db.PhanCongTinhNguyenViens
-            //                .Where(p => p.TinhNguyenVienID == tnv.TinhNguyenVienID)
-            //                .Select(p => p.SuKienID)
-            //                .Distinct()
-            //                .Count(),
-            //    TrangThai = "Hoạt động"
-            //})
-            //.AsEnumerable() // Chuyển sang LINQ to Objects
-            //.OrderBy(t => t.TenTinhNguyenVien,
-            //         StringComparer.Create(new System.Globalization.CultureInfo("vi-VN"), false))
-            //.ToList();
+            if (response.IsSuccessStatusCode)
+            {
+                string data = await response.Content.ReadAsStringAsync();
+                result = JsonConvert.DeserializeObject<List<T>>(data);
+            }
 
-            //ViewBag.listTNV = listTNV;
+            return result;
+        }
+        public async Task<ActionResult> TinhNguyenVien(int? KhuPhoID)
+        {
+            List<KhuPho> khuPhos = await GetDataAsync<KhuPho>("KhuPho");
+            List<TT_TNV> tnvs = await GetDataAsync<TT_TNV>("TinhNguyenVien");
 
-            //ViewBag.ActivePage = "TinhNguyenVien";
-            //ViewBag.PageTitle = "Tình Nguyện Viên";
-            //ViewBag.PageDescription = "Quản lý thông tin tình nguyện viên";
+            if (KhuPhoID.HasValue)
+            {
+                tnvs = tnvs.Where(t => t.KhuPhoID == KhuPhoID.Value).ToList();
+            }
+            ViewBag.listTNV = tnvs;
+            ViewBag.KhuPho = khuPhos;
+
+            ViewBag.ActivePage = "TinhNguyenVien";
+            ViewBag.PageTitle = "Tình Nguyện Viên";
+            ViewBag.PageDescription = "Quản lý thông tin tình nguyện viên";
             return View();
         }
-        //public ActionResult Detail(int id)
-        //{
-        //    //var tnv = db.TinhNguyenViens.FirstOrDefault(x => x.TinhNguyenVienID == id);
-        //    //if (tnv == null) return HttpNotFound();
-        //    //return PartialView("_DetailModal", tnv);
-        //}
     }
 }

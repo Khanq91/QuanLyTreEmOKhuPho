@@ -16,5 +16,6 @@ namespace QuanLyTreEmOKhuPho.Models
 
         public int CaRanh { get; set; }
         public string TrangThai { get; set; }
+        public int KhuPhoID { get; set; }
     }
 }

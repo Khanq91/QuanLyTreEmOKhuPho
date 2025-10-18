@@ -26,6 +26,6 @@ namespace QuanLyTreEmOKhuPho.Models
         public int SoLuongTreEm { get; set; }
 
         public int UserId { get; set; }
-
+        public int khuPhoID { get; set; }
     }
 }

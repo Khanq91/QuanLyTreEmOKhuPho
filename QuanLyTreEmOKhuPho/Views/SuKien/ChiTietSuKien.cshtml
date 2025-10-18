@@ -2,6 +2,12 @@
 @{
     ViewBag.Title = "ChiTietSuKien";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var TTCB_ChiTietSuKien = ViewBag.TTCB_ChiTietSuKien;
+    var TTCT_ChiTietSuKien = ViewBag.TTCT_ChiTietSuKien;
+    int TongSL_TNV = ViewBag.TongSL_TNV;
+    int TongSL_PhuHuynh = ViewBag.TongSL_PhuHuynh;
+    var LayThanhVienSuKien = ViewBag.LayThanhVienSuKien as List<QuanLyTreEmOKhuPho.Models.TT_ThanhVienSuKien>;
+    var LayThanhVienSuKien_PhuHuynhTreEm = ViewBag.LayThanhVienSuKien_PhuHuynhTreEm;
 }
 
 <link href="~/Content/css/ChiTietSuKien.css" rel="stylesheet" />
@@ -39,7 +45,7 @@
 <div class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3 class="modal-title">Ngày hội Trung thu 2025</h3>
+            <h3 class="modal-title">@TTCB_ChiTietSuKien.TenSuKien</h3>
         </div>
         <div class="modal-body">
             <div class="tabs">
@@ -57,27 +63,27 @@
                     <div class="info-grid">
                         <div class="info-item">
                             <span class="info-label">Tên sự kiện</span>
-                            <span class="info-value">Ngày hội Trung thu 2025</span>
+                            <span class="info-value">@TTCB_ChiTietSuKien.TenSuKien</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Người chịu trách nhiệm</span>
-                            <span class="info-value">Nguyễn Thị Hương</span>
+                            <span class="info-value">@TTCB_ChiTietSuKien.NguoiChiuTrachNhiem</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Ngày bắt đầu</span>
-                            <span class="info-value">15/10/2025 - 08:00 AM</span>
+                            <span class="info-value">@TTCB_ChiTietSuKien.NgayBatDau</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Ngày kết thúc</span>
-                            <span class="info-value">15/10/2025 - 18:00 PM</span>
+                            <span class="info-value">@TTCB_ChiTietSuKien.NgayKetThuc</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Địa điểm</span>
-                            <span class="info-value">Sân trường Tiểu học Khu phố 2</span>
+                            <span class="info-value">@TTCB_ChiTietSuKien.DiaDiem</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Khu phố</span>
-                            <span class="info-value">Khu phố 2</span>
+                            <span class="info-value">@TTCB_ChiTietSuKien.DiaDiem</span>
                         </div>
                     </div>
                 </div>
@@ -85,7 +91,7 @@
                 <div class="section">
                     <div class="info-item">
                         <span class="info-label">Mô tả</span>
-                        <span class="info-value">Tổ chức lễ hội Trung thu cho các em thiếu nhi tại khu phố với nhiều hoạt động vui chơi, văn nghệ và trao quà. Chương trình dành cho 120 trẻ em từ 3-15 tuổi với sự hỗ trợ của 25 tình nguyện viên.</span>
+                        <span class="info-value">@TTCB_ChiTietSuKien.MoTa</span>
                     </div>
                 </div>
 
@@ -100,46 +106,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>08:00 - 08:30</td>
-                                <td>Lễ khai mạc</td>
-                                <td>Ban tổ chức</td>
-                            </tr>
-                            <tr>
-                                <td>08:30 - 09:30</td>
-                                <td>Múa lân, trống</td>
-                                <td>Đoàn múa lân Thanh Bình</td>
-                            </tr>
-                            <tr>
-                                <td>09:30 - 10:30</td>
-                                <td>Trò chơi dân gian</td>
-                                <td>Nhóm TNV 1</td>
-                            </tr>
-                            <tr>
-                                <td>10:30 - 11:00</td>
-                                <td>Nghỉ giải lao, ăn nhẹ</td>
-                                <td>Nhóm TNV 2</td>
-                            </tr>
-                            <tr>
-                                <td>11:00 - 12:00</td>
-                                <td>Thi vẽ tranh, làm lồng đèn</td>
-                                <td>Nhóm TNV 3</td>
-                            </tr>
-                            <tr>
-                                <td>14:00 - 16:00</td>
-                                <td>Văn nghệ, ca hát</td>
-                                <td>Các em thiếu nhi</td>
-                            </tr>
-                            <tr>
-                                <td>16:00 - 17:00</td>
-                                <td>Phá cỗ Trung thu</td>
-                                <td>Tất cả</td>
-                            </tr>
-                            <tr>
-                                <td>17:00 - 18:00</td>
-                                <td>Trao quà và bế mạc</td>
-                                <td>Ban tổ chức</td>
-                            </tr>
+                            @foreach (var item in TTCT_ChiTietSuKien)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Ngay @item.GioBatDau <br />
+                                        @item.Ngay @item.GioKetThuc
+                                    </td>
+
+                                    <td>@item.NoiDung</td>
+                                    <td>@item.NguoiThucHien</td>
+                                </tr>
+                            }
+
                         </tbody>
                     </table>
                 </div>
@@ -150,7 +129,7 @@
                 <div class="registration-container">
                     <!-- Volunteers Registration -->
                     <div class="registration-panel">
-                        <div class="panel-header">Tình nguyện viên đăng ký (15)</div>
+                        <div class="panel-header">Tình nguyện viên đăng ký (@TongSL_TNV)</div>
                         <table class="reg-table">
                             <thead>
                                 <tr>
@@ -161,42 +140,67 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Nguyễn Văn An</td>
-                                    <td>0901234567</td>
-                                    <td><span class="badge badge-pending">Chờ duyệt</span></td>
-                                    <td>
-                                        <div class="action-btns">
-                                            <button class="btn-sm btn-approve">Duyệt</button>
-                                            <button class="btn-sm btn-reject">Từ chối</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Trần Thị Bình</td>
-                                    <td>0912345678</td>
-                                    <td><span class="badge badge-approved">Đã duyệt</span></td>
-                                    <td>-</td>
-                                </tr>
-                                <tr>
-                                    <td>Lê Hoàng Cường</td>
-                                    <td>0923456789</td>
-                                    <td><span class="badge badge-approved">Đã duyệt</span></td>
-                                    <td>-</td>
-                                </tr>
-                                <tr>
-                                    <td>Phạm Thị Dung</td>
-                                    <td>0934567890</td>
-                                    <td><span class="badge badge-rejected">Từ chối</span></td>
-                                    <td>-</td>
-                                </tr>
+                                @if (TongSL_TNV != 0)
+                                {
+                                    foreach (var item in LayThanhVienSuKien)
+                                    {
+                                        <tr>
+                                            <td>@item.HoTen</td>
+                                            <td>@item.SDT</td>
+                                            @if (item.TrangThai == "Đã duyệt")
+                                            {
+                                                <td>
+                                                    <button class="btn-sm btn-approve">Duyệt</button>
+                                                </td>
+                                            }
+                                            else if (item.TrangThai == "Chờ duyệt")
+                                            {
+                                                <td><span class="badge badge-pending">Chờ duyệt</span></td>
+                                                <td>
+                                                    <div class="action-btns">
+                                                        <form action="@Url.Action("CapNhatTrangThai", "SuKien")" method="post" style="display:inline;">
+                                                            <input type="hidden" name="suKienId" value="@item.UserID" />
+                                                            <input type="hidden" name="userId" value="@item.UserID" />
+                                                            <input type="hidden" name="trangThai" value="Đã duyệt" />
+                                                            <button type="submit" class="btn-sm btn-approve">Duyệt</button>
+                                                        </form>
+
+                                                        <form action="@Url.Action("CapNhatTrangThai", "SuKien")" method="post" style="display:inline;">
+                                                            <input type="hidden" name="suKienId" value="@item.UserID" />
+                                                            <input type="hidden" name="userId" value="@item.UserID" />
+                                                            <input type="hidden" name="trangThai" value="Từ chối" />
+                                                            <button type="submit" class="btn-sm btn-reject">Từ chối</button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    <div class="action-btns">
+                                                        <button class="btn-sm btn-reject">Từ chối</button>
+                                                    </div>
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted">
+                                            Không có tình nguyện viên nào trong sự kiện này.
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
+
                         </table>
                     </div>
 
                     <!-- Children/Parents Registration -->
                     <div class="registration-panel">
-                        <div class="panel-header">Phụ huynh/Trẻ em đăng ký (45)</div>
+                        <div class="panel-header">Phụ huynh/Trẻ em đăng ký (@TongSL_PhuHuynh)</div>
                         <table class="reg-table">
                             <thead>
                                 <tr>
@@ -207,29 +211,59 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Nguyễn Minh Anh</td>
-                                    <td>Nguyễn Văn A</td>
-                                    <td><span class="badge badge-pending">Chờ duyệt</span></td>
-                                    <td>
-                                        <div class="action-btns">
-                                            <button class="btn-sm btn-approve">Duyệt</button>
-                                            <button class="btn-sm btn-reject">Từ chối</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Trần Bảo Ngọc</td>
-                                    <td>Trần Thị B</td>
-                                    <td><span class="badge badge-approved">Đã duyệt</span></td>
-                                    <td>-</td>
-                                </tr>
-                                <tr>
-                                    <td>Lê Đức Duy</td>
-                                    <td>Lê Văn C</td>
-                                    <td><span class="badge badge-approved">Đã duyệt</span></td>
-                                    <td>-</td>
-                                </tr>
+                                @if (TongSL_PhuHuynh != 0)
+                                {
+                                    foreach (var item in LayThanhVienSuKien_PhuHuynhTreEm)
+                                    {
+                                        <tr>
+                                            <td>@item.TenTreEm</td>
+                                            <td>@item.HoTen</td>
+                                            @if (item.TrangThai == "Đã duyệt")
+                                            {
+                                                <td>
+                                                    <button class="btn-sm btn-approve">Duyệt</button>
+                                                </td>
+                                            }
+                                            else if (item.TrangThai == "Chờ duyệt")
+                                            {
+                                                <td><span class="badge badge-pending">Chờ duyệt</span></td>
+                                                <td>
+                                                    <div class="action-btns">
+                                                        <form action="@Url.Action("CapNhatTrangThai", "SuKien")" method="post" style="display:inline;">
+                                                            <input type="hidden" name="suKienId" value="@item.UserID" />
+                                                            <input type="hidden" name="userId" value="@item.UserID" />
+                                                            <input type="hidden" name="trangThai" value="Đã duyệt" />
+                                                            <button type="submit" class="btn-sm btn-approve">Duyệt</button>
+                                                        </form>
+
+                                                        <form action="@Url.Action("CapNhatTrangThai", "SuKien")" method="post" style="display:inline;">
+                                                            <input type="hidden" name="suKienId" value="@item.UserID" />
+                                                            <input type="hidden" name="userId" value="@item.UserID" />
+                                                            <input type="hidden" name="trangThai" value="Từ chối" />
+                                                            <button type="submit" class="btn-sm btn-reject">Từ chối</button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    <div class="action-btns">
+                                                        <button class="btn-sm btn-reject">Từ chối</button>
+                                                    </div>
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted">
+                                            Không có phụ huynh nào trong sự kiện này.
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>

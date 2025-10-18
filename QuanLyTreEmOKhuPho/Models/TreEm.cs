@@ -24,5 +24,6 @@ namespace QuanLyTreEmOKhuPho.Models
         public int TruongId { get; set; }
 
         public string TinhTrang { get; set; }
+        public int KhuPhoID { get; set; }
     }
 }
