@@ -1,0 +1,295 @@
+﻿@using Newtonsoft.Json
+
+@{
+    ViewBag.Title = "ThongTinChiTietTinhNguyenVien";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var TTChiTietTinhNguyenVien = ViewBag.TTChiTietTinhNguyenVien;
+    var lichRanh = ViewBag.LichRanhTNV as List<QuanLyTreEmOKhuPho.Models.TinhNguyenVien.LichRanhTNV>;
+    Func<string, string, bool> isAvailable = (thu, buoi) =>
+    {
+        return lichRanh?.Any(x => x.Thu == thu && x.Buoi == buoi) ?? false;
+    };
+    var SuKienDaThamGia = ViewBag.SuKienDaThamGia;
+    var DSTNV_HoTroVanDong = ViewBag.DSTNV_HoTroVanDong;
+}
+<link rel="stylesheet" href="~/Content/css/Site.css" />
+<link rel="stylesheet" href="~/Content/css/media_tnv.css" />
+<link rel="stylesheet" href="~/Content/css/ThongTinChiTietTinhNguyenVien.css" />
+<!-- Profile Card -->
+<div class="profile-card">
+    <div class="profile-header">
+        <div class="profile-avatar" id="profileAvatar">NVA</div>
+        <div class="profile-info">
+            <h2 class="profile-name" id="profileName">@TTChiTietTinhNguyenVien.TenTinhNguyenVien</h2>
+            <div class="profile-meta">
+                <div class="meta-item">
+                    <span>📱</span>
+                    <span id="profilePhone">@TTChiTietTinhNguyenVien.SDT</span>
+                </div>
+                <div class="meta-item">
+                    <span>📍</span>
+                    <span id="profileLocation">@TTChiTietTinhNguyenVien.TenKhuPho</span>
+                </div>
+                <div class="meta-item">
+                    <span>👤</span>
+                    <span id="profileRole">@TTChiTietTinhNguyenVien.ChucVu</span>
+                </div>
+            </div>
+            <span class="profile-status status-active" id="profileStatus">Đang hoạt động</span>
+        </div>
+    </div>
+
+    <div class="profile-stats">
+        <div class="stat-box">
+            <div class="stat-value" id="statEvents">@TTChiTietTinhNguyenVien.TongSuKienThamGia</div>
+            <div class="stat-label">Sự kiện tham gia</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-value" id="statSlots">@TTChiTietTinhNguyenVien.SoLuongCaRanh</div>
+            <div class="stat-label">Ca rảnh/tuần</div>
+        </div>
+        @*<div class="stat-box">
+                <div class="stat-value" id="statYears">3</div>
+                <div class="stat-label">Năm hoạt động</div>
+            </div>*@
+    </div>
+
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+    <button class="tab active" onclick="switchTab(0)">📋 Thông tin cá nhân</button>
+    <button class="tab" onclick="switchTab(1)">📆 Lịch trống</button>
+    <button class="tab" onclick="switchTab(2)">🎉 Sự kiện tham gia</button>
+    <button class="tab" onclick="switchTab(3)">💝 Hỗ trợ & Vận động</button>
+</div>
+
+<!-- Tab 1: Personal Info -->
+<div class="tab-content active" id="tabPersonal">
+    <h3 class="section-title">📝 Thông tin cơ bản</h3>
+    <div class="info-grid">
+        <div class="info-item">
+            <span class="info-label">Họ và tên</span>
+            <span class="info-value" id="detailName">@TTChiTietTinhNguyenVien.TenTinhNguyenVien</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Số điện thoại</span>
+            <span class="info-value" id="detailPhone">@TTChiTietTinhNguyenVien.SDT</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Ngày sinh</span>
+            <span class="info-value" id="detailBirthday">@TTChiTietTinhNguyenVien.NgaySinh</span>
+        </div>
+        @*<div class="info-item">
+                <span class="info-label">Tuổi</span>
+                <span class="info-value" id="detailAge">35 tuổi</span>
+            </div>*@
+        <div class="info-item">
+            <span class="info-label">Chức vụ</span>
+            <span class="info-value" id="detailRole">@TTChiTietTinhNguyenVien.ChucVu</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Khu phố phụ trách</span>
+            <span class="info-value" id="detailLocation">@TTChiTietTinhNguyenVien.TenKhuPho</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Trạng thái</span>
+            <span class="info-value" id="detailStatus">Đang hoạt động</span>
+        </div>
+        @*<div class="info-item">
+                <span class="info-label">Ngày tham gia</span>
+                <span class="info-value" id="detailJoinDate">01/01/2022</span>
+            </div>*@
+    </div>
+</div>
+
+<!-- Tab 2: Schedule -->
+<div class="tab-content" id="tabSchedule">
+    <h3 class="section-title">📆 Lịch trống trong tuần</h3>
+    <div class="schedule-grid" id="scheduleGrid">
+        <div class="schedule-header">Thứ / Buổi</div>
+        <div class="schedule-header">🌅 Sáng</div>
+        <div class="schedule-header">🌆 Chiều</div>
+
+        <div class="schedule-day">Thứ 2</div>
+        <div class="schedule-cell"></div>
+        <div class="schedule-cell"></div>
+
+        <div class="schedule-day">Thứ 3</div>
+        <div class="schedule-cell"></div>
+        <div class="schedule-cell"></div>
+
+        <div class="schedule-day">Thứ 4</div>
+        <div class="schedule-cell"></div>
+        <div class="schedule-cell"></div>
+
+        <div class="schedule-day">Thứ 5</div>
+        <div class="schedule-cell"></div>
+        <div class="schedule-cell"></div>
+
+        <div class="schedule-day">Thứ 6</div>
+        <div class="schedule-cell"></div>
+        <div class="schedule-cell"></div>
+
+        <div class="schedule-day">Thứ 7</div>
+        <div class="schedule-cell"></div>
+        <div class="schedule-cell"></div>
+
+        <div class="schedule-day">Chủ nhật</div>
+        <div class="schedule-cell"></div>
+        <div class="schedule-cell"></div>
+    </div>
+</div>
+
+<!-- Tab 3: Events -->
+<div class="tab-content" id="tabEvents">
+    <h3 class="section-title">🎉 Sự kiện đã tham gia</h3>
+    <div class="events-list">
+        @foreach (var item in SuKienDaThamGia)
+        {
+            <div class="event-card">
+                <div class="event-header">
+                    <div>
+                        <div class="event-title">@item.TenSuKien</div>
+                        <div class="event-date">📅 @item.NgayBatDau</div>
+                    </div>
+                    @if (@item.NgayBatDau > DateTime.Today)
+                    {
+                        <span class="event-badge">Sắp diễn ra</span>
+
+                    }
+                    else
+                    {
+                        <span class="event-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">Đã hoàn thành</span>
+
+                    }
+                </div>
+                <div class="event-assignment">
+                    <strong>Phân công:</strong> @item.CongViec
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Tab 4: Support -->
+<!-- Tab 4: Support -->
+<div class="tab-content" id="tabSupport">
+    <h3 class="section-title">💝 Hỗ trợ & Vận động đã thực hiện</h3>
+
+    @if (DSTNV_HoTroVanDong != null && DSTNV_HoTroVanDong.Count > 0)
+    {
+        <div class="support-list">
+            @foreach (var item in DSTNV_HoTroVanDong)
+            {
+                <div class="support-card">
+                    <div class="support-header">
+                        <div class="support-info">
+                            <div class="support-title">
+                                <span class="support-icon">👶</span>
+                                <strong>@item.TenTreEm</strong>
+                            </div>
+                            <div class="support-badge">
+                                @item.loaiHoanCanh
+                            </div>
+                        </div>
+                        <div class="support-date">
+                            <span>📅</span>
+                            <span>@item.NgayVanDong.ToString("dd/MM/yyyy")</span>
+
+                        </div>
+                    </div>
+
+                    <div class="support-body">
+                        <div class="support-detail">
+                            <span class="detail-label">🏠 Hoàn cảnh:</span>
+                            <span class="detail-value">@item.MoTaHoanCanh</span>
+                        </div>
+
+                        <div class="support-detail">
+                            <span class="detail-label">📝 Lý do hỗ trợ:</span>
+                            <span class="detail-value">@item.LyDo</span>
+                        </div>
+
+                        <div class="support-detail">
+                            <span class="detail-label">✨ Kết quả:</span>
+                            <span class="detail-value">@item.KetQua</span>
+                        </div>
+
+                        <div class="support-stats">
+                            <div class="stat-item">
+                                <span class="stat-icon">🔄</span>
+                                <span class="stat-text">Đã hỗ trợ <strong>@item.SoLan lần</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <p style="font-size: 16px; margin-bottom: 10px;">Chưa có hoạt động hỗ trợ</p>
+            <p style="font-size: 14px;">Thông tin về hoạt động hỗ trợ và vận động sẽ được hiển thị tại đây</p>
+        </div>
+    }
+</div>
+
+<script>
+
+    function switchTab(index) {
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => tab.classList.remove('active'));
+        contents.forEach(content => content.classList.remove('active'));
+
+        tabs[index].classList.add('active');
+        contents[index].classList.add('active');
+
+        // Scroll tới tab
+        const tabsElement = document.querySelector('.tabs');
+        tabsElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+document.addEventListener("DOMContentLoaded", () => {
+    const lichRanh = @Html.Raw(JsonConvert.SerializeObject(ViewBag.LichRanhTNV));
+
+    console.log("Dữ liệu lịch rảnh:", lichRanh);
+
+    if (!lichRanh || lichRanh.length === 0) {
+        console.warn("Không có dữ liệu lịch rảnh!");
+        return;
+    }
+
+    lichRanh.forEach(item => {
+        // Xử lý cả trường hợp Thu/thu và Buoi/buoi
+        const thu = (item.thu || item.Thu || '').trim().toLowerCase();
+        const buoi = (item.buoi || item.Buoi || '').trim().toLowerCase();
+
+        console.log("Đang xử lý:", thu, buoi);
+
+        const dayRow = [...document.querySelectorAll('.schedule-day')]
+            .find(el => el.textContent.trim().toLowerCase() === thu);
+
+        console.log("Kết quả tìm thấy dayRow:", dayRow);
+
+        if (dayRow) {
+            const sangCell = dayRow.nextElementSibling;
+            const chieuCell = sangCell.nextElementSibling;
+
+            if (buoi === "sáng") {
+                sangCell.textContent = "✓ Rảnh";
+                sangCell.classList.add("available");
+            }
+            if (buoi === "chiều") {
+                chieuCell.textContent = "✓ Rảnh";
+                chieuCell.classList.add("available");
+            }
+        } else {
+            console.warn("Không tìm thấy hàng cho:", thu);
+        }
+    });
+});
+</script>

@@ -588,53 +588,16 @@ SELECT * FROM PhieuMinhChung;
 SELECT * FROM UngHo_TreEm;
 SELECT * FROM UngHo_HoTroPhucLoi;
 SELECT 
-    t.TinhNguyenVienID,
-    u.HoTen AS TenTinhNguyenVien,
-    t.NgaySinh,
-    k.TenKhuPho,
-    u.SDT,
-    t.ChucVu,
-    c.ChiTietLichTrongID,
-    c.Buoi,
-    c.Thu,
-    p.CongViec,
-    p.NgayPhanCong,
-    p.GhiChu,
-    s.SuKienID,
-    s.TenSuKien,
-    s.NgayBatDau
-FROM TinhNguyenVien t
-INNER JOIN NguoiDung u ON t.UserID = u.UserID
-INNER JOIN KhuPho k ON t.KhuPhoID = k.KhuPhoID
-INNER JOIN LichTrong l ON t.TinhNguyenVienID = l.TinhNguyenVienID
-INNER JOIN ChiTietLichTrong c ON l.LichTrongID = c.LichTrongID
-LEFT JOIN PhanCongTinhNguyenVien p ON t.TinhNguyenVienID = p.TinhNguyenVienID
-LEFT JOIN SuKien s ON p.SuKienID = s.SuKienID
-ORDER BY t.TinhNguyenVienID;
-
-UPDATE DangKySuKien
-SET TrangThai = N'Chờ duyệt'
-FROM DangKySuKien
-INNER JOIN NguoiDung ON NguoiDung.UserID = DangKySuKien.UserID
-WHERE DangKySuKien.SuKienID = 2 AND NguoiDung.UserID = 2;
-
-select  NguoiDung.UserID,NguoiDung.HoTen,NguoiDung.SDT,DangKySuKien.TrangThai,NguoiDung.VaiTro from NguoiDung,DangKySuKien where NguoiDung.UserID=DangKySuKien.UserID and DangKySuKien.SuKienID=2
-
-select  NguoiDung.UserID,NguoiDung.HoTen,TreEm.HoTen,NguoiDung.SDT,DangKySuKien.TrangThai,NguoiDung.VaiTro from NguoiDung,DangKySuKien,TreEm,TreEm_PhuHuynh,ThongTinPhuHuynh 
-where NguoiDung.UserID=DangKySuKien.UserID and 
-		NguoiDung.UserID=ThongTinPhuHuynh.UserID and 
-		ThongTinPhuHuynh.PhuHuynhID=TreEm_PhuHuynh.PhuHuynhID and 
-		TreEm_PhuHuynh.TreEmID=TreEm.TreEmID and NguoiDung.VaiTro=N'Phụ Huynh'
-		
-UPDATE DangKySuKien
-SET TrangThai = N'Chờ duyệt'
-FROM DangKySuKien
-INNER JOIN NguoiDung ON DangKySuKien.UserID = NguoiDung.UserID
-INNER JOIN ThongTinPhuHuynh ON NguoiDung.UserID = ThongTinPhuHuynh.UserID
-INNER JOIN TreEm_PhuHuynh ON ThongTinPhuHuynh.PhuHuynhID = TreEm_PhuHuynh.PhuHuynhID
-INNER JOIN TreEm ON TreEm_PhuHuynh.TreEmID = TreEm.TreEmID
-WHERE NguoiDung.VaiTro = N'Phụ Huynh'
-AND DangKySuKien.SuKienID = 3
-AND DangKySuKien.UserID = 3
-
-select ThoiGianChiTietSuKien.ThoiGianBatDau,ThoiGianChiTietSuKien.ThoiGianKetThuc,TietMucSuKien.TenTietMuc,TietMucSuKien.NguoiThucHien from ThoiGianChiTietSuKien,TietMucSuKien where ThoiGianChiTietSuKien.ThoiGianChiTietSuKienID=TietMucSuKien.ThoiGianChiTietSuKienID and ThoiGianChiTietSuKien.SuKienID=1
+    nd.HoTen AS TenTinhNguyenVien,
+    te.HoTen AS TenTreEm,
+    hc.LoaiHoanCanh,
+    hc.MoTa AS MoTaHoanCanh,
+    vdt.SoLan,
+    vdt.LyDo,
+    vdt.KetQua,
+    vdt.NgayVanDong
+FROM VanDongTreEm vdt
+JOIN NguoiDung nd ON vdt.NguoiDungID = nd.UserID
+JOIN TreEm te ON vdt.TreEmID = te.TreEmID
+JOIN HoanCanh hc ON vdt.HoanCanhID = hc.HoanCanhID
+WHERE vdt.NguoiDungID = 2;

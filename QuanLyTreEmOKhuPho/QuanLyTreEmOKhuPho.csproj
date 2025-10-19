@@ -138,13 +138,17 @@
     <Compile Include="Models\KhuPho.cs" />
     <Compile Include="Models\NguoiDung.cs" />
     <Compile Include="Models\SuKien.cs" />
+    <Compile Include="Models\TinhNguyenVien\HoTroVanDong.cs" />
+    <Compile Include="Models\TinhNguyenVien\LichRanhTNV.cs" />
+    <Compile Include="Models\TinhNguyenVien\SuKienDaThamGia.cs" />
+    <Compile Include="Models\TinhNguyenVien\ThongKeTinhNguyenVien.cs" />
     <Compile Include="Models\TongTreEmTheoKhuPho.cs" />
     <Compile Include="Models\TreEm.cs" />
     <Compile Include="Models\TreEmTheoTungKhoPho.cs" />
     <Compile Include="Models\TTCB_ChiTietSuKien.cs" />
     <Compile Include="Models\TTCT_ChiTietSuKien.cs" />
     <Compile Include="Models\TT_ThanhVienSuKien.cs" />
-    <Compile Include="Models\TT_TNV.cs" />
+    <Compile Include="Models\TinhNguyenVien\TT_TNV.cs" />
     <Compile Include="Models\UngHo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -171,11 +175,13 @@
     <Content Include="Content\css\HoTroVaUngHo.css" />
     <Content Include="Content\css\ManhThuongQuan.css" />
     <Content Include="Content\css\media.css" />
+    <Content Include="Content\css\media_tnv.css" />
     <Content Include="Content\css\QuanLyTaiKhoan.css" />
     <Content Include="Content\css\Site.css" />
     <Content Include="Content\css\SuKien.css" />
     <Content Include="Content\css\ThemSuKien.css" />
     <Content Include="Content\css\ThemTreEm.css" />
+    <Content Include="Content\css\ThongTinChiTietTinhNguyenVien.css" />
     <Content Include="Content\css\TinhNguyenVien.css" />
     <Content Include="Content\css\trangchu.css" />
     <Content Include="Content\css\TreEm.css" />
@@ -234,7 +240,7 @@
     <Content Include="Views\SuKien\ChiTietSuKien.cshtml" />
     <Content Include="Views\TinhNguyenVien\TinhNguyenVien.cshtml" />
     <Content Include="Views\VanDongTreEm\VanDongTreEm.cshtml" />
-    <Content Include="Views\TinhNguyenVien\_DetailModal.cshtml" />
+    <Content Include="Views\TinhNguyenVien\ThongTinChiTietTinhNguyenVien.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

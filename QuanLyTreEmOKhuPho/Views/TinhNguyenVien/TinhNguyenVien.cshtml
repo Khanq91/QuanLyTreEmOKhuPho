@@ -51,49 +51,71 @@
         position: relative;
         min-width: 250px;
     }
+
+    .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Cắt ảnh vừa khung, không méo */
+    }
+
+    .avatar:hover {
+        transform: scale(1.05); /* Phóng nhẹ khi hover */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
 </style>
 
-<div class="filter-section">
-    <div class="filter-grid">
-        <div class="filter-item">
-            <label class="filter-label">Tìm kiếm</label>
-            <input type="text" class="filter-input" id="searchInput"
-                   placeholder="Tìm theo tên, SĐT...">
-        </div>
-        <div class="filter-item">
-            <label class="filter-label">Khu phố</label>
-            <select class="filter-select" id="filterKhuPho">
-                <option value="">Tất cả khu phố</option>
-                @foreach (var item in KhuPho)
-                {
-                    <option value="@item.KhuPhoID">@item.TenKhuPho</option>
+<form method="get" action="@Url.Action("TinhNguyenVien", "TinhNguyenVien")">
+    <div class="filter-section">
+        <div class="filter-grid">
+            <div class="filter-item">
+                <label class="filter-label">Tìm kiếm</label>
+                <input type="text" class="filter-input"
+                       id="searchInput" name="search"
+                       placeholder="Tìm theo tên, SĐT..."
+                       value="@Request.QueryString["search"]" />
+            </div>
 
-                }
-            </select>
+            <div class="filter-item">
+                <label class="filter-label">Khu phố</label>
+                <select class="filter-select" id="filterKhuPho" name="KhuPhoID">
+                    <option value="">Tất cả khu phố</option>
+                    @foreach (var item in KhuPho)
+                    {
+                        <option value="@item.KhuPhoID"
+                                @(Request.QueryString["KhuPhoID"] == item.KhuPhoID.ToString() ? "selected" : "")>
+                            @item.TenKhuPho
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <label class="filter-label">Chức vụ</label>
+                <select class="filter-select" id="filterChucVu" name="ChucVu">
+                    <option value="">Tất cả chức vụ</option>
+                    <option value="Trưởng nhóm" @(Request.QueryString["ChucVu"] == "Trưởng nhóm" ? "selected" : "")>Trưởng nhóm</option>
+                    <option value="Phó nhóm" @(Request.QueryString["ChucVu"] == "Phó nhóm" ? "selected" : "")>Phó nhóm</option>
+                    <option value="Thành viên" @(Request.QueryString["ChucVu"] == "Thành viên" ? "selected" : "")>Thành viên</option>
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <label class="filter-label">Trạng thái</label>
+                <select class="filter-select" id="filterTrangThai" name="TrangThai">
+                    <option value="">Tất cả</option>
+                    <option value="active" @(Request.QueryString["TrangThai"] == "active" ? "selected" : "")>Đang hoạt động</option>
+                    <option value="inactive" @(Request.QueryString["TrangThai"] == "inactive" ? "selected" : "")>Ngừng hoạt động</option>
+                </select>
+            </div>
         </div>
-        <div class="filter-item">
-            <label class="filter-label">Chức vụ</label>
-            <select class="filter-select" id="filterChucVu">
-                <option value="">Tất cả chức vụ</option>
-                <option value="Trưởng nhóm">Trưởng nhóm</option>
-                <option value="Phó nhóm">Phó nhóm</option>
-                <option value="Thành viên">Thành viên</option>
-            </select>
-        </div>
-        <div class="filter-item">
-            <label class="filter-label">Trạng thái</label>
-            <select class="filter-select" id="filterTrangThai">
-                <option value="">Tất cả</option>
-                <option value="active">Đang hoạt động</option>
-                <option value="inactive">Ngừng hoạt động</option>
-            </select>
+
+        <div class="filter-actions">
+            <button type="submit" class="btn btn-primary">Áp dụng</button>
+            <button type="button" class="btn btn-secondary" onclick="resetFilters()">Đặt lại</button>
         </div>
     </div>
-    <div class="filter-actions">
-        <button class="btn btn-primary" onclick="applyFilters()">Áp dụng</button>
-        <button class="btn btn-secondary" onclick="resetFilters()">Đặt lại</button>
-    </div>
-</div>
+</form>
+
 
 <!-- View Toggle -->
 <div class="view-toggle">
@@ -107,28 +129,34 @@
     {
         <div class="volunteer-card">
             <div class="card-header">
-                @*<div class="avatar">@item.TenTinhNguyenVien</div>*@
+                <div class="avatar">
+                    <img src="https://i.pinimg.com/736x/61/62/2e/61622ec8899cffaa687a8342a84ea525.jpg" />
+                </div>
                 <div class="card-info">
                     <div class="volunteer-name">@item.TenTinhNguyenVien </div>
                     <div class="volunteer-position">@item.ChucVu</div>
-                    <div class="volunteer-location">📍 @item.KhuPho</div>
+                    <div class="volunteer-location">📍 @item.TenKhuPho</div>
                 </div>
             </div>
             <div class="card-stats">
                 <div class="stat-item">
-                    <div class="stat-value">@item.SuKien</div>
+                    <div class="stat-value">@item.TongSuKienThamGia</div>
                     <div class="stat-label">Sự kiện</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">@item.CaRanh</div>
+                    <div class="stat-value">@item.SoLuongCaRanh</div>
                     <div class="stat-label">Ca rảnh</div>
                 </div>
             </div>
             <div class="card-status">
-                <span class="status-badge status-active">@item.TrangThai</span>
-                <button class="btn-view-detail" onclick="openDetailModal(@item.ID)">
-                    Xem chi tiết
-                </button>
+                @*<span class="status-badge status-active">@item.TrangThai</span>*@
+                <form action="@Url.Action("ThongTinChiTietTinhNguyenVien","TinhNguyenVien")" method="get">
+                    <input type="hidden" name="UserID" value="@item.UserID" />
+                    <button class="btn-view-detail">
+                        Xem chi tiết
+                    </button>
+                </form>
+
 
             </div>
         </div>
@@ -145,135 +173,39 @@
                 <th>Khu phố</th>
                 <th>Số điện thoại</th>
                 <th>Số sự kiện</th>
-                <th>Trạng thái</th>
                 <th>Hành động</th>
             </tr>
         </thead>
         <tbody id="tableBody">
-            @*@foreach (var item in listTNV)
+            @foreach (var item in listTNV)
             {
                 <tr>
                     <td>
                         <div class="table-avatar">
-                            <div class="table-avatar-img">@item.TenTinhNguyenVien.Substring(0, 1)</div>
+                            <div class="table-avatar-img">
+                                @*<img src="https://i.pinimg.com/736x/61/62/2e/61622ec8899cffaa687a8342a84ea525.jpg" />*@
+                            </div>
                             <span>@item.TenTinhNguyenVien </span>
                         </div>
                     </td>
                     <td>@item.ChucVu</td>
-                    <td>@item.KhuPho</td>
+                    <td>@item.TenKhuPho</td>
                     <td>@item.SDT</td>
-                    <td><strong>@item.SuKien</strong> sự kiện</td>
-                    <td><span class="status-badge">@item.TrangThai</span></td>
+                    <td><strong>@item.TongSuKienThamGia</strong> </td>
                     <td>
-                        <button class="btn-view-detail" onclick="openDetailModal(@item.ID)">
-                            Xem chi tiết
-                        </button>
-
+                        <form action="@Url.Action("ThongTinChiTietTinhNguyenVien","TinhNguyenVien")" method="get">
+                            <input type="hidden" name="UserID" value="@item.UserID" />
+                            <button class="btn-view-detail">
+                                Xem chi tiết
+                            </button>
+                        </form>
                     </td>
                 </tr>
-            }*@
+            }
         </tbody>
     </table>
 </div>
-<!--<div class="modal" id="detailModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title" id="modalVolunteerName">Chi tiết TNV</h3>
-            <button class="close-btn" onclick="closeModal()">✕</button>
-        </div>
-        <div class="modal-body">
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab(0)">Thông tin cá nhân</button>
-                <button class="tab" onclick="switchTab(1)">Lịch trống</button>
-                <button class="tab" onclick="switchTab(2)">Sự kiện tham gia</button>
-                <button class="tab" onclick="switchTab(3)">Hỗ trợ & Vận động</button>
-            </div>-->
-<!--<div class="tab-content active" id="tabPersonal">
-    <div class="detail-section">
-        <h4 class="section-title">Thông tin cơ bản</h4>
-        <div class="info-grid">
-            <div class="info-item">
-                <span class="info-label">Họ và tên</span>
-                <span class="info-value" id="detailHoTen">-</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Số điện thoại</span>
-                <span class="info-value" id="detailSDT">-</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Ngày sinh</span>
-                <span class="info-value" id="detailNgaySinh">-</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Chức vụ</span>
-                <span class="info-value" id="detailChucVu">-</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Khu phố</span>
-                <span class="info-value" id="detailKhuPho">-</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Trạng thái</span>
-                <span class="info-value" id="detailTrangThai">-</span>
-            </div>
-        </div>
-    </div>
-</div>-->
-<!--<div class="tab-content" id="tabSchedule">
-    <div class="detail-section">
-        <h4 class="section-title">Lịch trống (Ca có thể tham gia)</h4>
-        <div class="schedule-grid">
-            <div class="schedule-header">Thứ / Buổi</div>
-            <div class="schedule-header">Sáng</div>
-            <div class="schedule-header">Chiều</div>
 
-            <div class="schedule-day">Thứ 2</div>
-            <div class="schedule-cell" data-day="2" data-shift="Sáng">-</div>
-            <div class="schedule-cell" data-day="2" data-shift="Chiều">-</div>
-
-            <div class="schedule-day">Thứ 3</div>
-            <div class="schedule-cell" data-day="3" data-shift="Sáng">-</div>
-            <div class="schedule-cell" data-day="3" data-shift="Chiều">-</div>
-
-            <div class="schedule-day">Thứ 4</div>
-            <div class="schedule-cell" data-day="4" data-shift="Sáng">-</div>
-            <div class="schedule-cell" data-day="4" data-shift="Chiều">-</div>
-
-            <div class="schedule-day">Thứ 5</div>
-            <div class="schedule-cell" data-day="5" data-shift="Sáng">-</div>
-            <div class="schedule-cell" data-day="5" data-shift="Chiều">-</div>
-
-            <div class="schedule-day">Thứ 6</div>
-            <div class="schedule-cell" data-day="6" data-shift="Sáng">-</div>
-            <div class="schedule-cell" data-day="6" data-shift="Chiều">-</div>
-
-            <div class="schedule-day">Thứ 7</div>
-            <div class="schedule-cell" data-day="7" data-shift="Sáng">-</div>
-            <div class="schedule-cell" data-day="7" data-shift="Chiều">-</div>
-
-            <div class="schedule-day">Chủ nhật</div>
-            <div class="schedule-cell" data-day="CN" data-shift="Sáng">-</div>
-            <div class="schedule-cell" data-day="CN" data-shift="Chiều">-</div>
-        </div>
-    </div>
-</div>-->
-<!--<div class="tab-content" id="tabEvents">
-    <div class="detail-section">
-        <h4 class="section-title">Sự kiện đã tham gia</h4>
-        <div class="events-list" id="eventsList"></div>
-    </div>
-</div>-->
-<!--<div class="tab-content" id="tabSupport">
-                <div class="detail-section">
-                    <h4 class="section-title">Hỗ trợ & Vận động đã thực hiện</h4>
-                    <div id="supportList">
-                        <p style="color: var(--gray-600);">Chức năng đang phát triển...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>-->
 
 <script>
     function switchView(view) {
@@ -294,36 +226,12 @@
 
         renderVolunteers();
     }
-    function openDetailModal(id) {
-        fetch(`/TinhNguyenVien/Detail?id=${id}`)
-            .then(res => res.text())
-            .then(html => {
-                // Chèn vào container
-                const container = document.createElement('div');
-                container.innerHTML = html;
-                document.body.appendChild(container);
-
-                // Hiển thị modal
-                const modal = container.querySelector('#detailModal');
-                modal.classList.add('active');
-
-                // Đóng modal
-                modal.querySelector('.close-btn').addEventListener('click', () => {
-                    modal.remove();
-                });
-            });
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('filterKhuPho').value = '';
+        document.getElementById('filterChucVu').value = '';
+        document.getElementById('filterTrangThai').value = '';
+        filteredData = [...volunteersData];
+        renderVolunteers();
     }
-
-    // Tab
-    function switchTab(index) {
-        const tabs = document.querySelectorAll('.tab');
-        const contents = document.querySelectorAll('.tab-content');
-
-        tabs.forEach(tab => tab.classList.remove('active'));
-        contents.forEach(content => content.classList.remove('active'));
-
-        tabs[index].classList.add('active');
-        contents[index].classList.add('active');
-    }
-
 </script>
