@@ -49,9 +49,9 @@
             <div class="stat-label">Ca rảnh/tuần</div>
         </div>
         @*<div class="stat-box">
-                <div class="stat-value" id="statYears">3</div>
-                <div class="stat-label">Năm hoạt động</div>
-            </div>*@
+            <div class="stat-value" id="statYears">3</div>
+            <div class="stat-label">Năm hoạt động</div>
+        </div>*@
     </div>
 
 </div>
@@ -97,9 +97,9 @@
             <span class="info-value" id="detailStatus">Đang hoạt động</span>
         </div>
         @*<div class="info-item">
-                <span class="info-label">Ngày tham gia</span>
-                <span class="info-value" id="detailJoinDate">01/01/2022</span>
-            </div>*@
+            <span class="info-label">Ngày tham gia</span>
+            <span class="info-value" id="detailJoinDate">@TTChiTietTinhNguyenVien.NgayTao</span>
+        </div>*@
     </div>
 </div>
 
@@ -156,12 +156,10 @@
                     @if (@item.NgayBatDau > DateTime.Today)
                     {
                         <span class="event-badge">Sắp diễn ra</span>
-
                     }
                     else
                     {
                         <span class="event-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">Đã hoàn thành</span>
-
                     }
                 </div>
                 <div class="event-assignment">

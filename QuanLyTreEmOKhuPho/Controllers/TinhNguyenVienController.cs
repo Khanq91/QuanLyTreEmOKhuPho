@@ -146,10 +146,10 @@ namespace QuanLyTreEmOKhuPho.Controllers
             {
                 tnvs = tnvs.Where(t => t.ChucVu == ChucVu).ToList();
             }
-            //if (!string.IsNullOrEmpty(TrangThai))
-            //{
-            //    tnvs = tnvs.Where(t => t.TrangThai == TrangThai).ToList();
-            //}
+            if (!string.IsNullOrEmpty(TrangThai))
+            {
+                tnvs = tnvs.Where(t => t.TrangThai == TrangThai).ToList();
+            }
             ViewBag.listTNV = tnvs;
             ViewBag.KhuPho = khuPhos;
 

@@ -130,7 +130,7 @@
         <div class="volunteer-card">
             <div class="card-header">
                 <div class="avatar">
-                    <img src="https://i.pinimg.com/736x/61/62/2e/61622ec8899cffaa687a8342a84ea525.jpg" />
+                    <img src="https://localhost:44362//@item.Anh" alt="@item.TenTinhNguyenVien" style="border-radius:50%;object-fit:cover;" />
                 </div>
                 <div class="card-info">
                     <div class="volunteer-name">@item.TenTinhNguyenVien </div>
@@ -149,7 +149,15 @@
                 </div>
             </div>
             <div class="card-status">
-                @*<span class="status-badge status-active">@item.TrangThai</span>*@
+                @if (@item.TrangThai == "Đang hoạt động")
+                {
+                    <span class="status-badge status-active">@item.TrangThai</span>
+                }
+                else
+                {
+                    <span class="status-badge status-inactive">@item.TrangThai</span>
+
+                }
                 <form action="@Url.Action("ThongTinChiTietTinhNguyenVien","TinhNguyenVien")" method="get">
                     <input type="hidden" name="UserID" value="@item.UserID" />
                     <button class="btn-view-detail">
@@ -168,11 +176,13 @@
     <table>
         <thead>
             <tr>
+                <th>Ảnh</th>
                 <th>Họ tên</th>
                 <th>Chức vụ</th>
                 <th>Khu phố</th>
                 <th>Số điện thoại</th>
                 <th>Số sự kiện</th>
+                <th>Trạng thái</th>
                 <th>Hành động</th>
             </tr>
         </thead>
@@ -183,15 +193,26 @@
                     <td>
                         <div class="table-avatar">
                             <div class="table-avatar-img">
-                                @*<img src="https://i.pinimg.com/736x/61/62/2e/61622ec8899cffaa687a8342a84ea525.jpg" />*@
+                                <img src="https://localhost:44362//@item.Anh" alt="@item.TenTinhNguyenVien" style="width:50px;height:50px;object-fit:cover" , />
                             </div>
-                            <span>@item.TenTinhNguyenVien </span>
                         </div>
                     </td>
+                    <td>@item.TenTinhNguyenVien</td>
                     <td>@item.ChucVu</td>
                     <td>@item.TenKhuPho</td>
                     <td>@item.SDT</td>
                     <td><strong>@item.TongSuKienThamGia</strong> </td>
+                    <td>
+                        @if (@item.TrangThai == "Đang hoạt động")
+                        {
+                            <span class="status-badge status-active">@item.TrangThai</span>
+                        }
+                        else
+                        {
+                            <span class="status-badge status-inactive">@item.TrangThai</span>
+
+                        }
+                    </td>
                     <td>
                         <form action="@Url.Action("ThongTinChiTietTinhNguyenVien","TinhNguyenVien")" method="get">
                             <input type="hidden" name="UserID" value="@item.UserID" />
