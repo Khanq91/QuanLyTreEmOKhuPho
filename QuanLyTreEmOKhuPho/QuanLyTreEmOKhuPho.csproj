@@ -136,6 +136,12 @@
     </Compile>
     <Compile Include="Models\ApiHelper.cs" />
     <Compile Include="Models\KhuPho.cs" />
+    <Compile Include="Models\ManhThuongQuan\ChiTietManhThuongQuan.cs" />
+    <Compile Include="Models\ManhThuongQuan\GhiNhanManhThuongQuan.cs" />
+    <Compile Include="Models\ManhThuongQuan\SuaThongTinUngHoManhThuongQuan.cs" />
+    <Compile Include="Models\ManhThuongQuan\ThongKeManhThuongQuanDTO.cs" />
+    <Compile Include="Models\ManhThuongQuan\ThongTinManhThuongQuanDTO.cs" />
+    <Compile Include="Models\ManhThuongQuan\UngHoViewModel.cs" />
     <Compile Include="Models\NguoiDung.cs" />
     <Compile Include="Models\SuKien.cs" />
     <Compile Include="Models\TinhNguyenVien\HoTroVanDong.cs" />
@@ -170,8 +176,11 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\css\BaoCaoThongKe.css" />
+    <Content Include="Content\css\ChiTietManhThuongQuan.css" />
     <Content Include="Content\css\ChiTietSuKien.css" />
     <Content Include="Content\css\DangNhap.css" />
+    <Content Include="Content\css\GhiNhanManhThuongQuan.css" />
+    <Content Include="Content\css\GhiNhanUngHo.css" />
     <Content Include="Content\css\HoTroVaUngHo.css" />
     <Content Include="Content\css\ManhThuongQuan.css" />
     <Content Include="Content\css\media.css" />
@@ -241,6 +250,11 @@
     <Content Include="Views\TinhNguyenVien\TinhNguyenVien.cshtml" />
     <Content Include="Views\VanDongTreEm\VanDongTreEm.cshtml" />
     <Content Include="Views\TinhNguyenVien\ThongTinChiTietTinhNguyenVien.cshtml" />
+    <Content Include="Views\ManhThuongQuan\GhiNhanUngHo.cshtml" />
+    <Content Include="Views\ManhThuongQuan\GhiNhanManhThuongQuan.cshtml" />
+    <Content Include="Views\ManhThuongQuan\ChiTietManhThuongQuan.cshtml" />
+    <Content Include="Views\ManhThuongQuan\SuaManhThuongQuan.cshtml" />
+    <Content Include="Views\ManhThuongQuan\SuaUngHoManhThuongQuan.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
