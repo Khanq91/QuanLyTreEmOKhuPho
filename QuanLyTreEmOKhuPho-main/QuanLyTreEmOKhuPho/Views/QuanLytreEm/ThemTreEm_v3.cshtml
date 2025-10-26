@@ -1,0 +1,137 @@
+﻿
+@{
+    ViewBag.Title = "ThemTreEm_v3";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/ThemTreEm.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/css/media.css" />
+<style>
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 16px;
+        background: var(--gray-50);
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), #3b82f6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+    }
+</style>
+<div class="step-container">
+    <div class="step-progress">
+        <div class="step-item completed">
+            <div class="step-circle"><i class="fa-solid fa-check"></i></div>
+            <div class="step-label">Thông tin cơ bản</div>
+        </div>
+        <div class="step-item completed">
+            <div class="step-circle"><i class="fa-solid fa-check"></i></div>
+            <div class="step-label">Phụ huynh</div>
+        </div>
+        <div class="step-item active">
+            <div class="step-circle">3</div>
+            <div class="step-label">Học tập</div>
+        </div>
+    </div>
+</div>
+
+<div class="form-container">
+    <h3 class="section-title">
+        <i class="fa-solid fa-graduation-cap"></i>
+        Thông tin học tập
+    </h3>
+
+    <div class="info-note">
+        <strong>Lưu ý:</strong> Các thông tin học tập giúp đánh giá và hỗ trợ trẻ em tốt hơn
+    </div>
+
+    <div class="form-grid">
+        <div class="form-group">
+            <label class="form-label required">Tên trường</label>
+            <input type="text" class="form-control" id="tenTruong"
+                   placeholder="VD: Trường Tiểu học Nguyễn Du" />
+        </div>
+        <div class="form-group">
+            <label class="form-label required">Cấp học</label>
+            <select class="form-control" id="capHoc">
+                <option value="">-- Chọn cấp học --</option>
+                <option value="Mầm non">Mầm non</option>
+                <option value="Tiểu học">Tiểu học</option>
+                <option value="THCS">THCS (Trung học cơ sở)</option>
+                <option value="THPT">THPT (Trung học phổ thông)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label required">Tên lớp</label>
+            <input type="text" class="form-control" id="tenLop"
+                   placeholder="VD: 5A, 6B, 10A1..." />
+        </div>
+        <div class="form-group">
+            <label class="form-label">Điểm trung bình</label>
+            <input type="number" class="form-control" id="diemTrungBinh"
+                   placeholder="VD: 8.5" min="0" max="10" step="0.1" />
+        </div>
+        <div class="form-group">
+            <label class="form-label">Xếp loại học lực</label>
+            <select class="form-control" id="xepLoai">
+                <option value="">-- Chọn xếp loại --</option>
+                <option value="Xuất sắc">Xuất sắc</option>
+                <option value="Giỏi">Giỏi</option>
+                <option value="Khá">Khá</option>
+                <option value="Trung bình">Trung bình</option>
+                <option value="Yếu">Yếu</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Hạnh kiểm</label>
+            <select class="form-control" id="hanhKiem">
+                <option value="">-- Chọn hạnh kiểm --</option>
+                <option value="Tốt">Tốt</option>
+                <option value="Khá">Khá</option>
+                <option value="Trung bình">Trung bình</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-grid full">
+        <div class="form-group">
+            <label class="form-label">Địa chỉ trường</label>
+            <input type="text" class="form-control" id="diaChiTruong"
+                   placeholder="Địa chỉ của trường học" />
+        </div>
+        <div class="form-group">
+            <label class="form-label">Ghi chú</label>
+            <textarea class="form-control" id="ghiChu"
+                      placeholder="Ghi chú về tình hình học tập, sở thích, khó khăn..."></textarea>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn btn-secondary" onclick="previousStep()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+        <div style="flex: 1;"></div>
+        <button class="btn btn-secondary" onclick="resetAll()">Hủy bỏ</button>
+        @using (Html.BeginForm("TreEm", "QuanLyTreEm", FormMethod.Post))
+        {
+            <button type="submit" class="btn btn-success"><i class="fa-solid fa-check"></i> Hoàn tất</button>
+        }
+
+    </div>
+</div>
+

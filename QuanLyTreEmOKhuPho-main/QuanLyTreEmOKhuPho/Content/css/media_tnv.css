@@ -1,0 +1,38 @@
+﻿@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+
+    .profile-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .schedule-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+    }
+}

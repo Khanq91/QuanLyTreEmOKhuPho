@@ -1,0 +1,36 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho_API-main\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{DEA92219-FA1C-4B58-9550-8BA781B09770}|QuanLyTreEmAPI\\QuanLyTreEmAPI.csproj|c:\\users\\dell\\onedrive\\m\u00E1y t\u00EDnh\\zjob99\\kimanh\\quanlytreemokhupho_api-main\\quanlytreemapi\\wwwroot\\anh\\treem\\hinh1.jpg||{177559E0-D141-11D0-92DF-00A0C9138C45}",
+      "RelativeMoniker": "D:0:0:{DEA92219-FA1C-4B58-9550-8BA781B09770}|QuanLyTreEmAPI\\QuanLyTreEmAPI.csproj|solutionrelative:quanlytreemapi\\wwwroot\\anh\\treem\\hinh1.jpg||{177559E0-D141-11D0-92DF-00A0C9138C45}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "hinh1.jpg - Bitmap [640x883, 24 bit, JPG]",
+              "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho_API-main\\QuanLyTreEmAPI\\wwwroot\\Anh\\TreEm\\hinh1.jpg",
+              "RelativeDocumentMoniker": "QuanLyTreEmAPI\\wwwroot\\Anh\\TreEm\\hinh1.jpg",
+              "ToolTip": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho_API-main\\QuanLyTreEmAPI\\wwwroot\\Anh\\TreEm\\hinh1.jpg - Bitmap [640x883, 24 bit, JPG]",
+              "RelativeToolTip": "QuanLyTreEmAPI\\wwwroot\\Anh\\TreEm\\hinh1.jpg - Bitmap [640x883, 24 bit, JPG]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2025-10-26T07:35:01.658Z",
+              "EditorCaption": " - Bitmap [640x883, 24 bit, JPG]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

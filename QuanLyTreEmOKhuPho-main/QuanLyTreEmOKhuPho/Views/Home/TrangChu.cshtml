@@ -1,0 +1,334 @@
+﻿
+@{
+    ViewBag.Title = "TrangChu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var KhuPho = ViewBag.KhuPho;
+    var TongTreEmTungKhuPho = ViewBag.TongTreEmTungKhuPho as IEnumerable<dynamic>;
+    int TongTreEm = ViewBag.TongTreEm;
+
+}
+<link rel="stylesheet" href="~/Content/css/trangchu.css" />
+
+<style>
+    /* Khu Pho Grid Styles */
+    .khu-pho-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        padding: 20px;
+    }
+
+    /* Select Dropdown Styles */
+    .select-wrapper {
+        position: relative;
+        min-width: 250px;
+    }
+
+    .khu-pho-select {
+        width: 100%;
+        padding: 10px 40px 10px 16px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        background: white;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1e293b;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+        .khu-pho-select:hover {
+            border-color: #4f46e5;
+        }
+
+        .khu-pho-select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+    .select-icon {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        pointer-events: none;
+        font-size: 12px;
+    }
+</style>
+<form method="get" action="@Url.Action("TrangChu", "Home")">
+    <div class="card-header">
+        <h3 class="card-title">Chọn khu phố</h3>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <div class="select-wrapper">
+                <select name="KhuPhoID" class="khu-pho-select">
+                    <option value="">-- Chọn nhanh khu phố --</option>
+                    @foreach (var kp in ViewBag.KhuPho)
+                    {
+                        <option value="@kp.KhuPhoID" @(Request.QueryString["KhuPhoID"] == kp.KhuPhoID.ToString() ? "selected" : "")>
+                            @kp.TenKhuPho
+                        </option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-outline">Chọn</button>
+        </div>
+    </div>
+</form>
+
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-title">Tổng số trẻ em</div>
+            <div class="stat-icon"><i class="fa-solid fa-children"></i></div>
+        </div>
+        <div class="stat-value">@ViewBag.TongTreEm</div>
+        <div class="stat-change">
+            @*↑ 12% so với tháng trước*@
+        </div>
+    </div>
+
+    <div class="stat-card success">
+        <div class="stat-header">
+            <div class="stat-title">Sự kiện trong tháng</div>
+            <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+        </div>
+        <div class="stat-value">@ViewBag.TongSuKien</div>
+        <div class="stat-change">
+            @*6 sự kiện sắp diễn ra*@
+        </div>
+    </div>
+
+    <div class="stat-card warning">
+        <div class="stat-header">
+            <div class="stat-title">Tình nguyện viên</div>
+            <div class="stat-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+        </div>
+        <div class="stat-value">@ViewBag.TongTNV</div>
+        <div class="stat-change">
+            @*89 đang hoạt động*@
+        </div>
+    </div>
+
+    <div class="stat-card danger">
+        <div class="stat-header">
+            <div class="stat-title">Ủng hộ trong tháng</div>
+            <div class="stat-icon"><i class="fa-solid fa-comments-dollar"></i></div>
+        </div>
+        <div class="stat-value">@String.Format("{0:N0} VNĐ", ViewBag.TongSoTien)</div>
+        <div class="stat-change">
+            @*↑ 8% so với tháng trước*@
+        </div>
+    </div>
+</div>
+
+<!-- Content Grid -->
+<div class="content-grid">
+    <!-- Chart -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Tổng số trẻ em theo khu phố</h3>
+            <button class="btn btn-outline" onclick="location.href='@Url.Action("TreEm", "QuanLyTreEm")'">
+                Xem chi tiết
+            </button>
+        </div>
+        <div class="chart-container">
+            @foreach (var item in TongTreEmTungKhuPho)
+            {
+                double heightPercent = (double)item.SoLuongTreEm / TongTreEm * 100;
+                <div class="chart-bar" style="height: @heightPercent%;">
+                    <div class="chart-value">@item.SoLuongTreEm</div>
+                    <div class="chart-label">@item.TenKhuPho</div>
+                </div>
+            }
+
+        </div>
+    </div>
+    <!-- Priority Children -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Trẻ cần ưu tiên hỗ trợ</h3>
+            <button class="btn btn-outline" onclick="location.href='@Url.Action("VanDongTreEm", "VanDongTreEm")'">Xem tất cả</button>
+        </div>
+        <ul class="priority-list">
+            <li class="priority-item">
+                <div class="priority-info">
+                    <div class="priority-name">Nguyễn Văn A</div>
+                    <div class="priority-details">8 tuổi • KP2 • Mồ côi</div>
+                </div>
+                <span class="priority-badge badge-high">Cao</span>
+            </li>
+            <li class="priority-item">
+                <div class="priority-info">
+                    <div class="priority-name">Trần Thị B</div>
+                    <div class="priority-details">10 tuổi • KP1 • Khó khăn</div>
+                </div>
+                <span class="priority-badge badge-high">Cao</span>
+            </li>
+            <li class="priority-item">
+                <div class="priority-info">
+                    <div class="priority-name">Lê Văn C</div>
+                    <div class="priority-details">7 tuổi • KP5 • Khuyết tật</div>
+                </div>
+                <span class="priority-badge badge-medium">TB</span>
+            </li>
+            <li class="priority-item">
+                <div class="priority-info">
+                    <div class="priority-name">Phạm Thị D</div>
+                    <div class="priority-details">9 tuổi • KP3 • Hộ nghèo</div>
+                </div>
+                <span class="priority-badge badge-medium">TB</span>
+            </li>
+            <li class="priority-item">
+                <div class="priority-info">
+                    <div class="priority-name">Hoàng Văn E</div>
+                    <div class="priority-details">6 tuổi • KP4 • Học yếu</div>
+                </div>
+                <span class="priority-badge badge-low">Thấp</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Events Timeline -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Sự kiện sắp diễn ra</h3>
+        <button class="btn btn-primary" onclick="location.href='@Url.Action("ThemSuKien", "SuKien")'">
+            <i class="fa-solid fa-circle-plus"></i> Tạo sự kiện mới
+        </button>
+    </div>
+    @foreach (var item in ViewBag.SuKienSapToi)
+    {
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-title">@item.TenSuKien</div>
+                    <div class="timeline-date"><i class="fa-solid fa-calendar-days"></i> @item.NgayBatDau</div>
+                    <div class="timeline-desc">@item.DiaDiem • @item.SoLuongTinhNguyenVien Tình nguyện viên •@item.SoLuongTreEm Số lượng trẻ em</div>
+                    <button class="btn btn-primary"
+                            onclick="location.href='@Url.Action("ChiTietSuKien", "SuKien", new { SuKienID  = item.SuKienId })'"
+                            style="margin-top:12px">
+                        Xem chi tiết
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+<!-- Alerts -->
+<!--<div class="alerts-section">
+    <div class="alert alert-warning">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-content">
+            <div class="alert-title">Cảnh báo: Trẻ nghỉ học nhiều</div>
+            <div class="alert-text">Có 15 trẻ em nghỉ học quá 5 ngày trong tháng này. Cần liên hệ phụ huynh để nắm tình hình.</div>
+        </div>
+        <button class="btn btn-outline">Xem chi tiết</button>
+    </div>
+    <div class="alert alert-danger">
+        <div class="alert-icon">🚨</div>
+        <div class="alert-content">
+            <div class="alert-title">Trẻ đến tuổi nhưng chưa vào lớp 1</div>
+            <div class="alert-text">Có 8 trẻ em đủ 6 tuổi nhưng chưa đăng ký vào lớp 1. Cần vận động gia đình.</div>
+        </div>
+        <button class="btn btn-outline">Xem chi tiết</button>
+    </div>
+</div>-->
+
+<script>
+
+    // Priority list interaction
+    document.querySelectorAll('.priority-item').forEach(item => {
+        item.addEventListener('click', function () {
+            const name = this.querySelector('.priority-name').textContent;
+            showNotification(`Đang xem hồ sơ: ${name}`, 'info');
+        });
+    });
+
+    // Timeline interaction
+    document.querySelectorAll('.timeline-item').forEach(item => {
+        item.addEventListener('click', function () {
+            const title = this.querySelector('.timeline-title').textContent;
+            showNotification(`Chi tiết sự kiện: ${title}`, 'info');
+        });
+    });
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 20px;">${type === 'success' ? '✓' : type === 'warning' ? '⚠' : 'ℹ'}</span>
+                            <span>${message}</span>
+                        </div>
+                    `;
+
+        notification.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: white;
+                        padding: 16px 24px;
+                        border-radius: 12px;
+                        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                        z-index: 10000;
+                        animation: slideIn 0.3s ease;
+                        border-left: 4px solid ${type === 'success' ? 'var(--success)' : type === 'warning' ? 'var(--warning)' : 'var(--primary)'};
+                    `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Add animation keyframes
+    const style = document.createElement('style');
+    style.textContent = `
+                    @@keyframes slideIn {
+                        from {
+                            transform: translateX(400px);
+                            opacity: 0;
+                        }
+                        to {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+                    }
+                    @@keyframes slideOut {
+                        from {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+                        to {
+                            transform: translateX(400px);
+                            opacity: 0;
+                        }
+                    }
+                `;
+    document.head.appendChild(style);
+
+    // Live data update simulation
+    let updateInterval;
+    // User info dropdown
+    document.querySelector('.user-info').addEventListener('click', function () {
+        showNotification('Chức năng quản lý tài khoản', 'info');
+    });
+
+    // Cleanup
+    window.addEventListener('beforeunload', () => {
+        if (updateInterval) clearInterval(updateInterval);
+    });
+</script>

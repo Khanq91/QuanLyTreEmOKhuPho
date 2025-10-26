@@ -1,0 +1,203 @@
+﻿
+@{
+    ViewBag.Title = "ThemTreEm_v1";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/Content/css/media.css" />
+<link href="~/Content/css/ThemTreEm.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/Content/css/media.css" />
+<style>
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 16px;
+        background: var(--gray-50);
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), #3b82f6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+    }
+</style>
+@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />*@
+<div class="step-container">
+    <div class="step-progress">
+        <div class="step-item active">
+            <div class="step-circle">1</div>
+            <div class="step-label">Thông tin cơ bản</div>
+        </div>
+        <div class="step-item">
+            <div class="step-circle">2</div>
+            <div class="step-label">Phụ huynh</div>
+        </div>
+        <div class="step-item">
+            <div class="step-circle">3</div>
+            <div class="step-label">Học tập</div>
+        </div>
+    </div>
+</div>
+
+<div class="form-container">
+    <div class="form-step active" id="step1">
+        <h3 class="section-title">Thông tin cá nhân</h3>
+
+        <div class="form-grid full">
+            <div class="photo-upload">
+                <div class="photo-preview" id="photoPreview" onclick="document.getElementById('photoInput').click()">
+                    <span id="photoIcon"><i class="fa-solid fa-camera"></i></span>
+                </div>
+                <input type="file" id="photoInput" accept="image/*" style="display: none;" />
+                <button class="btn btn-outline" type="button" onclick="document.getElementById('photoInput').click()">Tải ảnh lên</button>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label required">Họ và tên</label>
+                <input type="text" class="form-control" id="fullName" placeholder="Nhập họ tên đầy đủ" />
+            </div>
+            <div class="form-group">
+                <label class="form-label required">Ngày sinh</label>
+                <input type="date" class="form-control" id="birthDate" />
+            </div>
+            <div class="form-group">
+                <label class="form-label required">Giới tính</label>
+                <select class="form-control" id="gender">
+                    <option value="">Chọn giới tính</option>
+                    <option value="male">Nam</option>
+                    <option value="female">Nữ</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label required">Khu phố</label>
+                <select class="form-control" id="area">
+                    <option value="">Chọn khu phố</option>
+                    <option value="KP1">Khu phố 1</option>
+                    <option value="KP2">Khu phố 2</option>
+                    <option value="KP3">Khu phố 3</option>
+                    <option value="KP4">Khu phố 4</option>
+                    <option value="KP5">Khu phố 5</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Dân tộc</label>
+                <input type="text" class="form-control" id="ethnicity" value="Kinh" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tôn giáo</label>
+                <input type="text" class="form-control" id="religion" placeholder="Không" />
+            </div>
+        </div>
+
+        <h3 class="section-title" style="margin-top: 30px;">Hoàn cảnh gia đình</h3>
+        <div class="form-grid full">
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="orphan" value="orphan" />
+                        <label>Mồ côi</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="poor" value="poor" />
+                        <label>Hộ nghèo</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="disabled" value="disabled" />
+                        <label>Khuyết tật</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="difficult" value="difficult" />
+                        <label>Khó khăn</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Mô tả chi tiết</label>
+                <textarea class="form-control" id="circumstanceDesc" placeholder="Nhập mô tả chi tiết về hoàn cảnh gia đình..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-step" id="step2">
+        <h3 class="section-title">Thông tin phụ huynh</h3>
+        <div id="parentsList" class="parent-list"></div>
+        <button class="btn btn-primary" type="button" onclick="addParent()">+ Thêm phụ huynh</button>
+    </div>
+
+    <div class="form-step" id="step3">
+        <h3 class="section-title">Thông tin học tập</h3>
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label">Trường học</label>
+                <input type="text" class="form-control" id="school" placeholder="Tên trường đang học" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Lớp học</label>
+                <input type="text" class="form-control" id="grade" placeholder="VD: Lớp 5A" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Học lực</label>
+                <select class="form-control" id="performance">
+                    <option value="">Chọn học lực</option>
+                    <option value="excellent">Giỏi</option>
+                    <option value="good">Khá</option>
+                    <option value="average">Trung bình</option>
+                    <option value="weak">Yếu</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label required">Mức độ ưu tiên</label>
+                <select class="form-control" id="priority">
+                    <option value="">Chọn mức độ</option>
+                    <option value="high">Cao</option>
+                    <option value="medium">Trung bình</option>
+                    <option value="low">Thấp</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn btn-secondary" " id="prevBtn" style="display: none;">⬅ Quay lại</button>
+        <div style="flex: 1;"></div>
+        <button class="btn btn-secondary">Hủy bỏ</button>
+        <a href="@Url.Action("ThemTreEm_v2", "QuanLyTreEm")" class="btn btn-primary">
+            Tiếp theo
+        </a>
+        <button class="btn btn-success" id="saveBtn" style="display: none;">💾 Lưu hồ sơ</button>
+    </div>
+</div>
+
+<div class="result-section" id="resultSection" style="display: none;">
+    <h3 style="margin-bottom: 20px;">Danh sách đã thêm (<span id="totalCount">0</span>)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Họ tên</th>
+                <th>Tuổi</th>
+                <th>Giới tính</th>
+                <th>Khu phố</th>
+                <th>Ưu tiên</th>
+            </tr>
+        </thead>
+        <tbody id="childrenTableBody"></tbody>
+    </table>
+</div>

@@ -1,0 +1,258 @@
+﻿
+@{
+    ViewBag.Title = "TinhNguyenVien";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var KhuPho = ViewBag.KhuPho;
+    var listTNV = ViewBag.listTNV;
+
+}
+
+<link rel="stylesheet" href="~/Content/css/TinhNguyenVien.css" />
+<link rel="stylesheet" href="~/Content/css/media.css" />
+<style>
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 16px;
+        background: var(--gray-50);
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), #3b82f6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+    }
+    /* Khu Pho Grid Styles */
+    .khu-pho-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        padding: 20px;
+    }
+
+    /* Select Dropdown Styles */
+    .select-wrapper {
+        position: relative;
+        min-width: 250px;
+    }
+
+    .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Cắt ảnh vừa khung, không méo */
+    }
+
+    .avatar:hover {
+        transform: scale(1.05); /* Phóng nhẹ khi hover */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+</style>
+
+<form method="get" action="@Url.Action("TinhNguyenVien", "TinhNguyenVien")">
+    <div class="filter-section">
+        <div class="filter-grid">
+            <div class="filter-item">
+                <label class="filter-label">Tìm kiếm</label>
+                <input type="text" class="filter-input"
+                       id="searchInput" name="search"
+                       placeholder="Tìm theo tên, SĐT..."
+                       value="@Request.QueryString["search"]" />
+            </div>
+
+            <div class="filter-item">
+                <label class="filter-label">Khu phố</label>
+                <select class="filter-select" id="filterKhuPho" name="KhuPhoID">
+                    <option value="">Tất cả khu phố</option>
+                    @foreach (var item in KhuPho)
+                    {
+                        <option value="@item.KhuPhoID"
+                                @(Request.QueryString["KhuPhoID"] == item.KhuPhoID.ToString() ? "selected" : "")>
+                            @item.TenKhuPho
+                        </option>
+                    }
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <label class="filter-label">Chức vụ</label>
+                <select class="filter-select" id="filterChucVu" name="ChucVu">
+                    <option value="">Tất cả chức vụ</option>
+                    <option value="Trưởng nhóm" @(Request.QueryString["ChucVu"] == "Trưởng nhóm" ? "selected" : "")>Trưởng nhóm</option>
+                    <option value="Phó nhóm" @(Request.QueryString["ChucVu"] == "Phó nhóm" ? "selected" : "")>Phó nhóm</option>
+                    <option value="Thành viên" @(Request.QueryString["ChucVu"] == "Thành viên" ? "selected" : "")>Thành viên</option>
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <label class="filter-label">Trạng thái</label>
+                <select class="filter-select" id="filterTrangThai" name="TrangThai">
+                    <option value="">Tất cả</option>
+                    <option value="active" @(Request.QueryString["TrangThai"] == "active" ? "selected" : "")>Đang hoạt động</option>
+                    <option value="inactive" @(Request.QueryString["TrangThai"] == "inactive" ? "selected" : "")>Ngừng hoạt động</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-actions">
+            <button type="submit" class="btn btn-primary">Áp dụng</button>
+            <button type="button" class="btn btn-secondary" onclick="resetFilters()">Đặt lại</button>
+        </div>
+    </div>
+</form>
+
+
+<!-- View Toggle -->
+<div class="view-toggle">
+    <button class="toggle-btn active" onclick="switchView('card')">Dạng thẻ</button>
+    <button class="toggle-btn" onclick="switchView('table')">Dạng bảng</button>
+</div>
+
+<!-- Card View -->
+<div class="volunteers-grid" id="cardView" style="display: grid;">
+    @foreach (var item in listTNV)
+    {
+        <div class="volunteer-card">
+            <div class="card-header">
+                <div class="avatar">
+                    <img src="https://localhost:44362//@item.Anh" alt="@item.TenTinhNguyenVien" style="border-radius:50%;object-fit:cover;" />
+                </div>
+                <div class="card-info">
+                    <div class="volunteer-name">@item.TenTinhNguyenVien </div>
+                    <div class="volunteer-position">@item.ChucVu</div>
+                    <div class="volunteer-location">📍 @item.TenKhuPho</div>
+                </div>
+            </div>
+            <div class="card-stats">
+                <div class="stat-item">
+                    <div class="stat-value">@item.TongSuKienThamGia</div>
+                    <div class="stat-label">Sự kiện</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">@item.SoLuongCaRanh</div>
+                    <div class="stat-label">Ca rảnh</div>
+                </div>
+            </div>
+            <div class="card-status">
+                @if (@item.TrangThai == "Đang hoạt động")
+                {
+                    <span class="status-badge status-active">@item.TrangThai</span>
+                }
+                else
+                {
+                    <span class="status-badge status-inactive">@item.TrangThai</span>
+
+                }
+                <form action="@Url.Action("ThongTinChiTietTinhNguyenVien","TinhNguyenVien")" method="get">
+                    <input type="hidden" name="UserID" value="@item.UserID" />
+                    <button class="btn-view-detail">
+                        Xem chi tiết
+                    </button>
+                </form>
+
+
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Table View -->
+<div class="volunteers-table" id="tableView">
+    <table>
+        <thead>
+            <tr>
+                <th>Ảnh</th>
+                <th>Họ tên</th>
+                <th>Chức vụ</th>
+                <th>Khu phố</th>
+                <th>Số điện thoại</th>
+                <th>Số sự kiện</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            @foreach (var item in listTNV)
+            {
+                <tr>
+                    <td>
+                        <div class="table-avatar">
+                            <div class="table-avatar-img">
+                                <img src="https://localhost:44362//@item.Anh" alt="@item.TenTinhNguyenVien" style="width:50px;height:50px;object-fit:cover" , />
+                            </div>
+                        </div>
+                    </td>
+                    <td>@item.TenTinhNguyenVien</td>
+                    <td>@item.ChucVu</td>
+                    <td>@item.TenKhuPho</td>
+                    <td>@item.SDT</td>
+                    <td><strong>@item.TongSuKienThamGia</strong> </td>
+                    <td>
+                        @if (@item.TrangThai == "Đang hoạt động")
+                        {
+                            <span class="status-badge status-active">@item.TrangThai</span>
+                        }
+                        else
+                        {
+                            <span class="status-badge status-inactive">@item.TrangThai</span>
+
+                        }
+                    </td>
+                    <td>
+                        <form action="@Url.Action("ThongTinChiTietTinhNguyenVien","TinhNguyenVien")" method="get">
+                            <input type="hidden" name="UserID" value="@item.UserID" />
+                            <button class="btn-view-detail">
+                                Xem chi tiết
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    function switchView(view) {
+        currentView = view;
+
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        if (view === 'card') {
+            document.getElementById('cardView').style.display = 'grid';
+            document.getElementById('tableView').classList.remove('active');
+        } else {
+            document.getElementById('cardView').style.display = 'none';
+            document.getElementById('tableView').classList.add('active');
+        }
+
+        renderVolunteers();
+    }
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('filterKhuPho').value = '';
+        document.getElementById('filterChucVu').value = '';
+        document.getElementById('filterTrangThai').value = '';
+        filteredData = [...volunteersData];
+        renderVolunteers();
+    }
+</script>
