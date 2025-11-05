@@ -2,12 +2,9 @@
 @{
     ViewBag.Title = "ManhThuongQuan";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var TongThongKe = ViewBag.TongThongKe;
-    var ThongTinManhThuongQuan = ViewBag.ThongTinManhThuongQuan;
-    int stt = 1;
 }
-<link rel="stylesheet" href="~/Content/css/media.css" />
 <link rel="stylesheet" href="~/Content/css/ManhThuongQuan.css" />
+<link rel="stylesheet" href="~/Content/css/media.css" />
 <style>
     .header-right {
         display: flex;
@@ -37,11 +34,6 @@
         color: white;
         font-weight: bold;
     }
-
-    .filter-actions {
-        display: flex;
-        gap: 10px;
-    }
 </style>
 <div class="stats-grid">
     <div class="stat-card primary">
@@ -49,8 +41,8 @@
             <div class="stat-title">Tổng mạnh thường quân</div>
             <div class="stat-icon"><i class="fa-solid fa-users-line"></i></div>
         </div>
-        <div class="stat-value" id="totalDonors">@TongThongKe.TongSoManhThuongQuan</div>
-        <div class="stat-change" id="donorBreakdown">@TongThongKe.SoCaNhan cá nhân, @TongThongKe.SoToChuc tổ chức</div>
+        <div class="stat-value" id="totalDonors">0</div>
+        <div class="stat-change" id="donorBreakdown">0 cá nhân, 0 tổ chức</div>
     </div>
 
     <div class="stat-card success">
@@ -58,12 +50,8 @@
             <div class="stat-title">Tổng tiền ủng hộ</div>
             <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
         </div>
-        <div class="stat-value" id="totalAmount">
-            @String.Format("{0:N2} triệu", TongThongKe.TongTienUngHo / 1_000_000M)
-        </div>
-
-
-        @*<div class="stat-change">Tính đến tháng 10/2025</div>*@
+        <div class="stat-value" id="totalAmount">0</div>
+        <div class="stat-change">Tính đến tháng 10/2025</div>
     </div>
 
     <div class="stat-card warning">
@@ -71,12 +59,8 @@
             <div class="stat-title">Ủng hộ tháng này</div>
             <div class="stat-icon"><i class="fa-solid fa-calendar-days"></i></div>
         </div>
-        <div class="stat-value" id="totalAmount">
-            @String.Format("{0:N2} triệu", TongThongKe.TongTienUngHoThangNay / 1_000_000M)
-        </div>
-
-        @*<div class="stat-value" id="monthAmount">@TongThongKe.TongTienUngHoThangNay</div>*@
-        @*<div class="stat-change" id="monthCount">0 lượt ủng hộ</div>*@
+        <div class="stat-value" id="monthAmount">0</div>
+        <div class="stat-change" id="monthCount">0 lượt ủng hộ</div>
     </div>
 
     <div class="stat-card danger">
@@ -84,7 +68,7 @@
             <div class="stat-title">Nhà tài trợ thường xuyên</div>
             <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
         </div>
-        <div class="stat-value" id="regularDonors">@TongThongKe.TongNhaTaiTroThuongXuyen</div>
+        <div class="stat-value" id="regularDonors">0</div>
         <div class="stat-change">Ủng hộ hơn 3 lần/năm</div>
     </div>
 </div>
@@ -93,46 +77,31 @@
     <div class="card-header">
         <h3 class="card-title">Danh sách mạnh thường quân</h3>
         <div style="display: flex; gap: 10px;">
-            @using (Html.BeginForm("GhiNhanUngHo", "ManhThuongQuan", FormMethod.Post, new { @class = "form-ung-ho" }))
-            {
-                <button type="submit" class="btn btn-success">
-                    <i class="fa-solid fa-circle-plus"></i> Ghi nhận ủng hộ
-                </button>
-            }
-            @using (Html.BeginForm("GhiNhanManhThuongQuan", "ManhThuongQuan", FormMethod.Post, new { @class = "form-manh-ho" }))
-            {
-                <button class="btn btn-primary">
-                    <i class="fa-solid fa-circle-plus"></i> Thêm mạnh thường quân
-                </button>
-
-            }
+            <button class="btn btn-success" onclick="openDonationModal()"><i class="fa-solid fa-circle-plus"></i> Ghi nhận ủng hộ</button>
+            <button class="btn btn-primary" onclick="openDonorModal()"><i class="fa-solid fa-circle-plus"></i> Thêm mạnh thường quân</button>
         </div>
     </div>
+
     <div class="filter-group">
         <div class="filter-item">
             <label>Loại</label>
             <select id="filterType" onchange="filterTable()">
                 <option value="">Tất cả</option>
-                <option value="Cá nhân">Cá nhân</option>
-                <option value="Tổ chức">Tổ chức</option>
+                <option value="canhan">Cá nhân</option>
+                <option value="tochuc">Tổ chức</option>
             </select>
         </div>
         <div class="filter-item">
             <label>Sắp xếp</label>
             <select id="filterSort" onchange="filterTable()">
                 <option value="name">Tên A-Z</option>
-                <option value="amountAsc">Số tiền tăng dần</option>
-                <option value="amountDesc">Số tiền giảm dần</option>
+                <option value="amount">Số tiền giảm dần</option>
+                <option value="recent">Mới nhất</option>
             </select>
-
         </div>
         <div class="filter-item">
             <label>Tìm kiếm</label>
             <input type="text" id="searchInput" placeholder="Tên, SĐT, Email..." onkeyup="filterTable()">
-        </div>
-        <div class="filter-actions" style="padding-top:24px; ">
-            @*<button type="submit" class="btn btn-primary" style="max-height:30px">Áp dụng</button>*@
-            <button type="button" class="btn btn-secondary " style="max-height:30px" onclick="resetFilters()">Đặt lại</button>
         </div>
     </div>
 
@@ -152,95 +121,8 @@
                 </tr>
             </thead>
             <tbody id="tableBody">
-                @foreach (var item in ThongTinManhThuongQuan)
-                {
-                    <tr>
-                        <td>@stt </td>
-                        <td>@item.Ten</td>
-                        <td>@item.Loai</td>
-                        <td>@item.SDT</td>
-                        <td>@item.Email</td>
-                        <td>@item.DiaChi</td>
-                        <td><strong>@String.Format("{0:N2} triệu", item.TongUngHo / 1_000_000M)</strong></td>
-                        <td>@item.SoLanUngHo lần</td>
-                        <td>
-                            @using (Html.BeginForm("ChiTietManhThuongQuan", "ManhThuongQuan", new { ManhThuongQuanId = item.ManhThuongQuanId }))
-                            {
-                                <button class="btn btn-primary btn-sm">Chi tiết</button>
-                            }
-                            <a href="@Url.Action("SuaManhThuongQuan", "ManhThuongQuan", new { ManhThuongQuanId = item.ManhThuongQuanId })"
-                               class="btn btn-outline btn-sm">
-                                Sửa
-                            </a>
-
-                        </td>
-                    </tr>
-                    stt++;
-                }
-
             </tbody>
         </table>
     </div>
 </div>
-<script>
-    // Lưu trữ dữ liệu gốc khi trang load
-    var originalRows = [];
 
-    window.onload = function () {
-        var table = document.getElementById("tableBody");
-        originalRows = Array.from(table.getElementsByTagName("tr")).map(row => row.cloneNode(true));
-    };
-
-    function filterTable() {
-        var typeFilter = document.getElementById("filterType").value.trim();
-        var sortFilter = document.getElementById("filterSort").value;
-        var searchInput = document.getElementById("searchInput").value.toLowerCase().trim();
-
-        // Sử dụng dữ liệu gốc để filter
-        var filteredRows = originalRows.filter(row => {
-            var cells = row.getElementsByTagName("td");
-            var ten = cells[1].innerText.toLowerCase().trim();
-            var loai = cells[2].innerText.trim();
-            var sdt = cells[3].innerText.toLowerCase().trim();
-            var email = cells[4].innerText.toLowerCase().trim();
-
-            var typeMatch = typeFilter === "" || loai === typeFilter;
-            var searchMatch = searchInput === "" || ten.includes(searchInput) || sdt.includes(searchInput) || email.includes(searchInput);
-
-            return typeMatch && searchMatch;
-        });
-
-        // Sắp xếp
-        filteredRows.sort((a, b) => {
-            var cellsA = a.getElementsByTagName("td");
-            var cellsB = b.getElementsByTagName("td");
-
-            if (sortFilter === "name") {
-                return cellsA[1].innerText.localeCompare(cellsB[1].innerText);
-            }
-            else if (sortFilter === "amountAsc") {
-                var amountA = parseFloat(cellsA[6].innerText.replace(/[^\d.-]/g, '')) || 0;
-                var amountB = parseFloat(cellsB[6].innerText.replace(/[^\d.-]/g, '')) || 0;
-                return amountA - amountB;
-            }
-            else if (sortFilter === "amountDesc") {
-                var amountA = parseFloat(cellsA[6].innerText.replace(/[^\d.-]/g, '')) || 0;
-                var amountB = parseFloat(cellsB[6].innerText.replace(/[^\d.-]/g, '')) || 0;
-                return amountB - amountA;
-            }
-            return 0;
-        });
-
-        // Hiển thị lại dữ liệu đã filter
-        var table = document.getElementById("tableBody");
-        table.innerHTML = "";
-        filteredRows.forEach(row => table.appendChild(row.cloneNode(true)));
-    }
-
-    function resetFilters() {
-        document.getElementById("filterType").value = "";
-        document.getElementById("filterSort").value = "name";
-        document.getElementById("searchInput").value = "";
-        filterTable();
-    }
-</script>
