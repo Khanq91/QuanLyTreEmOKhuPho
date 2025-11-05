@@ -1,0 +1,194 @@
+﻿@model QuanLyTreEmOKhuPho.Models.TreEmViewModel
+@{
+    ViewBag.Title = "Chi tiết trẻ em";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/Content/css/media.css" />
+<link rel="stylesheet" href="~/Content/css/ThemTreEm.css" />
+
+<div class="step-container">
+    <div class="step-progress">
+        <div class="step-item active">
+            <div class="step-circle">1</div>
+            <div class="step-label">Thông tin cơ bản</div>
+        </div>
+        <div class="step-item"><div class="step-circle">2</div><div class="step-label">Học tập</div></div>
+        <div class="step-item"><div class="step-circle">3</div><div class="step-label">Hỗ trợ</div></div>
+        <div class="step-item"><div class="step-circle">4</div><div class="step-label">Vận động</div></div>
+        <div class="step-item"><div class="step-circle">5</div><div class="step-label">Sự kiện</div></div>
+    </div>
+</div>
+
+<div class="form-container">
+    <!-- Tab 1 -->
+    <div class="form-step active" id="tab1">
+        <h3 class="section-title">Thông tin cơ bản</h3>
+        <div class="form-grid full">
+            <div class="photo-upload">
+                <div class="photo-preview" style="background-image:url('@Model.Anh');">
+                    <span id="photoIcon" style="display:none;"><i class="fa-solid fa-camera"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label class="form-label">Họ và tên</label>
+                <input type="text" class="form-control" value="@Model.HoTen" readonly />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Ngày sinh</label>
+                <input type="text" class="form-control" value="@(Convert.ToDateTime(Model.NgaySinh).ToString("dd/MM/yyyy"))" readonly />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Giới tính</label>
+                <input type="text" class="form-control" value="@Model.GioiTinh" readonly />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Dân tộc</label>
+                <input type="text" class="form-control" value="@Model.DanToc" readonly />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tôn giáo</label>
+                <input type="text" class="form-control" value="@Model.TonGiao" readonly />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Trường</label>
+                <input type="text" class="form-control" value="@Model.Truong" readonly />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Khu phố</label>
+                <input type="text" class="form-control" value="@Model.KhuPho" readonly />
+            </div>
+            <div class="form-group full">
+                <label class="form-label">Tình trạng</label>
+                <input type="text" class="form-control" value="@Model.TinhTrang" readonly />
+            </div>
+        </div>
+
+        <h3 class="section-title">Phụ huynh</h3>
+        <div class="form-grid full">
+            <table class="styled-table">
+                <thead><tr><th>Họ tên</th><th>Quan hệ</th><th>SĐT</th><th>Nghề nghiệp</th></tr></thead>
+                <tbody>
+                    @foreach (var ph in Model.PhuHuynh)
+                    {
+                        <tr>
+                            <td>@ph.HoTen</td>
+                            <td>@ph.MoiQuanHe</td>
+                            <td>@ph.Sdt</td>
+                            <td>@ph.NgheNghiep</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="section-title">Hoàn cảnh gia đình</h3>
+        <div class="form-grid full">
+            <p>@string.Join(", ", Model.HoanCanh)</p>
+        </div>
+    </div>
+
+    <!-- Tab 2 -->
+    <div class="form-step" id="tab2">
+        <h3 class="section-title">Học tập</h3>
+        <table class="styled-table">
+            <thead><tr><th>Ngày</th><th>Điểm TB</th><th>Xếp loại</th><th>Hạnh kiểm</th><th>Ghi chú</th></tr></thead>
+            <tbody>
+                @foreach (var ht in Model.HocTap)
+                {
+                    <tr>
+                        <td>@ht.NgayCapNhat.ToString("dd/MM/yyyy")</td>
+                        <td>@ht.DiemTrungBinh</td>
+                        <td>@ht.XepLoai</td>
+                        <td>@ht.HanhKiem</td>
+                        <td>@ht.GhiChu</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tab 3 -->
+    <div class="form-step" id="tab3">
+        <h3 class="section-title">Hỗ trợ & Phúc lợi</h3>
+        <table class="styled-table">
+            <thead><tr><th>Loại</th><th>Ngày cấp</th><th>Mô tả</th><th>File</th></tr></thead>
+            <tbody>
+                @foreach (var ht in Model.HoTro)
+                {
+                    <tr>
+                        <td>@ht.LoaiHoTro</td>
+                        <td>@ht.NgayCap.ToString("dd/MM/yyyy")</td>
+                        <td>@ht.MoTa</td>
+                        <td>
+                            @foreach (var f in ht.File)
+                            {
+                                <a href="@f" target="_blank">📄</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tab 4 -->
+    <div class="form-step" id="tab4">
+        <h3 class="section-title">Vận động</h3>
+        <table class="styled-table">
+            <thead><tr><th>Ngày</th><th>Lý do</th><th>Kết quả</th><th>Số lần</th></tr></thead>
+            <tbody>
+                @foreach (var v in Model.VanDong)
+                {
+                    <tr>
+                        <td>@v.NgayVanDong.ToString("dd/MM/yyyy")</td>
+                        <td>@v.LyDo</td>
+                        <td>@v.KetQua</td>
+                        <td>@v.SoLan</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tab 5 -->
+    <div class="form-step" id="tab5">
+        <h3 class="section-title">Sự kiện tham gia</h3>
+        <p>Chưa có API sự kiện tham gia. Sẽ cập nhật sau.</p>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn btn-secondary" type="button" onclick="prevStep()">Quay lại</button>
+        <button class="btn btn-primary" type="button" onclick="nextStep()">Tiếp theo</button>
+    </div>
+</div>
+
+<script>
+    let currentStep = 1;
+    const totalSteps = 5;
+
+    function showStep(step) {
+        document.querySelectorAll('.form-step').forEach((s, i) => {
+            s.classList.toggle('active', i + 1 === step);
+        });
+        document.querySelectorAll('.step-item').forEach((s, i) => {
+            s.classList.toggle('active', i + 1 === step);
+        });
+    }
+
+    function nextStep() {
+        if (currentStep < totalSteps) {
+            currentStep++;
+            showStep(currentStep);
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 1) {
+            currentStep--;
+            showStep(currentStep);
+        }
+    }
+</script>
