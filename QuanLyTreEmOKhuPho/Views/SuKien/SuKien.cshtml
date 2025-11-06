@@ -4,15 +4,80 @@
 }
 <link href="~/Content/css/SuKien.css" rel="stylesheet" />
 <link rel="stylesheet" href="~/Content/css/media.css" />
-<a href="@Url.Action("CreateSuKien", "SuKien")" class="btn btn-primary">
-    Tạo sự kiện mới
-</a>
-<a href="@Url.Action("DangKySuKien", "SuKien")" class="btn btn-primary">
-    Đăng ký sự kiện
-</a>
-<button class="btn btn-warning" onclick="openDangKyModal()">
-    Quản lý đăng ký sự kiện
-</button>
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --primary-hover: #3b5bcc;
+        --warning: #f39c12;
+        --bg-light: #f6f8fc;
+        --text-dark: #222;
+        --radius: 10px;
+        --shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+        background: var(--bg-light);
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    /* Thanh hành động */
+    .action-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 25px;
+    }
+
+        .action-bar a,
+        .action-bar button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 15px;
+        }
+
+            .action-bar a:hover,
+            .action-bar button:hover {
+                background: var(--primary-hover);
+                transform: translateY(-1px);
+            }
+
+        .action-bar .btn-warning {
+            background: var(--warning);
+        }
+
+            .action-bar .btn-warning:hover {
+                background: #d68910;
+            }
+
+  
+</style>
+
+<div class="action-bar">
+    <a href="@Url.Action("CreateSuKien", "SuKien")">
+        <i class="fa-solid fa-plus"></i> Tạo sự kiện mới
+    </a>
+    <a   href="@Url.Action("DangKySuKien", "SuKien")">
+        <i class="fa-solid fa-user-plus"></i> Đăng ký sự kiện
+    </a>
+    <button class="btn-warning" onclick="openDangKyModal()">
+        <i class="fa-solid fa-list-check"></i> Quản lý đăng ký
+    </button>
+</div>
 <div class="filter-tabs">
     <button class="filter-tab active" onclick="filterEvents('all')">
         <i class="fa-solid fa-bars"></i> Tất cả

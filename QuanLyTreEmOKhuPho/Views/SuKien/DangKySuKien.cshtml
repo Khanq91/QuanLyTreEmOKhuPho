@@ -210,10 +210,16 @@
             <div class="alert alert-light border-start border-success border-4 mb-4">
                 <i class="fa-solid fa-calendar-days text-success me-2"></i> <strong id="infoTenSuKien">Chưa chọn sự kiện</strong>
             </div>
-            <button type="button" class="btn btn-primary" onclick="dangKySuKien()">
-                <i class="fa-solid fa-paper-plane me-2"></i> Gửi đăng ký
-            </button>
+
         </div>
+    </div>
+    <div style="text-align: center; margin-top: 20px;">
+        <button type="button" class="btn btn-primary" onclick="dangKySuKien()">
+            <i class="fa-solid fa-paper-plane me-2"></i> Gửi đăng ký
+        </button>
+        <a  href="@Url.Action("SuKien", "SuKien") ">
+           Quay Lại
+        </a>
     </div>
 
 
