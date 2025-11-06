@@ -1,0 +1,341 @@
+﻿@{
+    ViewBag.Title = "Đăng ký sự kiện cho trẻ em";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --success: #2ecc71;
+        --warning: #f1c40f;
+        --danger: #e74c3c;
+        --light: #f8f9fa;
+        --border: #dee2e6;
+        --radius: 14px;
+        --shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    body {
+        background: linear-gradient(120deg, #f5f7fb, #edf2ff);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .page-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 1rem;
+    }
+
+    /* HEADER */
+    .page-header {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+        margin-bottom: 2rem;
+        animation: fadeIn .5s ease;
+    }
+
+        .page-header h1 {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: .5rem;
+        }
+
+        .page-header p {
+            color: #6c757d;
+        }
+
+    /* STEP PROGRESS */
+    .step-container {
+        background: #fff;
+        padding: 1rem 2rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+    }
+
+    .step-progress {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+    }
+
+        .step-progress::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: #e9ecef;
+        }
+
+    .step-item {
+        text-align: center;
+        z-index: 2;
+        flex: 1;
+    }
+
+    .step-circle {
+        width: 44px;
+        height: 44px;
+        background: #e9ecef;
+        color: #adb5bd;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        margin: 0 auto 0.5rem;
+        transition: all .3s ease;
+    }
+
+    .step-item.active .step-circle {
+        background: var(--primary);
+        color: white;
+        transform: scale(1.15);
+    }
+
+    .step-item.active .step-label {
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    /* CARD */
+    .card {
+        background: #fff;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 1.5rem;
+        animation: fadeIn 0.4s ease;
+    }
+
+    .card-header {
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+    }
+
+    .bg-primary-gradient {
+        background: linear-gradient(135deg, #4361ee, #3f37c9);
+    }
+
+    .bg-success-gradient {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+    }
+
+    .bg-info-gradient {
+        background: linear-gradient(135deg, #4dabf7, #0d6efd);
+    }
+
+    .card-body {
+        padding: 1.8rem;
+    }
+
+    .form-select {
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+        transition: .2s;
+    }
+
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67,97,238,0.15);
+            outline: none;
+        }
+
+    /* BUTTON */
+    .btn {
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #4361ee, #3f37c9);
+        border: none;
+        color: #fff;
+        padding: 0.75rem 2rem;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(67,97,238,0.3);
+        }
+
+    /* TOAST */
+    #toastContainer {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1100;
+    }
+</style>
+
+<div class="page-container">
+    <div class="page-header">
+        <h1><i class="fa-solid fa-children me-2"></i>Đăng ký sự kiện cho trẻ em</h1>
+        <p>Chọn trẻ và sự kiện phù hợp để hoàn tất đăng ký</p>
+    </div>
+
+    <!-- Step Progress -->
+    <div class="step-container">
+        <div class="step-progress">
+            <div class="step-item active"><div class="step-circle">1</div><div class="step-label">Trẻ em</div></div>
+            <div class="step-item"><div class="step-circle">2</div><div class="step-label">Sự kiện</div></div>
+            <div class="step-item"><div class="step-circle">3</div><div class="step-label">Xác nhận</div></div>
+        </div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="card" id="step1">
+        <div class="card-header bg-primary-gradient"><i class="fa-solid fa-child"></i> Chọn trẻ em</div>
+        <div class="card-body">
+            <select class="form-select" id="selectTreEm" onchange="nextStep(2)">
+                <option value="">-- Chọn trẻ em --</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="card d-none" id="step2">
+        <div class="card-header bg-success-gradient"><i class="fa-solid fa-calendar-alt"></i> Chọn sự kiện</div>
+        <div class="card-body">
+            <select class="form-select" id="selectSuKien" onchange="nextStep(3)">
+                <option value="">-- Chọn sự kiện --</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="card d-none" id="step3">
+        <div class="card-header bg-info-gradient justify-content-center"><i class="fa-solid fa-paper-plane"></i> Xác nhận đăng ký</div>
+        <div class="card-body text-center">
+            <div class="alert alert-light border-start border-primary border-4 mb-3">
+                <i class="fa-solid fa-child text-primary me-2"></i> <strong id="infoTreEmName">Chưa chọn</strong>
+            </div>
+            <div class="alert alert-light border-start border-success border-4 mb-4">
+                <i class="fa-solid fa-calendar-days text-success me-2"></i> <strong id="infoTenSuKien">Chưa chọn sự kiện</strong>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <button type="button" class="btn btn-primary" onclick="dangKySuKienTreEm()">
+            <i class="fa-solid fa-paper-plane me-2"></i> Gửi đăng ký
+        </button>
+        <a href="@Url.Action("SuKien", "SuKien")" style="margin-left:15px; text-decoration:none; color:#555;">
+            <i class="fa-solid fa-arrow-left"></i> Quay lại
+        </a>
+    </div>
+
+    <div id="toastContainer"></div>
+</div>
+
+@section scripts {
+    <script>
+        let selectedTreEmId = null, selectedSuKienId = null, selectedTreEmName = null, selectedSuKienName = null;
+
+        $(document).ready(() => {
+            loadDanhSachTreEm();
+            loadDanhSachSuKien();
+        });
+
+        async function loadDanhSachTreEm() {
+            try {
+                const res = await fetch('https://localhost:44362/api/TreEm/DanhSach');
+                const data = await res.json();
+                const select = $('#selectTreEm');
+                select.html('<option value="">-- Chọn trẻ em --</option>');
+                data.forEach(t => select.append(`<option value="${t.treEmId}" data-name="${t.hoTen}">${t.hoTen} (${t.gioiTinh})</option>`));
+            } catch { showToast('Không thể tải danh sách trẻ em!', 'danger'); }
+        }
+
+        async function loadDanhSachSuKien() {
+            try {
+                const res = await fetch('https://localhost:44362/api/SuKien/all');
+                const data = await res.json();
+                const select = $('#selectSuKien');
+                select.html('<option value="">-- Chọn sự kiện --</option>');
+                data.forEach(sk => {
+                    const start = new Date(sk.ngayBatDau).toLocaleDateString('vi-VN');
+                    select.append(`<option value="${sk.suKienId}" data-name="${sk.tenSuKien}">${sk.tenSuKien} (${start})</option>`);
+                });
+            } catch { showToast('Không thể tải danh sách sự kiện!', 'danger'); }
+        }
+
+        function nextStep(step) {
+            if (step === 2) {
+                const tre = $('#selectTreEm option:selected');
+                if (!tre.val()) return showToast('Vui lòng chọn trẻ em!', 'warning');
+                selectedTreEmId = tre.val();
+                selectedTreEmName = tre.data('name');
+                $('#infoTreEmName').text(selectedTreEmName);
+            }
+            if (step === 3) {
+                const sk = $('#selectSuKien option:selected');
+                if (!sk.val()) return showToast('Vui lòng chọn sự kiện!', 'warning');
+                selectedSuKienId = sk.val();
+                selectedSuKienName = sk.data('name');
+                $('#infoTenSuKien').text(selectedSuKienName);
+            }
+
+            $('.card').addClass('d-none');
+            $('#step' + step).removeClass('d-none');
+            $('.step-item').removeClass('active').slice(0, step).addClass('active');
+        }
+
+        async function dangKySuKienTreEm() {
+            if (!selectedTreEmId || !selectedSuKienId)
+                return showToast('⚠️ Vui lòng chọn đầy đủ thông tin!', 'warning');
+
+            const btn = $('button.btn-primary');
+            btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin me-2"></i> Đang gửi...');
+
+            const res = await fetch(`https://localhost:44362/api/SuKien/${selectedSuKienId}/dangkytreem`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(selectedTreEmId)
+            });
+            debugger
+            const text = await res.text(); 
+            let data = {};
+            try { data = JSON.parse(text); } catch { data = { message: text }; }
+
+            if (res.ok) {
+                window.location.href = "https://localhost:44389/SuKien/SuKien";
+            }
+            else {
+                showToast(data.text || 'Đăng ký thất bại!', 'danger');
+            }
+
+        }
+
+
+        function showToast(message, type = 'info') {
+            const icons = { success: 'check-circle', warning: 'triangle-exclamation', danger: 'circle-xmark', info: 'info-circle' };
+            const toast = $(`<div class="toast align-items-center border-0 shadow-lg rounded-3 mb-2" style="min-width: 320px;" role="alert">
+            <div class="d-flex p-3" style="background: #fff;">
+                <i class="fa-solid fa-${icons[type]} me-2 text-${type}" style="font-size:1.2rem;"></i>
+                <div class="fw-semibold flex-grow-1">${message}</div>
+                <button type="button" class="btn-close ms-2" data-bs-dismiss="toast"></button>
+            </div>
+        </div>`);
+            $('#toastContainer').append(toast);
+            const bsToast = new bootstrap.Toast(toast[0], { delay: 3000 });
+            bsToast.show();
+            toast.on('hidden.bs.toast', () => toast.remove());
+        }
+    </script>
+}

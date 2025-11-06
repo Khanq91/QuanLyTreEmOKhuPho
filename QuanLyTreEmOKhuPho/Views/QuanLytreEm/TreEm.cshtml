@@ -26,6 +26,17 @@
                 <input type="text" class="form-control" placeholder="Tìm theo tên, ID..." id="searchInput">
             </div>
             <div class="form-group">
+                <label class="form-label">Hoàn cảnh gia đình</label>
+                <select class="form-control" id="filterHoanCanh">
+                    <option value="">Tất cả</option>
+                    <option value="Mồ côi">Mồ côi</option>
+                    <option value="Hộ nghèo">Hộ nghèo</option>
+                    <option value="Khuyết tật">Khuyết tật</option>
+                    <option value="Khó khăn">Khó khăn</option>
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label class="form-label">Khu phố</label>
                 <select class="form-control" id="filterKhuPho">
                     <option value="">Tất cả khu phố</option>
@@ -161,12 +172,16 @@
             const search = document.getElementById('searchInput').value.toLowerCase();
             const khuPho = document.getElementById('filterKhuPho').value;
             const gender = document.getElementById('filterGender').value;
+            const hoanCanh = document.getElementById('filterHoanCanh').value.toLowerCase();
+
 
             const filtered = allChildren.filter(c => {
                 const matchSearch = !search || c.hoTen.toLowerCase().includes(search);
                 const matchKhuPho = !khuPho || c.khuPho.includes(khuPho);
                 const matchGender = !gender || c.gioiTinh === gender;
-                return matchSearch && matchKhuPho && matchGender;
+                const matchHoanCanh = !hoanCanh || (c.hoanCanh && c.hoanCanh.join(',').toLowerCase().includes(hoanCanh));
+
+                return matchSearch && matchKhuPho && matchGender && matchHoanCanh;
             });
 
             renderTable(filtered);

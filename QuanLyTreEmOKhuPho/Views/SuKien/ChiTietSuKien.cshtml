@@ -94,6 +94,23 @@
         {
             <div class="alert alert-info">Chưa có lịch chi tiết cho sự kiện này.</div>
         }
+        <!-- 🌟 DANH SÁCH TRẺ EM THAM GIA -->
+        <h4 class="section-title text-primary mt-4">👧 Danh sách trẻ em tham gia</h4>
+        <table class="styled-table" id="treEmTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Ảnh</th>
+                    <th>Họ tên</th>
+                    <th>Giới tính</th>
+                    <th>Ngày sinh</th>
+                    <th>Tình trạng</th>
+                </tr>
+            </thead>
+            <tbody id="treEmBody">
+                <tr><td colspan="6" class="text-center text-muted">⏳ Đang tải dữ liệu...</td></tr>
+            </tbody>
+        </table>
     </div>
 
     <!-- TAB 2: Tiết mục -->
@@ -207,9 +224,44 @@
             showStep(currentStep);
         }
     }
+  document.addEventListener("DOMContentLoaded", async () => {
+        const suKienId = "@Model.SuKienId";
+        const tbody = document.getElementById("treEmBody");
+
+        try {
+            const res = await fetch(`https://localhost:44362/api/SuKien/${suKienId}/trethamgiaSK`);
+            const data = await res.json();
+
+            tbody.innerHTML = "";
+
+            if (!data || data.length === 0 || data.message) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">Chưa có trẻ nào tham gia sự kiện này.</td></tr>`;
+                return;
+            }
+
+            data.forEach((tre, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><img src="${tre.anh || '/img/no-avatar.png'}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;"></td>
+                    <td>${tre.hoTen}</td>
+                    <td>${tre.gioiTinh}</td>
+                    <td>${new Date(tre.ngaySinh).toLocaleDateString('vi-VN')}</td>
+                    <td>${tre.tinhTrang || ''}</td>`;
+                tbody.appendChild(row);
+            });
+        } catch (err) {
+            console.error(err);
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">❌ Lỗi tải danh sách trẻ tham gia</td></tr>`;
+        }
+    });
 </script>
 
 <style>
+    .styled-table img {
+        border: 2px solid #eee;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
     .cost-card {
         background: #fff;
         border-radius: 12px;

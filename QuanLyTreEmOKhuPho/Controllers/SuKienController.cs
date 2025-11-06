@@ -3,6 +3,7 @@ using QuanLyTreEmOKhuPho.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -32,7 +33,56 @@ namespace QuanLyTreEmOKhuPho.Controllers
         {
             return View();
         }
+        public ActionResult DangKySuKienChoTreEm()
+        {
+            return View();
+        }
+        public async Task<ActionResult> EditSuKien(int id)
+        {
+            var response = await _client.GetAsync($"SuKien/{id}");
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Không lấy được thông tin sự kiện để chỉnh sửa.";
+                return RedirectToAction("SuKien");
+            }
 
+            var json = await response.Content.ReadAsStringAsync();
+            var model = JsonConvert.DeserializeObject<SuKienDetailVM>(json);
+
+            ViewBag.ActivePage = "SuKien";
+            ViewBag.PageTitle = "Chỉnh sửa sự kiện";
+            ViewBag.PageDescription = model?.TenSuKien ?? "Chỉnh sửa";
+
+            return View("EditSuKien", model);
+        }
+
+        // ====== GỬI CẬP NHẬT (PUT API) ======
+        [HttpPost]
+        public async Task<ActionResult> SaveEdit(SuKienDetailVM model)
+        {
+            if (model == null)
+            {
+                TempData["Error"] = "Dữ liệu không hợp lệ.";
+                return RedirectToAction("SuKien");
+            }
+
+            var json = JsonConvert.SerializeObject(model);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _client.PutAsync($"SuKien/{model.SuKienId}/updateAll", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["Success"] = "Cập nhật sự kiện thành công!";
+                return RedirectToAction("ChiTiet", new { id = model.SuKienId });
+            }
+            else
+            {
+                var errMsg = await response.Content.ReadAsStringAsync();
+                TempData["Error"] = $"Lỗi khi cập nhật sự kiện: {errMsg}";
+                return RedirectToAction("EditSuKien", new { id = model.SuKienId });
+            }
+        }
         public ActionResult SuKien()
         {
             ViewBag.ActivePage = "SuKien";

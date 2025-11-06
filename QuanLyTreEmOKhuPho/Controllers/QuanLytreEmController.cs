@@ -40,8 +40,7 @@ namespace QuanLyTreEmOKhuPho.Controllers
             {
                 var tre = await GetTreEmDetailAsync(id);
                 if (tre == null) return HttpNotFound($"Không tìm thấy trẻ với ID = {id}");
-
-
+                ViewBag.IsEditMode = true;
                 ViewBag.TreEmId = id;
                 return View("ChiTiet", tre); // → truyền sang view dạng dynamic hoặc ViewModel mở rộng
             }

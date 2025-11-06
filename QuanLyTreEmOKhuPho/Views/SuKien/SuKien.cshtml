@@ -71,12 +71,16 @@
     <a href="@Url.Action("CreateSuKien", "SuKien")">
         <i class="fa-solid fa-plus"></i> Tạo sự kiện mới
     </a>
-    <a   href="@Url.Action("DangKySuKien", "SuKien")">
-        <i class="fa-solid fa-user-plus"></i> Đăng ký sự kiện
+    <a href="@Url.Action("DangKySuKien", "SuKien")">
+        <i class="fa-solid fa-user-plus"></i> Đăng ký sự kiện cho người dùng
+    </a>
+    <a href="@Url.Action("DangKySuKienChoTreEm", "SuKien")">
+        <i class="fa-solid fa-user-plus"></i> Đăng ký sự kiện cho trẻ em
     </a>
     <button class="btn-warning" onclick="openDangKyModal()">
         <i class="fa-solid fa-list-check"></i> Quản lý đăng ký
     </button>
+
 </div>
 <div class="filter-tabs">
     <button class="filter-tab active" onclick="filterEvents('all')">
@@ -109,7 +113,25 @@
                 return;
             }
 
-            eventsData = data;
+            // Gắn thêm trường trạng thái dựa trên ngày bắt đầu / kết thúc
+            const now = new Date();
+
+            eventsData = data.map(e => {
+                const a = new Date(parseInt(e.NgayBatDau.match(/\d+/)[0]));
+                const b = new Date(parseInt(e.NgayKetThuc.match(/\d+/)[0]));
+
+                let trangThai = '';
+
+                if (b < now) trangThai = 'Đã kết thúc';
+                else if (a > now) trangThai = 'Sắp diễn ra';
+                else trangThai = 'Đang diễn ra';
+
+                return {
+                    ...e,
+                    TrangThai: trangThai
+                };
+            });
+
             renderEvents(); // render mặc định tất cả
         } catch (error) {
             console.error(error);
@@ -123,14 +145,13 @@
         const grid = document.getElementById('eventsGrid');
         grid.innerHTML = '';
 
-        const filtered = filter === 'all'
-            ? eventsData
-            : eventsData.filter(e => {
-                const status = e.trangThai?.toLowerCase();
-                return filter === 'upcoming' && status.includes('sắp')
-                    || filter === 'ongoing' && status.includes('đang')
-                    || filter === 'completed' && status.includes('kết thúc');
-            });
+        const filtered = eventsData.filter(e => {
+            if (filter === 'all') return true;
+            if (filter === 'upcoming') return e.TrangThai === 'Sắp diễn ra';
+            if (filter === 'ongoing') return e.TrangThai === 'Đang diễn ra';
+            if (filter === 'completed') return e.TrangThai === 'Đã kết thúc';
+            return true;
+        });
 
         if (filtered.length === 0) {
             grid.innerHTML = `<p style="text-align:center;color:gray;">Không có sự kiện nào.</p>`;
@@ -139,25 +160,32 @@
 
         filtered.forEach(event => {
             debugger
-            const statusClass = getStatusClass(event.trangThai);
             const card = document.createElement('div');
             card.className = 'event-card';
             card.onclick = () => viewEvent(event.SuKienId);
 
+            const start = new Date(parseInt(event.NgayBatDau.match(/\d+/)[0])).toLocaleDateString('vi-VN');
+            const end =  new Date(parseInt(event.NgayKetThuc.match(/\d+/)[0])).toLocaleDateString('vi-VN');
+            const statusClass = getStatusClass(event.TrangThai);
+
             card.innerHTML = `
-                <div class="event-image">
-                    <span style="font-size: 80px;">🎉</span>
+                <div class="event-image ${statusClass}">
+                    <span style="font-size: 70px;">🎉</span>
                 </div>
                 <div class="event-content">
                     <h3 class="event-title">${event.TenSuKien}</h3>
                     <div class="event-meta">
                         <div class="meta-item">
-                            <span class="meta-icon">📅</span>
-                            <span>${new Date(parseInt(event.NgayBatDau.replace(/[^0-9]/g, ''))).toLocaleString('vi-VN')} - ${new Date(parseInt(event.NgayKetThuc.replace(/[^0-9]/g, ''))).toLocaleString('vi-VN')}</span>
+                            <span>📅</span>
+                            <span>${start} - ${end}</span>
                         </div>
                         <div class="meta-item">
-                            <span class="meta-icon">📍</span>
+                            <span>📍</span>
                             <span>${event.DiaDiem}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>🕒</span>
+                            <span class="badge ${statusClass}">${event.TrangThai}</span>
                         </div>
                     </div>
                     <div class="event-actions">
@@ -202,8 +230,13 @@
     }
 
     function editEvent(id) {
-        showNotification(`Chỉnh sửa sự kiện #${id}`, 'info');
+        // Hiển thị thông báo (tuỳ chọn)
+        showNotification(`🔧 Đang mở trang chỉnh sửa sự kiện #${id}`, 'info');
+
+        // Chuyển hướng sang trang EditSuKien.cshtml
+        window.location.href = `/SuKien/EditSuKien/${id}`;
     }
+
 
     function openCreateEventModal() {
         showNotification('Mở form tạo sự kiện mới', 'info');
@@ -252,6 +285,8 @@
     // 🔹 Khởi chạy khi load trang
     document.addEventListener("DOMContentLoaded", loadEvents);
 </script>
+
+
 <div id="dangKyModal" class="modal fade" tabindex="-1">
 
     <div class="modal-dialog modal-lg modal-dialog-centered">

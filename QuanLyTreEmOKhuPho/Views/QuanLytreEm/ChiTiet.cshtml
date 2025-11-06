@@ -27,7 +27,8 @@
         <div class="form-grid full">
             <div class="photo-upload">
                 <div class="photo-preview" id="photoPreview"
-                     style="background-image:url('@Model.Anh'); cursor:@(isEdit ? " pointer" : "default" );"
+                     style="background-image:url('@(string.IsNullOrEmpty(Model.Anh) ? "/images/default-avatar.png" : Model.Anh)');
+            cursor:@(isEdit ? "pointer" : "default");"
                      @(isEdit ? "onclick=document.getElementById('photoInput').click()" : "" )>
                     <span id="photoIcon" style="display:@(isEdit ? " block" : "none" );"><i class="fa-solid fa-camera"></i></span>
                 </div>
@@ -55,11 +56,12 @@
                 <label class="form-label">Ngày sinh</label>
                 @if (isEdit)
                 {
-                <input type="date" class="form-control" id="NgaySinh" value="@Model.NgaySinh" />
+                    <input type="date" class="form-control" id="NgaySinh"
+                           value="@(Model.NgaySinh?.ToString("yyyy-MM-dd"))" />
                 }
                 else
                 {
-                <input type="text" class="form-control" value="@Model.NgaySinh" readonly />
+                    <input type="text" class="form-control" value="@Model.NgaySinh" readonly />
                 }
             </div>
 
@@ -67,10 +69,10 @@
                 <label class="form-label">Giới tính</label>
                 @if (isEdit)
                 {
-                <select id="GioiTinh" class="form-control">
-                    <option value="Nam" @(Model.GioiTinh  ==  "Nam" ? "selected" : "" )>Nam</option>
-                    <option value="Nữ" @(Model.GioiTinh  ==  "Nữ " ? "selected" : "" )>Nữ</option>
-                </select>
+             <select id="GioiTinh" class="form-control">
+                 <option value="Nam" @(Model.GioiTinh == "Nam" ? "selected" : "" )>Nam</option>
+                 <option value="Nữ" @(Model.GioiTinh == "Nữ" ? "selected" : "" )>Nữ</option>
+             </select>
                 }
                 else
                 {
@@ -248,7 +250,7 @@
         if (isEdit && (step === 1 || step === totalSteps || (step > 1 && step < totalSteps))) {
             html += `<button class="btn btn-success" type="button" onclick="saveEdit()">💾 Lưu thay đổi</button>`;
         } else if (!isEdit && step === 1) {
-            html += `<a class="btn btn-primary" href="@Url.Action("ChiTiet","QuanLyTreEm", new { id=Model.TreEmId, edit=true })">✏️ Chỉnh sửa</a>`;
+           // html += `<a class="btn btn-primary" href="@Url.Action("ChiTiet","QuanLyTreEm", new { id=Model.TreEmId, edit=true })">✏️ Chỉnh sửa</a>`;
         }
 
         if (step < totalSteps) {
