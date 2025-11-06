@@ -14,15 +14,20 @@
         </div>
         <div class="step-item">
             <div class="step-circle">2</div>
+            <div class="step-label">Tiết mục</div>
+        </div>
+        <div class="step-item">
+            <div class="step-circle">3</div>
             <div class="step-label">Chi phí</div>
         </div>
     </div>
 </div>
 
 <div class="form-container">
-    <!-- Bước 1: Thông tin chung -->
+    <!-- TAB 1: Thông tin chung -->
     <div class="form-step active" id="tab1">
         <h3 class="section-title text-primary">📋 Thông tin sự kiện</h3>
+
         <div class="form-grid full">
             <div class="photo-upload">
                 <div class="photo-preview" style="background-image:url('/img/event-default.jpg');">
@@ -38,11 +43,11 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Ngày bắt đầu</label>
-                <input type="text" class="form-control" value="@Model.NgayBatDau?.ToString(" dd /MM/yyyy")" readonly />
+                <input type="text" class="form-control" value="@Model.NgayBatDau" readonly />
             </div>
             <div class="form-group">
                 <label class="form-label">Ngày kết thúc</label>
-                <input type="text" class="form-control" value="@Model.NgayKetThuc?.ToString(" dd /MM/yyyy")" readonly />
+                <input type="text" class="form-control" value="@Model.NgayKetThuc" readonly />
             </div>
             <div class="form-group">
                 <label class="form-label">Địa điểm</label>
@@ -61,10 +66,70 @@
                 <textarea class="form-control" rows="3" readonly>@Model.MoTa</textarea>
             </div>
         </div>
+
+        <h4 class="section-title text-success mt-4">🕓 Thời gian chi tiết</h4>
+        @if (Model.ThoiGianChiTiet != null && Model.ThoiGianChiTiet.Count > 0)
+        {
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Mô tả</th>
+                        <th>Bắt đầu</th>
+                        <th>Kết thúc</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in Model.ThoiGianChiTiet)
+                    {
+                        <tr>
+                            <td>@t.MoTa</td>
+                            <td>@t.ThoiGianBatDau</td>
+                            <td>@t.ThoiGianKetThuc</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">Chưa có lịch chi tiết cho sự kiện này.</div>
+        }
     </div>
 
-    <!-- Bước 2: Chi phí -->
+    <!-- TAB 2: Tiết mục -->
     <div class="form-step" id="tab2">
+        <h3 class="section-title text-primary">🎤 Danh sách tiết mục</h3>
+
+        @if (Model.TietMuc != null && Model.TietMuc.Count > 0)
+        {
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Tên tiết mục</th>
+                        <th>Người thực hiện</th>
+                        <th>Chi phí tiết mục</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in Model.TietMuc)
+                    {
+                        <tr>
+                            <td>@t.TenTietMuc</td>
+                            <td>@t.NguoiThucHien</td>
+                            <td>@string.Format("{0:N0} đ", t.ChiPhiTietMuc)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">Chưa có tiết mục nào được thêm vào.</div>
+        }
+    </div>
+
+    <!-- TAB 3: Chi phí -->
+    <div class="form-step" id="tab3">
         <h3 class="section-title text-primary">💰 Thông tin chi phí</h3>
 
         @if (Model.ChiPhi != null && Model.ChiPhi.Count > 0)
@@ -109,16 +174,16 @@
         }
     </div>
 
-    <!-- Nút điều hướng -->
+    <!-- Navigation Buttons -->
     <div class="form-actions">
-        <button class="btn btn-secondary" type="button" onclick="prevStep()">Quay lại</button>
-        <button class="btn btn-primary" type="button" onclick="nextStep()">Tiếp theo</button>
+        <button class="btn btn-secondary" type="button" onclick="prevStep()">⬅ Quay lại</button>
+        <button class="btn btn-primary" type="button" onclick="nextStep()">Tiếp theo ➡</button>
     </div>
 </div>
 
 <script>
     let currentStep = 1;
-    const totalSteps = 2;
+    const totalSteps = 3;
 
     function showStep(step) {
         document.querySelectorAll('.form-step').forEach((s, i) => {
@@ -164,9 +229,20 @@
         margin-bottom: 10px;
     }
 
-    .styled-table th {
-        background-color: #f5f7fb;
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
     }
+
+        .styled-table th, .styled-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .styled-table th {
+            background-color: #f5f7fb;
+        }
 
     .section-title {
         border-left: 4px solid #0d6efd;

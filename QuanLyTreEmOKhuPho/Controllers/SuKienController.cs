@@ -24,6 +24,14 @@ namespace QuanLyTreEmOKhuPho.Controllers
         {
             return View();
         }
+        public ActionResult CreateSuKien()
+        {
+            return View();
+        }
+        public ActionResult DangKySuKien()
+        {
+            return View();
+        }
 
         public ActionResult SuKien()
         {

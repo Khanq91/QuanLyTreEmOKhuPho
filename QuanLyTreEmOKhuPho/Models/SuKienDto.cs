@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 namespace QuanLyTreEmOKhuPho.Models
 {
 
@@ -15,7 +14,27 @@ namespace QuanLyTreEmOKhuPho.Models
         public string NguoiChiuTrachNhiem { get; set; }
         public string KhuPho { get; set; }
 
+        public List<ThoiGianChiTietVM> ThoiGianChiTiet { get; set; } = new List<ThoiGianChiTietVM>();
+        public List<TietMucVM> TietMuc { get; set; } = new List<TietMucVM>();
+
         public List<ChiPhiItemVM> ChiPhi { get; set; } = new List<ChiPhiItemVM>();
+    }
+
+    public class ThoiGianChiTietVM
+    {
+        public int ThoiGianChiTietSuKienId { get; set; }
+        public string MoTa { get; set; }
+        public DateTime? ThoiGianBatDau { get; set; }
+        public DateTime? ThoiGianKetThuc { get; set; }
+    }
+
+    public class TietMucVM
+    {
+        public string TenTietMuc { get; set; }
+        public string NguoiThucHien { get; set; }
+        public decimal? ChiPhiTietMuc { get; set; }
+
+        public DateTime? ThoiGian { get; set; }
     }
 
     public class ChiPhiItemVM
@@ -33,5 +52,8 @@ namespace QuanLyTreEmOKhuPho.Models
         public string NguoiDaiDien { get; set; }
         public int SoLuong { get; set; }
         public decimal DonGia { get; set; }
+
+        // Optional: API computed field. You can set this server-side or compute client-side.
+        public decimal ThanhTien { get; set; }
     }
 }

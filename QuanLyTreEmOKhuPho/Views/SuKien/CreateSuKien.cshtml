@@ -1,0 +1,595 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "Tạo sự kiện mới";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --success: #2ecc71;
+        --danger: #e74c3c;
+        --warning: #f39c12;
+        --light: #f8f9fa;
+        --dark: #343a40;
+        --border: #dee2e6;
+        --shadow: 0 4px 15px rgba(0,0,0,0.08);
+        --radius: 12px;
+    }
+
+    body { background: #f5f7fb; font-family: 'Segoe UI', sans-serif; }
+    .page-container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+
+    /* Header */
+    .page-header {
+        background: white;
+        padding: 1.5rem 2rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .page-header h1 {
+        margin: 0;
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 1.8rem;
+    }
+    .page-header p { margin: 0.25rem 0 0; color: #6c757d; }
+
+    /* Step Progress */
+    .step-container {
+        background: white;
+        padding: 1.5rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 1.5rem;
+    }
+    .step-progress {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+    }
+    .step-progress::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50px;
+        right: 50px;
+        height: 3px;
+        background: #e9ecef;
+        z-index: 0;
+    }
+    .step-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 1;
+        flex: 1;
+    }
+    .step-circle {
+        width: 40px;
+        height: 40px;
+        background: #e9ecef;
+        color: #adb5bd;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .step-item.active .step-circle {
+        background: var(--primary);
+        color: white;
+        transform: scale(1.1);
+    }
+    .step-label {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    .step-item.active .step-label { color: var(--primary); font-weight: 500; }
+
+    /* Form */
+    .form-container {
+        background: white;
+        padding: 2rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+    .form-step { display: none; }
+    .form-step.active { display: block; animation: fadeIn 0.4s ease; }
+
+    .section-title {
+        font-size: 1.3rem;
+        color: var(--primary);
+        margin: 1.5rem 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .form-grid.full { grid-template-columns: 1fr; }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+    .form-label {
+        font-weight: 500;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+    .form-label.required::after { content: " *"; color: var(--danger); }
+
+    .form-control, select.form-control {
+        padding: 0.75rem 1rem;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+    .form-control:focus, select.form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        outline: none;
+    }
+
+    /* Photo Upload */
+    .photo-upload {
+        text-align: center;
+    }
+    .photo-preview {
+        width: 160px;
+        height: 160px;
+        background: #f1f3f5;
+        border: 3px dashed #ced4da;
+        border-radius: 16px;
+        margin: 0 auto 1rem;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .photo-preview:hover { border-color: var(--primary); }
+    #photoIcon {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.6);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    /* Dynamic Items */
+    .dynamic-item {
+        background: #f8f9fa;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        position: relative;
+        transition: all 0.2s ease;
+    }
+    .dynamic-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .btn-close {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        opacity: 0.6;
+    }
+    .btn-close:hover { opacity: 1; }
+
+    .add-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1.2rem;
+        background: var(--light);
+        color: var(--primary);
+        border: 1.5px dashed var(--primary);
+        border-radius: 8px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .add-btn:hover {
+        background: var(--primary);
+        color: white;
+    }
+
+    /* Action Buttons */
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+    }
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    .btn-primary { background: var(--primary); border: none; }
+    .btn-success { background: var(--success); border: none; }
+    .btn-secondary { background: #6c757d; border: none; }
+
+
+</style>
+
+<div class="page-container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1>Tạo sự kiện mới</h1>
+            <p>Nhập đầy đủ thông tin để tổ chức hoạt động thiếu nhi</p>
+        </div>
+        <a href="@Url.Action("Index", "SuKien")" class="btn btn-secondary">
+            Quay lại danh sách
+        </a>
+    </div>
+
+    <!-- Step Progress -->
+    <div class="step-container">
+        <div class="step-progress">
+            <div class="step-item active">
+                <div class="step-circle">1</div>
+                <div class="step-label">Thông tin chung</div>
+            </div>
+            <div class="step-item">
+                <div class="step-circle">2</div>
+                <div class="step-label">Tiết mục</div>
+            </div>
+            <div class="step-item">
+                <div class="step-circle">3</div>
+                <div class="step-label">Chi phí</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-container">
+        <form id="createSuKienForm">
+
+            <!-- TAB 1 -->
+            <div class="form-step active" id="tab1">
+                <h3 class="section-title">Thông tin chung</h3>
+
+                <div class="form-grid full">
+                    <div class="photo-upload">
+                        <div class="photo-preview" id="photoPreview" style="background-image:url('/img/event-default.jpg');">
+                            <input type="file" id="photoInput" accept="image/*" style="display:none;" />
+                            <span id="photoIcon">Camera</span>
+                        </div>
+                        <small class="text-muted">Nhấp để chọn ảnh đại diện</small>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label class="form-label required">Tên sự kiện</label>
+                        <input type="text" class="form-control" id="TenSuKien" placeholder="VD: Trung Thu 2025" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Ngày bắt đầu</label>
+                        <input type="date" class="form-control" id="NgayBatDau" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ngày kết thúc</label>
+                        <input type="date" class="form-control" id="NgayKetThuc" />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Địa điểm</label>
+                        <input type="text" class="form-control" id="DiaDiem" placeholder="VD: Nhà văn hóa khu phố 1" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Khu phố</label>
+                        <select class="form-control" id="KhuPhoId" required>
+                            <option value="">-- Chọn khu phố --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full">
+                        <label class="form-label">Người phụ trách</label>
+                        <input type="text" class="form-control" id="NguoiChiuTrachNhiem" placeholder="VD: Nguyễn Văn A" />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Số lượng TNV</label>
+                        <input type="number" class="form-control" id="SoLuongTinhNguyenVien" min="0" placeholder="0" />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Số lượng trẻ em</label>
+                        <input type="number" class="form-control" id="SoLuongTreEm" min="0" placeholder="0" />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label required">Người tạo</label>
+                        <select class="form-control" id="UserId" required>
+                            <option value="">-- Chọn người tạo --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full">
+                        <label class="form-label">Mô tả</label>
+                        <textarea class="form-control" id="MoTa" rows="3" placeholder="Mô tả chi tiết về sự kiện..."></textarea>
+                    </div>
+                </div>
+
+                <h4 class="section-title mt-4">Thời gian chi tiết</h4>
+                <div id="thoiGianList"></div>
+                <div class="add-btn" onclick="addThoiGian()">
+                    Thêm thời gian
+                </div>
+            </div>
+
+            <!-- TAB 2 -->
+            <div class="form-step" id="tab2">
+                <h3 class="section-title">Tiết mục biểu diễn</h3>
+                <div id="tietMucList"></div>
+                <div class="add-btn" onclick="addTietMuc()">
+                    Thêm tiết mục
+                </div>
+            </div>
+
+            <!-- TAB 3 -->
+            <div class="form-step" id="tab3">
+                <h3 class="section-title">Chi phí dự kiến</h3>
+                <div id="chiPhiList"></div>
+                <div class="add-btn" onclick="addChiPhi()">
+                    Thêm khoản chi
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="prevStep()">Quay lại</button>
+                <div>
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">Tiếp theo</button>
+                    <button type="submit" class="btn btn-success d-none" id="submitBtn">Tạo sự kiện</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Templates -->
+<script type="text/html" id="thoiGianTemplate">
+    <div class="dynamic-item">
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <input type="text" class="form-control" placeholder="Mô tả (VD: Buổi sáng)" data-field="MoTa" />
+            </div>
+            <div class="col-md-4">
+                <input type="datetime-local" class="form-control" data-field="ThoiGianBatDau" />
+            </div>
+            <div class="col-md-4">
+                <input type="datetime-local" class="form-control" data-field="ThoiGianKetThuc" />
+            </div>
+        </div>
+        <div class="mt-3" data-tietmuc></div>
+        <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addTietMucToThoiGian(this)">
+            + Thêm tiết mục
+        </button>
+    </div>
+</script>
+
+<script type="text/html" id="tietMucTemplate">
+    <div class="d-flex gap-2 align-items-center mb-2 bg-white p-2 rounded">
+        <input type="text" class="form-control form-control-sm" placeholder="Tên tiết mục" data-field="TenTietMuc" style="flex:2" />
+        <input type="text" class="form-control form-control-sm" placeholder="Người thực hiện" data-field="NguoiThucHien" />
+        <input type="number" class="form-control form-control-sm" placeholder="Chi phí" data-field="ChiPhiTietMuc" min="0" />
+        <button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">X</button>
+    </div>
+</script>
+
+<script type="text/html" id="chiPhiTemplate">
+    <div class="dynamic-item">
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <input type="text" class="form-control" placeholder="Tên khoản chi" data-field="TenKhoanChi" />
+            </div>
+            <div class="col-md-3">
+                <input type="number" class="form-control" placeholder="Số tiền" data-field="SoTien" min="0" />
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" placeholder="Ghi chú" data-field="GhiChu" />
+            </div>
+        </div>
+        <div class="mt-3" data-chitiet></div>
+        <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addChiTietToChiPhi(this)">
+            + Thêm chi tiết
+        </button>
+    </div>
+</script>
+
+<script type="text/html" id="chiTietTemplate">
+    <div class="d-flex gap-2 align-items-center mb-2 bg-white p-2 rounded">
+        <input type="text" class="form-control form-control-sm" placeholder="Tên phần quà" data-field="TenPhanQua" style="flex:2" />
+        <input type="number" class="form-control form-control-sm" placeholder="SL" data-field="SoLuong" min="1" />
+        <input type="number" class="form-control form-control-sm" placeholder="Đơn giá" data-field="DonGia" min="0" />
+        <input type="text" class="form-control form-control-sm" placeholder="Người đại diện" data-field="NguoiDaiDien" />
+        <button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">X</button>
+    </div>
+</script>
+
+<script>
+    let currentStep = 1;
+    const totalSteps = 3;
+
+    $(document).ready(function () {
+        loadKhuPho();
+        loadNguoiDung();
+        setupPhotoUpload();
+    });
+
+    function loadKhuPho() {
+        $.get('https://localhost:44362/api/SuKien/khuPho')
+            .done(data => $('#KhuPhoId').empty().append('<option value="">-- Chọn khu phố --</option>').append(
+                data.map(k => `<option value="${k.khuPhoId}">${k.tenKhuPho}</option>`).join('')
+            ))
+            .fail(() => showNotification('Không tải được khu phố!', 'danger'));
+    }
+
+    function loadNguoiDung() {
+        $.get('https://localhost:44362/api/SuKien/nguoiDung')
+            .done(data => $('#UserId').empty().append('<option value="">-- Chọn người tạo --</option>').append(
+                data.map(u => `<option value="${u.userId}">${u.hoTen}</option>`).join('')
+            ))
+            .fail(() => showNotification('Không tải được người dùng!', 'danger'));
+    }
+
+    function setupPhotoUpload() {
+        $('#photoPreview, #photoIcon').click(() => $('#photoInput').click());
+        $('#photoInput').change(e => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = ev => $('#photoPreview').css('background-image', `url(${ev.target.result})`);
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    function showStep(step) {
+        $('.form-step').removeClass('active').eq(step - 1).addClass('active');
+        $('.step-item').removeClass('active').eq(step - 1).addClass('active');
+        $('#submitBtn').toggleClass('d-none', step !== totalSteps);
+    }
+
+    function nextStep() { if (currentStep < totalSteps) { currentStep++; showStep(currentStep); } }
+    function prevStep() { if (currentStep > 1) { currentStep--; showStep(currentStep); } }
+
+    function addThoiGian() {
+        const $item = $($('#thoiGianTemplate').html());
+        $item.find('[data-tietmuc]').attr('data-tietmuc', 'container-' + Date.now());
+        $('#thoiGianList').append($item);
+    }
+
+    function addTietMucToThoiGian(btn) {
+        $(btn).prev('[data-tietmuc]').append($('#tietMucTemplate').html());
+    }
+
+    function addTietMuc() { $('#tietMucList').append($('#tietMucTemplate').html()); }
+    function addChiPhi() { $('#chiPhiList').append($('#chiPhiTemplate').html()); }
+    function addChiTietToChiPhi(btn) { $(btn).prev('[data-chitiet]').append($('#chiTietTemplate').html()); }
+
+    $('#createSuKienForm').submit(function (e) {
+        e.preventDefault();
+        if (!validateForm()) return;
+
+        const data = {
+            TenSuKien: $('#TenSuKien').val().trim(),
+            MoTa: $('#MoTa').val().trim(),
+            DiaDiem: $('#DiaDiem').val().trim(),
+            NgayBatDau: $('#NgayBatDau').val(),
+            NgayKetThuc: $('#NgayKetThuc').val() || null,
+            NguoiChiuTrachNhiem: $('#NguoiChiuTrachNhiem').val().trim(),
+            SoLuongTinhNguyenVien: parseInt($('#SoLuongTinhNguyenVien').val()) || null,
+            SoLuongTreEm: parseInt($('#SoLuongTreEm').val()) || null,
+            UserId: parseInt($('#UserId').val()),
+            KhuPhoId: parseInt($('#KhuPhoId').val()),
+            ThoiGianChiTiet: [],
+            ChiPhi: [],
+            PhanCong: []
+        };
+
+        $('.dynamic-item').each(function () {
+            const $this = $(this);
+            if ($this.find('[data-field="MoTa"]').length) {
+                const tg = {
+                    MoTa: $this.find('[data-field="MoTa"]').val().trim(),
+                    ThoiGianBatDau: $this.find('[data-field="ThoiGianBatDau"]').val(),
+                    ThoiGianKetThuc: $this.find('[data-field="ThoiGianKetThuc"]').val(),
+                    TietMuc: []
+                };
+                $this.find('.d-flex.gap-2').each(function () {
+                    tg.TietMuc.push({
+                        TenTietMuc: $(this).find('[data-field="TenTietMuc"]').val().trim(),
+                        NguoiThucHien: $(this).find('[data-field="NguoiThucHien"]').val().trim(),
+                        ChiPhiTietMuc: parseFloat($(this).find('[data-field="ChiPhiTietMuc"]').val()) || 0
+                    });
+                });
+                if (tg.TietMuc.length || tg.MoTa || tg.ThoiGianBatDau) data.ThoiGianChiTiet.push(tg);
+            }
+            if ($this.find('[data-field="TenKhoanChi"]').length) {
+                const cp = {
+                    TenKhoanChi: $this.find('[data-field="TenKhoanChi"]').val().trim(),
+                    SoTien: parseFloat($this.find('[data-field="SoTien"]').val()) || 0,
+                    GhiChu: $this.find('[data-field="GhiChu"]').val().trim(),
+                    ChiTiet: []
+                };
+                $this.find('.d-flex.gap-2').each(function () {
+                    cp.ChiTiet.push({
+                        TenPhanQua: $(this).find('[data-field="TenPhanQua"]').val().trim(),
+                        SoLuong: parseInt($(this).find('[data-field="SoLuong"]').val()) || 0,
+                        DonGia: parseFloat($(this).find('[data-field="DonGia"]').val()) || 0,
+                        NguoiDaiDien: $(this).find('[data-field="NguoiDaiDien"]').val().trim()
+                    });
+                });
+                if (cp.TenKhoanChi || cp.ChiTiet.length) data.ChiPhi.push(cp);
+            }
+        });
+
+        $.ajax({
+            url: 'https://localhost:44362/api/SuKien',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            beforeSend: () => showNotification('Đang tạo sự kiện...', 'info'),
+            success: res => {
+                showNotification('Tạo sự kiện thành công!', 'success');
+                setTimeout(() => window.location.href = '/SuKien/ChiTiet/' + res.suKienId, 1200);
+            },
+            error: xhr => showNotification(xhr.responseJSON?.message || 'Lỗi không xác định', 'danger')
+        });
+    });
+
+    function validateForm() {
+        const required = ['#TenSuKien', '#DiaDiem', '#KhuPhoId', '#UserId', '#NgayBatDau'];
+        for (let s of required) if (!$(s).val()) { showNotification('Vui lòng điền đầy đủ thông tin bắt buộc!', 'warning'); return false; }
+        return true;
+    }
+
+    function showNotification(msg, type) {
+        const icons = { success: 'Check', warning: 'Warning', info: 'Info', danger: 'Error' };
+        const colors = { success: '#2ecc71', warning: '#f39c12', info: '#4361ee', danger: '#e74c3c' };
+        const $n = $(`<div style="position:fixed;top:20px;right:20px;background:white;padding:16px 24px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.15);z-index:10000;border-left:4px solid ${colors[type]};display:flex;align-items:center;gap:12px;font-weight:500;animation:slideIn 0.3s ease;">${icons[type]} <span>${msg}</span></div>`);
+        $('body').append($n);
+        setTimeout(() => $n.fadeOut(() => $n.remove()), 3000);
+    }
+</script>
