@@ -80,6 +80,23 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 return JsonConvert.DeserializeObject<TreEmViewModel>(json);
             }
         }
+        public async Task<ActionResult> Sua(int id)
+        {
+            if (id <= 0) return HttpNotFound("ID không hợp lệ");
+
+            try
+            {
+                var tre = await GetTreEmDetailAsync(id);
+                if (tre == null) return HttpNotFound($"Không tìm thấy trẻ với ID = {id}");
+
+                ViewBag.IsEditMode = true; 
+                return View("ChiTiet", tre); 
+            }
+            catch
+            {
+                return new HttpStatusCodeResult(500, "Lỗi khi tải chi tiết trẻ em");
+            }
+        }
 
         public ActionResult ThemTreEm_v1()
         {
@@ -95,5 +112,7 @@ namespace QuanLyTreEmOKhuPho.Controllers
         {
             return View();
         }
+
+     
     }
 }

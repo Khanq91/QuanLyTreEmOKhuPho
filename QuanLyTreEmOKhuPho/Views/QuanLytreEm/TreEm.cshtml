@@ -288,7 +288,7 @@
 
 
         function editChild(id) {
-            showNotification(`Chỉnh sửa trẻ ID ${id}`, 'info');
+            window.location.href = `/QuanLyTreEm/ChiTiet/${id}?edit=true`;
         }
 
         async function deleteChild(id) {
