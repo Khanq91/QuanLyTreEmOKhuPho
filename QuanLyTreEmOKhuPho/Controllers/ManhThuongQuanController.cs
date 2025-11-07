@@ -410,7 +410,23 @@ namespace QuanLyTreEmOKhuPho.Controllers
             ViewBag.PageDescription = "Sửa ủng hộ mạnh thường quân";
             return RedirectToAction("SuaUngHoManhThuongQuan", new { UngHoId = ttmtq.UngHoId });
         }
-        //Thong tin chi tiết 1 mạnh thường quân
+        //Xóa Ủng hộ mạnh thường quân
+        [HttpPost]
+        public async Task<ActionResult> XoaUngHo(int UngHoId, int ManhThuongQuanId)
+        {
+            // Gọi API DELETE
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"ManhThuongQuan/XoaUngHo?UngHoId={UngHoId}");
+            var response = await _client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["Notification"] = "Xóa ủng hộ thành công";
+                TempData["NotificationType"] = "success";
+            }
+
+            // Chuyển về chi tiết mạnh thường quân với id đúng
+            return RedirectToAction("ChiTietManhThuongQuan", new { ManhThuongQuanId });
+        }
     }
 
 }

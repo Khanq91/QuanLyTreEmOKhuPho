@@ -2,6 +2,8 @@
 @{
     ViewBag.Title = "QuanLyTaiKhoan";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var ThongKe = ViewBag.ThongKe;
+    var DsTaiKhoan = ViewBag.DsTaiKhoan;
 }
 
 <link rel="stylesheet" href="~/Content/css/QuanLyTaiKhoan.css" />
@@ -36,6 +38,14 @@
         color: white;
         font-weight: bold;
     }
+
+    .action-buttons .btn {
+        margin-right: 4px;
+    }
+
+    .inline-form {
+        display: inline;
+    }
 </style>
 <div class="alert alert-warning">
     <span><i class="fa-solid fa-triangle-exclamation" style="color: var(--warning);"></i></span>
@@ -50,8 +60,8 @@
             <div class="stat-title">Tổng người dùng</div>
             <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
         </div>
-        <div class="stat-value">248</div>
-        <div class="stat-change">12 Admin, 186 TNV, 50 Phụ huynh</div>
+        <div class="stat-value">@ThongKe.TongTaiKhoan</div>
+        <div class="stat-change">@ThongKe.CanBo Cán bộ, @ThongKe.SoTnv TNV, @ThongKe.SoPhuHuynh Phụ huynh</div>
     </div>
 
     <div class="stat-card success">
@@ -59,25 +69,15 @@
             <div class="stat-title">Đang hoạt động</div>
             <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
         </div>
-        <div class="stat-value">235</div>
-        <div class="stat-change">94.8% tổng số tài khoản</div>
+        <div class="stat-value">@ThongKe.DangHoatDong</div>
+        @*<div class="stat-change">94.8% tổng số tài khoản</div>*@
     </div>
-
-    <div class="stat-card warning">
-        <div class="stat-header">
-            <div class="stat-title">Chưa kích hoạt</div>
-            <div class="stat-icon"><i class="fa-solid fa-user-clock"></i></div>
-        </div>
-        <div class="stat-value">8</div>
-        <div class="stat-change">Tài khoản mới tạo</div>
-    </div>
-
     <div class="stat-card danger">
         <div class="stat-header">
             <div class="stat-title">Bị khóa</div>
             <div class="stat-icon"><i class="fa-solid fa-user-lock"></i></div>
         </div>
-        <div class="stat-value">5</div>
+        <div class="stat-value">@ThongKe.DaBiKhoa</div>
         <div class="stat-change">Vi phạm quy định</div>
     </div>
 </div>
@@ -86,9 +86,10 @@
     <div class="card-header">
         <h3 class="card-title">Danh sách người dùng</h3>
         <div style="display: flex; gap: 10px;">
-            <button class="btn btn-success" onclick="openImportModal()"><i class="fa-solid fa-upload"></i> Import Excel</button>
-            <button class="btn btn-success" onclick="openCreateUserModal()"><i class="fa-solid fa-circle-plus"></i> Tạo tài khoản</button>
-            <button class="btn btn-primary" onclick="resetAllPasswords()"><i class="fa-solid fa-arrows-rotate"></i> Reset tất cả mật khẩu</button>
+            <button class="btn btn-success" onclick="location.href='@Url.Action("TaoTaiKhoan", "QuanLyTaiKhoan")'">
+                <i class="fa-solid fa-circle-plus"></i> Tạo tài khoản
+            </button>
+            @*<button class="btn btn-primary" onclick="resetAllPasswords()"><i class="fa-solid fa-arrows-rotate"></i> Reset tất cả mật khẩu</button>*@
         </div>
     </div>
 
@@ -96,7 +97,7 @@
         <span><i class="fa-solid fa-circle-info" style="color: var(--primary);"></i></span>
         <div>
 
-            <strong>Mật khẩu mặc định:</strong> <code>MatKhau123</code> (Người dùng nên đổi mật khẩu sau lần đăng nhập đầu tiên)
+            <strong>Mật khẩu mặc định:</strong> <code>140letrongtan</code> (Người dùng nên đổi mật khẩu sau lần đăng nhập đầu tiên)
         </div>
     </div>
 
@@ -105,18 +106,16 @@
             <label>Vai trò</label>
             <select id="filterRole" onchange="filterTable()">
                 <option value="">Tất cả</option>
-                <option value="admin">Quản trị viên</option>
-                <option value="volunteer">Tình nguyện viên</option>
-                <option value="parent">Phụ huynh</option>
+                <option value="tình nguyện viên">Tình nguyện viên</option>
+                <option value="phụ huynh">Phụ huynh</option>
             </select>
         </div>
         <div class="filter-item">
             <label>Trạng thái</label>
             <select id="filterStatus" onchange="filterTable()">
                 <option value="">Tất cả</option>
-                <option value="active">Hoạt động</option>
-                <option value="inactive">Chưa kích hoạt</option>
-                <option value="locked">Bị khóa</option>
+                <option value="đang hoạt động">Hoạt động</option>
+                <option value="đã bị khóa">Bị khóa</option>
             </select>
         </div>
         <div class="filter-item">
@@ -124,7 +123,6 @@
             <input type="text" id="searchInput" placeholder="Tên, Email, SĐT..." onkeyup="filterTable()">
         </div>
     </div>
-
     <div class="table-container">
         <table>
             <thead>
@@ -135,12 +133,354 @@
                     <th>Số điện thoại</th>
                     <th>Vai trò</th>
                     <th>Trạng thái</th>
-                    <th>Lần đăng nhập cuối</th>
+                    <th>Ngày tạo</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
-            <tbody id="tableBody">
+            <tbody>
+                @for (int i = 0; i < DsTaiKhoan.Count; i++)
+                {
+                    <tr>
+                        <td>@(i+1)</td>
+                        <td><strong>@DsTaiKhoan[i].HoTen</strong></td>
+                        <td>@DsTaiKhoan[i].Email</td>
+                        <td>@DsTaiKhoan[i].SDT</td>
+
+                        @if (DsTaiKhoan[i].VaiTro == "Cán bộ")
+                        {
+                            <td><span class="badge badge-admin">@DsTaiKhoan[i].VaiTro</span></td>
+                        }
+                        else if (DsTaiKhoan[i].VaiTro == "Phụ huynh")
+                        {
+                            <td><span class="badge badge-parent">@DsTaiKhoan[i].VaiTro</span></td>
+                        }
+                        else
+                        {
+                            <td><span class="badge badge-volunteer">@DsTaiKhoan[i].VaiTro</span></td>
+                        }
+
+                        @if (DsTaiKhoan[i].TrangThai == "Đang hoạt động")
+                        {
+                            <td><span class="badge badge-active">@DsTaiKhoan[i].TrangThai</span></td>
+                        }
+                        else
+                        {
+                            <td><span class="badge badge-locked">@DsTaiKhoan[i].TrangThai</span></td>
+                        }
+
+                        <td>@DsTaiKhoan[i].NgayTao.ToString("dd/MM/yyyy")</td>
+                        <td class="action-buttons">
+
+                            <!-- Sửa -->
+                            <a href="@Url.Action("SuaThongTinTaiKhoan", "QuanLyTaiKhoan", new { UserId = DsTaiKhoan[i].UserId })"
+                               class="btn btn-sm btn-primary" title="Sửa tài khoản">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+
+                            <!-- Reset mật khẩu -->
+                            @using (Html.BeginForm("ResetMatKhau", "QuanLyTaiKhoan", FormMethod.Post, new { @class = "inline-form" }))
+                            {
+                                <input type="hidden" name="id" value="@DsTaiKhoan[i].UserId" />
+                                <button type="submit" class="btn btn-sm btn-warning" title="Reset mật khẩu"
+                                        onclick="return confirm('Bạn có chắc muốn reset mật khẩu cho tài khoản này không?');">
+                                    <i class="fa-solid fa-rotate-left"></i>
+                                </button>
+                            }
+
+                            <!-- Khóa / Mở khóa -->
+                            @if (DsTaiKhoan[i].TrangThai == "Đã bị khóa")
+                            {
+                                using (Html.BeginForm("MoKhoaTaiKhoan", "QuanLyTaiKhoan", FormMethod.Post, new { @class = "inline-form" }))
+                                {
+                                    <input type="hidden" name="id" value="@DsTaiKhoan[i].UserId" />
+                                    <button type="submit" class="btn btn-sm btn-success" title="Mở khóa tài khoản"
+                                            onclick="return confirm('Bạn có chắc muốn mở khóa cho tài khoản này không?');">
+                                        <i class="fa-solid fa-lock-open"></i>
+                                    </button>
+                                }
+                            }
+                            else
+                            {
+                                using (Html.BeginForm("KhoaTiaKhoan", "QuanLyTaiKhoan", FormMethod.Post, new { @class = "inline-form" }))
+                                {
+                                    <input type="hidden" name="id" value="@DsTaiKhoan[i].UserId" />
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Khóa tài khoản"
+                                            onclick="return confirm('Bạn có chắc muốn khóa tài khoản này không?');">
+                                        <i class="fa-solid fa-lock"></i>
+                                    </button>
+                                }
+                            }
+
+                            <!-- Xóa -->
+                            @using (Html.BeginForm("XoaTaiKhoan", "QuanLyTaiKhoan", FormMethod.Post, new { @class = "inline-form" }))
+                            {
+                                <input type="hidden" name="id" value="@DsTaiKhoan[i].UserId" />
+                                <button type="submit" class="btn btn-sm btn-danger" title="Xóa tài khoản"
+                                        onclick="return confirm('Bạn có chắc muốn xóa tài khoản này không?');">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            }
+                        </td>
+
+                    </tr>
+                }
             </tbody>
+
+
         </table>
     </div>
 </div>
+@if (TempData["Notification"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showNotification("@TempData["Notification"]", "@TempData["NotificationType"]");
+        });
+    </script>
+}
+<script>
+    function showNotification(message, type = 'info') {
+        // Tạo element thông báo
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <i class="fa-solid fa-circle-check"></i>
+            <span>${message}</span>
+        `;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: ${type === 'success' ? '#4CAF50' : '#2196F3'};
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        `;
+
+        document.body.appendChild(notification);
+
+        // Tự động xóa sau 3 giây
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Thêm CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @@keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @@keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        .no-result-message {
+            margin-top: 20px;
+        }
+
+        /* Highlight text khi tìm kiếm */
+        .table-container tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Loading state cho filter */
+        .filter-loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Debounce function để tối ưu performance khi gõ tìm kiếm
+    let searchTimeout;
+    document.getElementById('searchInput').addEventListener('input', function () {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(filterTable, 300);
+    });
+
+    // Export số lượng kết quả ra console (có thể dùng để hiển thị)
+    function getFilterStats() {
+        const table = document.querySelector('.table-container table tbody');
+        const rows = table.getElementsByTagName('tr');
+        let visible = 0;
+
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].style.display !== 'none') {
+                visible++;
+            }
+        }
+
+        return {
+            total: rows.length,
+            visible: visible,
+            hidden: rows.length - visible
+        };
+    }
+</script>
+
+<style>
+    /* Style cho nút reset filter */
+    .filter-group {
+        position: relative;
+    }
+
+    .reset-filter-btn {
+        position: absolute;
+        right: 0;
+        top: 0;
+        background: transparent;
+        border: 2px dashed #ccc;
+        color: #666;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 14px;
+    }
+
+        .reset-filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(33, 150, 243, 0.05);
+        }
+
+        .reset-filter-btn i {
+            margin-right: 5px;
+        }
+
+    .inline-form {
+        display: inline-block; /* Cho form nằm ngang */
+    }
+</style>
+<script>
+    function filterTable() {
+        // Lấy giá trị từ các filter
+        const roleFilter = document.getElementById('filterRole').value.toLowerCase().trim();
+        const statusFilter = document.getElementById('filterStatus').value.toLowerCase().trim();
+        const searchInput = document.getElementById('searchInput').value.toLowerCase().trim();
+
+        // Lấy tất cả các hàng trong tbody
+        const table = document.querySelector('.table-container table tbody');
+        const rows = table.getElementsByTagName('tr');
+
+        let visibleCount = 0;
+
+        // Duyệt qua từng hàng
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const cells = row.getElementsByTagName('td');
+
+            if (cells.length > 0) {
+                // Lấy dữ liệu từ các cột
+                const hoTen = cells[1].textContent.toLowerCase().trim();
+                const email = cells[2].textContent.toLowerCase().trim();
+                const sdt = cells[3].textContent.toLowerCase().trim();
+                const vaiTro = cells[4].textContent.toLowerCase().trim();
+                const trangThai = cells[5].textContent.toLowerCase().trim();
+
+                // Kiểm tra điều kiện lọc
+                let matchRole = true;
+                let matchStatus = true;
+                let matchSearch = true;
+
+                // Lọc theo vai trò
+                if (roleFilter !== '') {
+                    matchRole = vaiTro.includes(roleFilter);
+                }
+
+                // Lọc theo trạng thái
+                if (statusFilter !== '') {
+                    matchStatus = trangThai.includes(statusFilter);
+                }
+
+                // Lọc theo tìm kiếm (tên, email, số điện thoại)
+                if (searchInput !== '') {
+                    matchSearch = hoTen.includes(searchInput) ||
+                        email.includes(searchInput) ||
+                        sdt.includes(searchInput);
+                }
+
+                // Hiển thị hoặc ẩn hàng
+                if (matchRole && matchStatus && matchSearch) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        }
+
+        // Hiển thị thông báo nếu không có kết quả
+        showNoResultMessage(visibleCount);
+
+        // Log kết quả (optional)
+        console.log(`Hiển thị ${visibleCount}/${rows.length} kết quả`);
+    }
+
+    // Hàm hiển thị thông báo khi không có kết quả
+    function showNoResultMessage(visibleCount) {
+        // Xóa thông báo cũ nếu có
+        const oldMessage = document.querySelector('.no-result-message');
+        if (oldMessage) {
+            oldMessage.remove();
+        }
+
+        // Nếu không có kết quả, hiển thị thông báo
+        if (visibleCount === 0) {
+            const tableContainer = document.querySelector('.table-container');
+            const message = document.createElement('div');
+            message.className = 'no-result-message alert alert-info';
+            message.innerHTML = `
+            <span><i class="fa-solid fa-circle-info" style="color: var(--primary);"></i></span>
+            <div>
+                <strong>Không tìm thấy kết quả</strong> phù hợp với bộ lọc của bạn. Vui lòng thử lại với các tiêu chí khác.
+            </div>
+        `;
+            tableContainer.appendChild(message);
+        }
+    }
+
+    // Hàm reset tất cả filter
+    function resetFilters() {
+        document.getElementById('filterRole').value = '';
+        document.getElementById('filterStatus').value = '';
+        document.getElementById('searchInput').value = '';
+        filterTable();
+    }
+
+    // Thêm nút Reset Filter vào giao diện (optional)
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterGroup = document.querySelector('.filter-group');
+        if (filterGroup && !document.querySelector('.reset-filter-btn')) {
+            const resetBtn = document.createElement('button');
+            resetBtn.className = 'reset-filter-btn';
+            resetBtn.innerHTML = '<i class="fa-solid fa-arrow-rotate-left"></i> Xóa bộ lọc';
+            resetBtn.onclick = resetFilters;
+            filterGroup.style.paddingRight = '140px';
+            filterGroup.appendChild(resetBtn);
+        }
+    });
+</script>

@@ -105,10 +105,16 @@
                                class="btn btn-outline btn-sm">
                                 ✏️ Sửa
                             </a>
-                            <button class="btn btn-outline btn-sm" style="color: var(--danger);"
-                                    onclick="xoaUngHo(@item.UngHoId)">
-                                🗑️ Xóa
-                            </button>
+                            @using (Html.BeginForm("XoaUngHo", "ManhThuongQuan", FormMethod.Post, new { @class = "inline-form" }))
+                            {
+                                <input type="hidden" name="UngHoId" value="@item.UngHoId" />
+                                <input type="hidden" name="ManhThuongQuanId" value="@item.ManhThuongQuanId" />
+                                <button type="submit" class="btn btn-outline btn-sm"
+                                        style="color: var(--danger);"
+                                        onclick="return confirm('Bạn có chắc muốn xóa ủng hộ này không?');">
+                                    Xóa
+                                </button>
+                            }
                         </td>
                     </tr>
                     stt++;
