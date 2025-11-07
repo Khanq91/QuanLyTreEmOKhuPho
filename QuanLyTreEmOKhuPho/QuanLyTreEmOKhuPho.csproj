@@ -138,6 +138,7 @@
     <Compile Include="Models\KhuPho.cs" />
     <Compile Include="Models\NguoiDung.cs" />
     <Compile Include="Models\SuKien.cs" />
+    <Compile Include="Models\SuKienDto.cs" />
     <Compile Include="Models\TinhNguyenVien\HoTroVanDong.cs" />
     <Compile Include="Models\TinhNguyenVien\LichRanhTNV.cs" />
     <Compile Include="Models\TinhNguyenVien\SuKienDaThamGia.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Models\TongTreEmTheoKhuPho.cs" />
     <Compile Include="Models\TreEm.cs" />
     <Compile Include="Models\TreEmTheoTungKhoPho.cs" />
+    <Compile Include="Models\TreEmViewModel.cs" />
     <Compile Include="Models\TTCB_ChiTietSuKien.cs" />
     <Compile Include="Models\TTCT_ChiTietSuKien.cs" />
     <Compile Include="Models\TT_ThanhVienSuKien.cs" />
@@ -234,6 +236,7 @@
     <Content Include="Views\TinhNguyenVien\TinhNguyenVien.cshtml" />
     <Content Include="Views\VanDongTreEm\VanDongTreEm.cshtml" />
     <Content Include="Views\TinhNguyenVien\ThongTinChiTietTinhNguyenVien.cshtml" />
+    <Content Include="Views\QuanLytreEm\ChiTiet.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
