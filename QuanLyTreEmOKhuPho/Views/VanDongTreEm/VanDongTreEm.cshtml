@@ -1,128 +1,155 @@
-﻿
-@{
-    ViewBag.Title = "VanDongTreEm";
+﻿@{
+    ViewBag.Title = "Vận động trẻ em vào lớp 1";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <link rel="stylesheet" href="~/Content/css/VanDongTreEm.css" />
 <link rel="stylesheet" href="~/Content/css/media.css" />
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <style>
-    .header-right {
-        display: flex;
-        align-items: center;
-        gap: 20px;
+    /* ==== Dashboard cards ==== */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    .stat-card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        padding: 1rem 1.2rem;
+        transition: all .2s;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-header { display: flex; justify-content: space-between; align-items: center; }
+    .stat-title { font-weight: 600; color: #555; }
+    .stat-value { font-size: 1.8rem; font-weight: bold; margin-top: .5rem; }
+
+    /* ==== Table & Filters ==== */
+    .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+        padding: 1.5rem;
+    }
+    .card-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .card-header h3 { margin: 0; }
+    .filter-select {
+        padding: 6px 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
     }
 
-    .user-info {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 8px 16px;
-        background: var(--gray-50);
-        border-radius: 50px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: .7rem; border: 1px solid #eee; text-align: center; }
+    th { background: #f8f9fa; }
 
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary), #3b82f6);
-        display: flex;
+    .badge { padding: 3px 8px; border-radius: 8px; font-size: .85rem; color: white; }
+    .badge.success { background: #27ae60; }
+    .badge.warning { background: #f1c40f; color: #222; }
+    .badge.danger { background: #e74c3c; }
+    .badge.secondary { background: #7f8c8d; }
+
+    .btn { padding: .4rem .8rem; border: none; border-radius: 6px; cursor: pointer; color: white; }
+    .btn-primary { background: #0d6efd; }
+    .btn-success { background: #2ecc71; }
+    .btn-info { background: #3498db; }
+    .btn-sm { font-size: .85rem; }
+
+    /* ==== Modal ==== */
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: 1000;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-weight: bold;
     }
+    .modal.active { display: flex; }
+    .modal-content {
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 10px;
+        width: 520px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        animation: fadeIn .3s ease;
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .modal-header h3 { margin: 0; font-size: 1.2rem; color: #333; }
+    .modal-body input, .modal-body textarea, .modal-body select {
+        width: 100%; padding: .6rem; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 1rem;
+    }
+    .modal-footer { display: flex; justify-content: flex-end; gap: .5rem; }
+    .close-btn { cursor: pointer; font-size: 1.4rem; color: #888; }
+
+    .history-item:hover { transform: scale(1.01); }
+
 </style>
+
+<!-- ==================== STATS ==================== -->
 <div class="stats-grid">
-    <div class="stat-card primary">
-        <div class="stat-header">
-            <div class="stat-title">Tổng số trẻ đến tuổi</div>
-            <div class="stat-icon"><i class="fa-solid fa-children"></i></div>
-        </div>
-        <div class="stat-value">87</div>
+    <div class="stat-card">
+        <div class="stat-header"><div class="stat-title">Tổng số trẻ đến tuổi</div><i class="fa-solid fa-children"></i></div>
+        <div class="stat-value" id="totalTre">0</div>
         <div class="stat-change">Trẻ sinh năm 2019 (6 tuổi)</div>
     </div>
-
-    <div class="stat-card warning">
-        <div class="stat-header">
-            <div class="stat-title">Chưa vận động</div>
-            <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
-        </div>
-        <div class="stat-value">23</div>
+    <div class="stat-card">
+        <div class="stat-header"><div class="stat-title">Chưa vận động</div><i class="fa-solid fa-hourglass-half"></i></div>
+        <div class="stat-value" id="chuaVD">0</div>
         <div class="stat-change">Cần liên hệ gia đình</div>
     </div>
-
-    <div class="stat-card success">
-        <div class="stat-header">
-            <div class="stat-title">Đã nhập học</div>
-            <div class="stat-icon"><i class="fa-solid fa-check-double"></i></div>
-        </div>
-        <div class="stat-value">56</div>
-        <div class="stat-change">64% hoàn thành</div>
+    <div class="stat-card">
+        <div class="stat-header"><div class="stat-title">Đã nhập học</div><i class="fa-solid fa-check-double"></i></div>
+        <div class="stat-value" id="daHoc">0</div>
+        <div class="stat-change">Hoàn thành</div>
     </div>
-
-    <div class="stat-card danger">
-        <div class="stat-header">
-            <div class="stat-title">Từ chối/Hoãn</div>
-            <div class="stat-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        </div>
-        <div class="stat-value">8</div>
+    <div class="stat-card">
+        <div class="stat-header"><div class="stat-title">Từ chối/Hoãn</div><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="stat-value" id="tuChoi">0</div>
         <div class="stat-change">Cần theo dõi đặc biệt</div>
     </div>
 </div>
 
+<!-- ==================== TABLE ==================== -->
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Danh sách trẻ đến tuổi vào lớp 1</h3>
-        <button class="btn btn-primary" onclick="openModal()"><i class="fa-solid fa-circle-plus"></i> Ghi nhận vận động</button>
-    </div>
+        <h3>Danh sách trẻ đến tuổi vào lớp 1</h3>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <select id="filterHoanCanh" class="filter-select" onchange="applyFilter()">
+                <option value="">-- Tất cả hoàn cảnh --</option>
+                <option value="Hộ nghèo">Hộ nghèo</option>
+                <option value="Mồ côi cha">Mồ côi cha</option>
+                <option value="Mồ côi mẹ">Mồ côi mẹ</option>
+                <option value="Khuyết tật">Khuyết tật</option>
+                <option value="Bình thường">Bình thường</option>
+            </select>
 
-    <div class="filter-group">
-        <div class="filter-item">
-            <label>Năm học</label>
-            <select id="filterYear">
-                <option value="2025-2026">2025-2026</option>
-                <option value="2024-2025">2024-2025</option>
+            <select id="filterTrangThai" class="filter-select" onchange="applyFilter()">
+                <option value="">-- Tất cả trạng thái --</option>
+                <option value="Chưa vận động">Chưa vận động</option>
+                <option value="Đang vận động">Đang vận động</option>
+                <option value="Đã nhập học">Đã nhập học</option>
+                <option value="Từ chối">Từ chối</option>
             </select>
-        </div>
-        <div class="filter-item">
-            <label>Khu phố</label>
-            <select id="filterKhuPho">
-                <option value="">Tất cả</option>
-                <option value="KP1">KP1</option>
-                <option value="KP2">KP2</option>
-                <option value="KP3">KP3</option>
-                <option value="KP4">KP4</option>
-                <option value="KP5">KP5</option>
-            </select>
-        </div>
-        <div class="filter-item">
-            <label>Trạng thái</label>
-            <select id="filterStatus">
-                <option value="">Tất cả</option>
-                <option value="chua">Chưa vận động</option>
-                <option value="dang">Đang vận động</option>
-                <option value="hoan">Đã nhập học</option>
-                <option value="tu-choi">Từ chối</option>
-            </select>
-        </div>
-        <div class="filter-item">
-            <label>Tìm kiếm</label>
-            <input type="text" id="searchInput" placeholder="Tên trẻ, CCCD...">
+
+            <button class="btn btn-primary" onclick="loadTreEmDenTuoi()">
+                <i class="fa-solid fa-rotate"></i> Làm mới
+            </button>
         </div>
     </div>
 
     <div class="table-container">
-        <table id="childrenTable">
+        <table>
             <thead>
                 <tr>
                     <th>STT</th>
                     <th>Họ và tên</th>
                     <th>Ngày sinh</th>
-                    <th>Khu phố</th>
                     <th>Hoàn cảnh</th>
                     <th>Trạng thái</th>
                     <th>Số lần VĐ</th>
@@ -130,8 +157,189 @@
                 </tr>
             </thead>
             <tbody id="tableBody">
+                <tr><td colspan="8" class="text-center text-muted">⏳ Đang tải dữ liệu...</td></tr>
             </tbody>
         </table>
     </div>
 </div>
 
+<!-- ==================== MODAL GHI NHẬN ==================== -->
+<div id="ghiNhanModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>📝 Ghi nhận vận động</h3>
+            <span class="close-btn" onclick="closeModal('#ghiNhanModal')">&times;</span>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="treEmId" />
+            <label>Lý do vận động</label>
+            <textarea id="lyDo" rows="2" placeholder="Nhập lý do..."></textarea>
+            <label>Kết quả</label>
+            <select id="ketQua">
+                <option value="">-- Chọn kết quả --</option>
+                <option value="Đang vận động">Đang vận động</option>
+                <option value="Đã nhập học">Đã nhập học</option>
+                <option value="Từ chối">Từ chối</option>
+            </select>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('#ghiNhanModal')">Hủy</button>
+            <button class="btn btn-success" onclick="submitGhiNhan()">Lưu</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODAL CHI TIẾT ==================== -->
+<div id="chiTietModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>📜 Lịch sử vận động</h3>
+            <span class="close-btn" onclick="closeModal('#chiTietModal')">&times;</span>
+        </div>
+        <div class="modal-body" id="chiTietBody">
+            <p class="text-muted">⏳ Đang tải...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    let originalData = [];
+
+    $(document).ready(function () { loadTreEmDenTuoi(); });
+
+    function loadTreEmDenTuoi() {
+        $.ajax({
+            url: "https://localhost:44362/api/VanDong/vandong/vaolop1",
+            method: "GET",
+            success: function (data) {
+                originalData = data || [];
+                renderTable(originalData);
+            },
+            error: () => $("#tableBody").html(`<tr><td colspan="8" class="text-danger">Lỗi tải dữ liệu!</td></tr>`)
+        });
+    }
+
+    function applyFilter() {
+        const hoanCanh = $("#filterHoanCanh").val().toLowerCase();
+        const trangThai = $("#filterTrangThai").val().toLowerCase();
+
+        const filtered = originalData.filter(item => {
+            const matchHC = !hoanCanh || (item.hoanCanh && item.hoanCanh.toLowerCase().includes(hoanCanh));
+            const matchTT = !trangThai || (item.trangThai && item.trangThai.toLowerCase().includes(trangThai));
+            return matchHC && matchTT;
+        });
+
+        renderTable(filtered);
+    }
+
+    function renderTable(data) {
+        const tbody = $("#tableBody");
+        tbody.empty();
+
+        if (!data || data.length === 0) {
+            tbody.html(`<tr><td colspan="8" class="text-center text-muted">Không có dữ liệu phù hợp.</td></tr>`);
+            $("#totalTre").text(0); $("#chuaVD").text(0); $("#daHoc").text(0); $("#tuChoi").text(0);
+            return;
+        }
+
+        let total = data.length, chua = 0, da = 0, tu = 0;
+
+        data.forEach((item, i) => {
+            const tt = item.trangThai || "Chưa vận động";
+            if (tt.includes("Chưa")) chua++; else if (tt.includes("Đã")) da++; else if (tt.includes("Từ")) tu++;
+
+            const badge =
+                tt === "Đã nhập học" ? `<span class='badge success'>${tt}</span>` :
+                    tt === "Từ chối" ? `<span class='badge danger'>${tt}</span>` :
+                        tt === "Đang vận động" ? `<span class='badge warning'>${tt}</span>` :
+                            `<span class='badge secondary'>${tt}</span>`;
+
+            tbody.append(`
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${item.hoTen}</td>
+                    <td>${convertJsonDate(item.ngaySinh)}</td>
+                    <td>${item.hoanCanh || ""}</td>
+                    <td>${badge}</td>
+                    <td>${item.lanCuoi?.soLan || 0}</td>
+                    <td>
+                        <button class="btn btn-sm btn-success" onclick="openGhiNhan(${item.treEmId}, '${item.hoTen}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-sm btn-info" onclick="xemChiTiet(${item.treEmId}, '${item.hoTen}')"><i class="fa-solid fa-eye"></i></button>
+                    </td>
+                </tr>
+            `);
+        });
+
+        $("#totalTre").text(total);
+        $("#chuaVD").text(chua);
+        $("#daHoc").text(da);
+        $("#tuChoi").text(tu);
+    }
+
+    function openGhiNhan(id, ten) {
+        $("#treEmId").val(id);
+        $("#lyDo").val('');
+        $("#ketQua").val('');
+        $("#ghiNhanModal .modal-header h3").text(`📝 Ghi nhận vận động - ${ten}`);
+        $("#ghiNhanModal").addClass("active");
+    }
+
+    function submitGhiNhan() {
+        const data = {
+            TreEmId: $("#treEmId").val(),
+            LyDo: $("#lyDo").val(),
+            KetQua: $("#ketQua").val()
+        };
+        $.ajax({
+            url: "https://localhost:44362/api/VanDong/ghinhan",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (res) {
+                alert(res.message || "Đã lưu!");
+                closeModal("#ghiNhanModal");
+                loadTreEmDenTuoi();
+            },
+            error: () => alert("❌ Ghi nhận thất bại!")
+        });
+    }
+
+    function xemChiTiet(id, ten) {
+        $("#chiTietModal").addClass("active");
+        $("#chiTietBody").html("<p>⏳ Đang tải...</p>");
+        $.ajax({
+            url: `https://localhost:44362/api/VanDong/vandong/chitiet/${id}`,
+            method: "GET",
+            success: function (res) {
+                if (!res || !res.lichSu || res.lichSu.length === 0)
+                    return $("#chiTietBody").html(`<p style="color:#6c757d;text-align:center;padding:16px;">Chưa có lịch sử vận động.</p>`);
+
+                let html = `<div style="padding:8px 16px;"><h3 style="color:#2c3e50;font-weight:600;">${res.hoTen}</h3><hr>`;
+                res.lichSu.forEach(v => {
+                    const d = new Date(v.ngayVanDong);
+                    html += `
+                    <div style="background:#f8f9fa;border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,0.05);">
+                        <div style="font-weight:600;color:#007bff;">🕓 Lần ${v.soLan}</div>
+                        <p><strong>Lý do:</strong> ${v.lyDo || '<i style="color:#888">Không có</i>'}</p>
+                        <p><strong>Kết quả:</strong> ${v.ketQua || '<i style="color:#888">Chưa có</i>'}</p>
+                        <p><strong>Ngày:</strong> ${d.toLocaleDateString('vi-VN')}</p>
+                        <p><strong>Hoàn cảnh:</strong> ${v.hoanCanh || '<i style="color:#aaa">Không có</i>'}</p>
+                    </div>`;
+                });
+                html += `</div>`;
+                $("#chiTietBody").html(html);
+            },
+            error: () => $("#chiTietBody").html(`<p style="color:#e74c3c;text-align:center;padding:16px;">❌ Lỗi tải dữ liệu.</p>`)
+        });
+    }
+
+    function convertJsonDate(jsonDate) {
+        if (!jsonDate) return '';
+        const match = /Date\((\d+)\)/.exec(jsonDate);
+        if (!match) return '---';
+        const d = new Date(parseInt(match[1]));
+        return d.toLocaleDateString('vi-VN');
+    }
+
+    function closeModal(sel) { $(sel).removeClass("active"); }
+</script>
