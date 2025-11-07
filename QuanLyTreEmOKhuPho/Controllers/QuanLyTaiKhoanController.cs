@@ -177,7 +177,6 @@ namespace QuanLyTreEmOKhuPho.Controllers
             {
                 // Lấy thông báo lỗi từ API
                 var errJson = await response.Content.ReadAsStringAsync();
-                // Giả sử API trả dạng: { "message": "Email đã tồn tại!" }
                 var errObj = JsonConvert.DeserializeObject<dynamic>(errJson);
                 return (false, errObj.message.ToString());
             }
@@ -281,14 +280,56 @@ namespace QuanLyTreEmOKhuPho.Controllers
             ViewBag.PageDescription = "Cấu hình và quản lý tài khoản";
             return View();
         }
+        //================== Tạo 1 tài khoản - CẢI TIẾN ======================================
         [HttpPost]
-        public async Task<ActionResult> TaoTaiKhoan(TaoTaiKhoan taikhoan)
+        public async Task<ActionResult> TaoTaiKhoan(TaoTaiKhoan tk)
         {
-            await TaoTaiKhoanThuCong(taikhoan);
             ViewBag.ActivePage = "QuanLyTaiKhoan";
             ViewBag.PageTitle = "Quản Trị Hệ Thống";
             ViewBag.PageDescription = "Cấu hình và quản lý tài khoản";
-            return View();
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = "Vui lòng điền đầy đủ thông tin!";
+                return View(tk); // Trả về model để giữ dữ liệu
+            }
+
+            var check = await CheckDuLieuClient(tk.Email, tk.SDT);
+            if (!check.IsValid)
+            {
+                ViewBag.Error = check.Message;
+                return View(tk); // Trả về model để giữ dữ liệu
+            }
+
+            var dto = new
+            {
+                tk.HoTen,
+                tk.Email,
+                tk.SDT,
+                tk.VaiTro,
+                tk.MatKhau,
+                tk.TrangThai,
+                tk.Anh,
+                NgayTao = tk.NgayTao.ToString("yyyy-MM-dd")
+            };
+
+            var json = JsonConvert.SerializeObject(dto);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var postResponse = await _client.PostAsync("QuanLyTaiKhoan/ThemTaiKhoan", content);
+
+            if (postResponse.IsSuccessStatusCode)
+            {
+                ViewBag.Message = "Tạo tài khoản thành công!";
+                ModelState.Clear(); // Xóa ModelState để form rỗng
+                return View(new TaoTaiKhoan()); // Trả về model rỗng
+            }
+            else
+            {
+                var err = await postResponse.Content.ReadAsStringAsync();
+                ViewBag.Error = err;
+                return View(tk); // Trả về model có dữ liệu khi lỗi
+            }
         }
         [HttpPost]
         public async Task<ActionResult> ImportExcel(HttpPostedFileBase excelFile, string validDataJson)
@@ -303,6 +344,8 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 if (excelFile == null || excelFile.ContentLength == 0)
                 {
                     ViewBag.ImportError = "Vui lòng chọn file Excel để import!";
+                    // GIỮ LẠI dữ liệu đã validate
+                    ViewBag.PreservedData = validDataJson;
                     return View("TaoTaiKhoan");
                 }
 
@@ -312,6 +355,8 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 if (!allowedExtensions.Contains(fileExtension))
                 {
                     ViewBag.ImportError = "File không đúng định dạng! Chỉ chấp nhận file .xlsx hoặc .xls";
+                    ViewBag.PreservedData = validDataJson;
+                    ViewBag.PreservedFileName = excelFile.FileName;
                     return View("TaoTaiKhoan");
                 }
 
@@ -319,6 +364,7 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 if (string.IsNullOrWhiteSpace(validDataJson))
                 {
                     ViewBag.ImportError = "Không có dữ liệu hợp lệ để import!";
+                    ViewBag.PreservedFileName = excelFile.FileName;
                     return View("TaoTaiKhoan");
                 }
 
@@ -331,12 +377,16 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 catch (JsonException jsonEx)
                 {
                     ViewBag.ImportError = $"Lỗi parse dữ liệu JSON: {jsonEx.Message}";
+                    ViewBag.PreservedData = validDataJson;
+                    ViewBag.PreservedFileName = excelFile.FileName;
                     return View("TaoTaiKhoan");
                 }
 
                 if (danhSachTaiKhoan == null || danhSachTaiKhoan.Count == 0)
                 {
                     ViewBag.ImportError = "Danh sách tài khoản trống!";
+                    ViewBag.PreservedData = validDataJson;
+                    ViewBag.PreservedFileName = excelFile.FileName;
                     return View("TaoTaiKhoan");
                 }
 
@@ -353,11 +403,10 @@ namespace QuanLyTreEmOKhuPho.Controllers
                     NgayTao = DateTime.Now.ToString("yyyy-MM-dd")
                 }).ToList();
 
-
                 var validateJson = JsonConvert.SerializeObject(validateList);
                 var validateContent = new StringContent(validateJson, Encoding.UTF8, "application/json");
 
-                // Gọi API để validate và kiểm tra trùng lặp trong database
+                // Gọi API để validate
                 HttpResponseMessage validateResponse = null;
                 try
                 {
@@ -366,10 +415,11 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 catch (HttpRequestException httpEx)
                 {
                     ViewBag.ImportError = $"Lỗi kết nối API: {httpEx.Message}";
+                    ViewBag.PreservedData = validDataJson;
+                    ViewBag.PreservedFileName = excelFile.FileName;
                     return View("TaoTaiKhoan");
                 }
 
-                // Đọc response content
                 var validateResultContent = await validateResponse.Content.ReadAsStringAsync();
 
                 if (!validateResponse.IsSuccessStatusCode)
@@ -384,6 +434,9 @@ namespace QuanLyTreEmOKhuPho.Controllers
                     {
                         ViewBag.ImportError = $"Lỗi validate: {validateResultContent}";
                     }
+                    // GIỮ LẠI dữ liệu
+                    ViewBag.PreservedData = validDataJson;
+                    ViewBag.PreservedFileName = excelFile.FileName;
                     return View("TaoTaiKhoan");
                 }
 
@@ -395,14 +448,17 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 }
                 catch (JsonException jsonEx)
                 {
-                    ViewBag.ImportError = $"Lỗi parse response từ API: {jsonEx.Message}. Response: {validateResultContent}";
+                    ViewBag.ImportError = $"Lỗi parse response từ API: {jsonEx.Message}";
+                    ViewBag.PreservedData = validDataJson;
+                    ViewBag.PreservedFileName = excelFile.FileName;
                     return View("TaoTaiKhoan");
                 }
 
-                // Kiểm tra xem có lỗi nào không
                 if (validationData?.chiTiet == null)
                 {
                     ViewBag.ImportError = "API không trả về dữ liệu chi tiết validation!";
+                    ViewBag.PreservedData = validDataJson;
+                    ViewBag.PreservedFileName = excelFile.FileName;
                     return View("TaoTaiKhoan");
                 }
 
@@ -428,10 +484,13 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 if (hasErrors)
                 {
                     ViewBag.ImportError = "Có lỗi trong dữ liệu:<br/>" + string.Join("<br/>", errorMessages);
+                    // GIỮ LẠI dữ liệu
+                    ViewBag.PreservedData = validDataJson;
+                    ViewBag.PreservedFileName = excelFile.FileName;
                     return View("TaoTaiKhoan");
                 }
 
-                // Chuẩn bị dữ liệu để gửi lên API - KHÔNG GỬI DATETIME OBJECT
+                // Chuẩn bị dữ liệu để import
                 var importDto = danhSachTaiKhoan.Select(tk => new
                 {
                     HoTen = tk.HoTen?.Trim(),
@@ -447,7 +506,7 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 var importJson = JsonConvert.SerializeObject(importDto);
                 var importContent = new StringContent(importJson, Encoding.UTF8, "application/json");
 
-                // Gọi API để thêm nhiều tài khoản
+                // Gọi API để import
                 HttpResponseMessage importResponse = null;
                 try
                 {
@@ -456,6 +515,8 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 catch (HttpRequestException httpEx)
                 {
                     ViewBag.ImportError = $"Lỗi kết nối API khi import: {httpEx.Message}";
+                    ViewBag.PreservedData = validDataJson;
+                    ViewBag.PreservedFileName = excelFile.FileName;
                     return View("TaoTaiKhoan");
                 }
 
@@ -467,10 +528,15 @@ namespace QuanLyTreEmOKhuPho.Controllers
                     {
                         var resultObj = JsonConvert.DeserializeObject<dynamic>(importResultContent);
                         ViewBag.ImportMessage = resultObj?.message?.ToString() ?? "Import thành công!";
+                        // KHÔNG GIỮ dữ liệu khi thành công
+                        ViewBag.PreservedData = null;
+                        ViewBag.PreservedFileName = null;
                     }
                     catch
                     {
                         ViewBag.ImportMessage = "Import thành công!";
+                        ViewBag.PreservedData = null;
+                        ViewBag.PreservedFileName = null;
                     }
                 }
                 else
@@ -484,16 +550,20 @@ namespace QuanLyTreEmOKhuPho.Controllers
                     {
                         ViewBag.ImportError = $"Lỗi khi import: {importResultContent}";
                     }
+                    // GIỮ LẠI dữ liệu khi import thất bại
+                    ViewBag.PreservedData = validDataJson;
+                    ViewBag.PreservedFileName = excelFile.FileName;
                 }
             }
             catch (Exception ex)
             {
-                ViewBag.ImportError = $"Lỗi hệ thống: {ex.Message}<br/>Stack trace: {ex.StackTrace}";
+                ViewBag.ImportError = $"Lỗi hệ thống: {ex.Message}";
+                ViewBag.PreservedData = validDataJson;
             }
 
             return View("TaoTaiKhoan");
         }
 
-    }
+    } 
 
 }
