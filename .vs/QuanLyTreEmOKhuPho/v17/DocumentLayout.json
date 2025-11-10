@@ -1,26 +1,18 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho-main\\",
+  "WorkspaceRootPath": "D:\\QuanLyTreEmOKhuPho\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|c:\\users\\dell\\onedrive\\m\u00E1y t\u00EDnh\\zjob99\\kimanh\\quanlytreemokhupho-main\\quanlytreemokhupho\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|solutionrelative:quanlytreemokhupho\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|d:\\quanlytreemokhupho\\quanlytreemokhupho\\controllers\\vandongtreemcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|solutionrelative:quanlytreemokhupho\\controllers\\vandongtreemcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|c:\\users\\dell\\onedrive\\m\u00E1y t\u00EDnh\\zjob99\\kimanh\\quanlytreemokhupho-main\\quanlytreemokhupho\\views\\baocaothongke\\baocaothongke.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|solutionrelative:quanlytreemokhupho\\views\\baocaothongke\\baocaothongke.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|D:\\QuanLyTreEmOKhuPho\\quanlytreemokhupho\\views\\sukien\\sukien.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|solutionrelative:quanlytreemokhupho\\views\\sukien\\sukien.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|c:\\users\\dell\\onedrive\\m\u00E1y t\u00EDnh\\zjob99\\kimanh\\quanlytreemokhupho-main\\quanlytreemokhupho\\scripts\\baocaothongke.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|solutionrelative:quanlytreemokhupho\\scripts\\baocaothongke.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|c:\\users\\dell\\onedrive\\m\u00E1y t\u00EDnh\\zjob99\\kimanh\\quanlytreemokhupho-main\\quanlytreemokhupho\\controllers\\baocaothongkecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|solutionrelative:quanlytreemokhupho\\controllers\\baocaothongkecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|c:\\users\\dell\\onedrive\\m\u00E1y t\u00EDnh\\zjob99\\kimanh\\quanlytreemokhupho-main\\quanlytreemokhupho\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|solutionrelative:quanlytreemokhupho\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+      "AbsoluteMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|D:\\QuanLyTreEmOKhuPho\\quanlytreemokhupho\\controllers\\sukiencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C2E2B87C-8405-4CAF-9771-6017564B3716}|QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho.csproj|solutionrelative:quanlytreemokhupho\\controllers\\sukiencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -35,67 +27,43 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho-main\\QuanLyTreEmOKhuPho\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "QuanLyTreEmOKhuPho\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho-main\\QuanLyTreEmOKhuPho\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "QuanLyTreEmOKhuPho\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAFEAAAAAAAAAAAAQwGoAAAAHAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-26T07:43:53.034Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "BaoCaoThongKe.js",
-              "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho-main\\QuanLyTreEmOKhuPho\\Scripts\\BaoCaoThongKe.js",
-              "RelativeDocumentMoniker": "QuanLyTreEmOKhuPho\\Scripts\\BaoCaoThongKe.js",
-              "ToolTip": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho-main\\QuanLyTreEmOKhuPho\\Scripts\\BaoCaoThongKe.js",
-              "RelativeToolTip": "QuanLyTreEmOKhuPho\\Scripts\\BaoCaoThongKe.js",
-              "ViewState": "AgIAAP8AAAAAAAAAAAAYwBcBAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-10-26T07:42:48.731Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "BaoCaoThongKeController.cs",
-              "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho-main\\QuanLyTreEmOKhuPho\\Controllers\\BaoCaoThongKeController.cs",
-              "RelativeDocumentMoniker": "QuanLyTreEmOKhuPho\\Controllers\\BaoCaoThongKeController.cs",
-              "ToolTip": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho-main\\QuanLyTreEmOKhuPho\\Controllers\\BaoCaoThongKeController.cs",
-              "RelativeToolTip": "QuanLyTreEmOKhuPho\\Controllers\\BaoCaoThongKeController.cs",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
+              "Title": "VanDongTreEmController.cs",
+              "DocumentMoniker": "D:\\QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho\\Controllers\\VanDongTreEmController.cs",
+              "RelativeDocumentMoniker": "QuanLyTreEmOKhuPho\\Controllers\\VanDongTreEmController.cs",
+              "ToolTip": "D:\\QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho\\Controllers\\VanDongTreEmController.cs",
+              "RelativeToolTip": "QuanLyTreEmOKhuPho\\Controllers\\VanDongTreEmController.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAowAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-26T07:40:30.134Z",
+              "WhenOpened": "2025-11-09T17:31:16.297Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "BaoCaoThongKe.cshtml",
-              "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho-main\\QuanLyTreEmOKhuPho\\Views\\BaoCaoThongKe\\BaoCaoThongKe.cshtml",
-              "RelativeDocumentMoniker": "QuanLyTreEmOKhuPho\\Views\\BaoCaoThongKe\\BaoCaoThongKe.cshtml",
-              "ToolTip": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho-main\\QuanLyTreEmOKhuPho\\Views\\BaoCaoThongKe\\BaoCaoThongKe.cshtml",
-              "RelativeToolTip": "QuanLyTreEmOKhuPho\\Views\\BaoCaoThongKe\\BaoCaoThongKe.cshtml",
-              "ViewState": "AgIAAM8AAAAAAAAAAADwv9gAAAAUAAAAAAAAAA==",
+              "Title": "SuKien.cshtml",
+              "DocumentMoniker": "D:\\QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho\\Views\\SuKien\\SuKien.cshtml",
+              "RelativeDocumentMoniker": "QuanLyTreEmOKhuPho\\Views\\SuKien\\SuKien.cshtml",
+              "ToolTip": "D:\\QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho\\Views\\SuKien\\SuKien.cshtml",
+              "RelativeToolTip": "QuanLyTreEmOKhuPho\\Views\\SuKien\\SuKien.cshtml",
+              "ViewState": "AgIAAIoBAAAAAAAAAAAAAKABAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-26T07:38:31.506Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-09T17:27:32.109Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Web.config",
-              "DocumentMoniker": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho-main\\QuanLyTreEmOKhuPho\\Web.config",
-              "RelativeDocumentMoniker": "QuanLyTreEmOKhuPho\\Web.config",
-              "ToolTip": "C:\\Users\\DELL\\OneDrive\\M\u00E1y t\u00EDnh\\zjob99\\kimanh\\QuanLyTreEmOKhuPho-main\\QuanLyTreEmOKhuPho\\Web.config",
-              "RelativeToolTip": "QuanLyTreEmOKhuPho\\Web.config",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2025-10-26T07:31:15.944Z",
-              "EditorCaption": ""
+              "DocumentIndex": 2,
+              "Title": "SuKienController.cs",
+              "DocumentMoniker": "D:\\QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho\\Controllers\\SuKienController.cs",
+              "RelativeDocumentMoniker": "QuanLyTreEmOKhuPho\\Controllers\\SuKienController.cs",
+              "ToolTip": "D:\\QuanLyTreEmOKhuPho\\QuanLyTreEmOKhuPho\\Controllers\\SuKienController.cs",
+              "RelativeToolTip": "QuanLyTreEmOKhuPho\\Controllers\\SuKienController.cs",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAowFUAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-09T17:26:28.74Z"
             }
           ]
         }

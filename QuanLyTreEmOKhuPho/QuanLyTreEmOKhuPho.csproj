@@ -137,6 +137,17 @@
     <Compile Include="Models\ApiHelper.cs" />
     <Compile Include="Models\KhuPho.cs" />
     <Compile Include="Models\NguoiDung.cs" />
+    <Compile Include="Models\QuanLyTaiKhoan\ApiResult.cs" />
+    <Compile Include="Models\QuanLyTaiKhoan\DanhSachTaiKhoan.cs" />
+    <Compile Include="Models\QuanLyTaiKhoan\DoiTrangThaiDto.cs" />
+    <Compile Include="Models\QuanLyTaiKhoan\DsLoiTaiKhoan.cs" />
+    <Compile Include="Models\QuanLyTaiKhoan\ImportDto.cs" />
+    <Compile Include="Models\QuanLyTaiKhoan\KiemTraTonTaiDTO.cs" />
+    <Compile Include="Models\QuanLyTaiKhoan\NguoiDungCreateDto.cs" />
+    <Compile Include="Models\QuanLyTaiKhoan\TaoTaiKhoan.cs" />
+    <Compile Include="Models\QuanLyTaiKhoan\ThongKe.cs" />
+    <Compile Include="Models\QuanLyTaiKhoan\TTTaiKhoan.cs" />
+    <Compile Include="Models\QuanLyTaiKhoan\ValidateDto.cs" />
     <Compile Include="Models\SuKien.cs" />
     <Compile Include="Models\TinhNguyenVien\HoTroVanDong.cs" />
     <Compile Include="Models\TinhNguyenVien\LichRanhTNV.cs" />
@@ -179,6 +190,7 @@
     <Content Include="Content\css\QuanLyTaiKhoan.css" />
     <Content Include="Content\css\Site.css" />
     <Content Include="Content\css\SuKien.css" />
+    <Content Include="Content\css\taotaikhoan.css" />
     <Content Include="Content\css\ThemSuKien.css" />
     <Content Include="Content\css\ThemTreEm.css" />
     <Content Include="Content\css\ThongTinChiTietTinhNguyenVien.css" />
@@ -234,6 +246,16 @@
     <Content Include="Views\TinhNguyenVien\TinhNguyenVien.cshtml" />
     <Content Include="Views\VanDongTreEm\VanDongTreEm.cshtml" />
     <Content Include="Views\TinhNguyenVien\ThongTinChiTietTinhNguyenVien.cshtml" />
+<<<<<<< HEAD
+=======
+    <Content Include="Views\ManhThuongQuan\GhiNhanUngHo.cshtml" />
+    <Content Include="Views\ManhThuongQuan\GhiNhanManhThuongQuan.cshtml" />
+    <Content Include="Views\ManhThuongQuan\ChiTietManhThuongQuan.cshtml" />
+    <Content Include="Views\ManhThuongQuan\SuaManhThuongQuan.cshtml" />
+    <Content Include="Views\ManhThuongQuan\SuaUngHoManhThuongQuan.cshtml" />
+    <Content Include="Views\QuanLyTaiKhoan\SuaThongTinTaiKhoan.cshtml" />
+    <Content Include="Views\QuanLyTaiKhoan\TaoTaiKhoan.cshtml" />
+>>>>>>> 84c373c5da5ed2eace1f7f93a0ed74959daa62f7
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
