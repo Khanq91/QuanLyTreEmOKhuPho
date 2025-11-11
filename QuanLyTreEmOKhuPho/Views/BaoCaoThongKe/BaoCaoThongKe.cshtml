@@ -1,40 +1,10 @@
-﻿
-@{
-    ViewBag.Title = "BaoCaoThongKe";
+﻿@{
+    ViewBag.Title = "Báo cáo & Thống kê";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link rel="stylesheet" href="~/Content/css/BaoCaoThongKe.css" />
-<link rel="stylesheet" href="~/Content/css/media.css" />
-<style>
-    .header-right {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
 
-    .user-info {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 8px 16px;
-        background: var(--gray-50);
-        border-radius: 50px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary), #3b82f6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-    }
-</style>
+<link rel="stylesheet" href="~/Content/css/BaoCaoThongKe.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/Content/css/media.css" asp-append-version="true" />
 
 <div class="stats-grid">
     <div class="stat-card primary">
@@ -42,69 +12,42 @@
             <div class="stat-title">Tổng số sự kiện</div>
             <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
         </div>
-        <div class="stat-value">48</div>
+        <div class="stat-value" id="soSuKien">0</div>
         <div class="stat-change up">
-            <span>↑ 12%</span>
+            <span id="suKienChange">↑ 0%</span>
             <span style="color: var(--gray-600);">so với tháng trước</span>
         </div>
     </div>
-
     <div class="stat-card success">
         <div class="stat-header">
             <div class="stat-title">Trẻ được hỗ trợ</div>
             <div class="stat-icon"><i class="fa-solid fa-children"></i></div>
         </div>
-        <div class="stat-value">1,245</div>
+        <div class="stat-value" id="soTreHoTro">0</div>
         <div class="stat-change up">
-            <span>↑ 8%</span>
+            <span id="treHoTroChange">↑ 0%</span>
             <span style="color: var(--gray-600);">so với tháng trước</span>
         </div>
     </div>
-
     <div class="stat-card warning">
         <div class="stat-header">
             <div class="stat-title">Tổng tiền ủng hộ</div>
             <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
         </div>
-        <div class="stat-value">845M</div>
+        <div class="stat-value" id="tongUngHo">0M</div>
         <div class="stat-change up">
-            <span>↑ 15%</span>
+            <span id="ungHoChange">↑ 0%</span>
             <span style="color: var(--gray-600);">so với tháng trước</span>
         </div>
     </div>
-
-    <div class="stat-card danger">
-        <div class="stat-header">
-            <div class="stat-title">Hiện vật ủng hộ</div>
-            <div class="stat-icon"><i class="fa-solid fa-gift"></i></div>
-        </div>
-        <div class="stat-value">2,340</div>
-        <div class="stat-change down">
-            <span>↓ 3%</span>
-            <span style="color: var(--gray-600);">so với tháng trước</span>
-        </div>
-    </div>
-
     <div class="stat-card purple">
         <div class="stat-header">
             <div class="stat-title">Tình nguyện viên</div>
             <div class="stat-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
         </div>
-        <div class="stat-value">186</div>
+        <div class="stat-value" id="soTinhNguyenVien">0</div>
         <div class="stat-change up">
-            <span>↑ 22%</span>
-            <span style="color: var(--gray-600);">so với tháng trước</span>
-        </div>
-    </div>
-
-    <div class="stat-card pink">
-        <div class="stat-header">
-            <div class="stat-title">Giờ tình nguyện</div>
-            <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
-        </div>
-        <div class="stat-value">3,420</div>
-        <div class="stat-change up">
-            <span>↑ 18%</span>
+            <span id="tnvChange">↑ 0%</span>
             <span style="color: var(--gray-600);">so với tháng trước</span>
         </div>
     </div>
@@ -113,13 +56,12 @@
 <div class="chart-grid">
     <div class="chart-card">
         <div class="chart-header">
-            <h3 class="chart-title">Sự kiện theo thời gian</h3>
+            <h3 class="chart-title">Sự kiện theo tháng</h3>
         </div>
         <div class="chart-container">
             <canvas id="eventsChart"></canvas>
         </div>
     </div>
-
     <div class="chart-card">
         <div class="chart-header">
             <h3 class="chart-title">Trẻ em được hỗ trợ</h3>
@@ -128,7 +70,6 @@
             <canvas id="childrenChart"></canvas>
         </div>
     </div>
-
     <div class="chart-card">
         <div class="chart-header">
             <h3 class="chart-title">Nguồn ủng hộ</h3>
@@ -137,88 +78,130 @@
             <canvas id="donationsChart"></canvas>
         </div>
     </div>
-
-    <div class="chart-card">
-        <div class="chart-header">
-            <h3 class="chart-title">Tình nguyện viên tham gia</h3>
-        </div>
-        <div class="chart-container">
-            <canvas id="volunteersChart"></canvas>
-        </div>
-    </div>
-
-    <div class="chart-card full-width">
-        <div class="chart-header">
-            <h3 class="chart-title">So sánh hiệu suất theo tháng</h3>
-        </div>
-        <div class="chart-container" style="height: 350px;">
-            <canvas id="comparisonChart"></canvas>
-        </div>
-    </div>
-
-    <div class="chart-card">
-        <div class="chart-header">
-            <h3 class="chart-title">Phân loại sự kiện</h3>
-        </div>
-        <div class="chart-container">
-            <canvas id="eventTypeChart"></canvas>
-        </div>
-    </div>
-
-    <div class="chart-card">
-        <div class="chart-header">
-            <h3 class="chart-title">Tỷ lệ hoàn thành mục tiêu</h3>
-        </div>
-        <div class="chart-container">
-            <canvas id="goalChart"></canvas>
-        </div>
-    </div>
 </div>
 
-<div class="chart-card">
-    <div class="chart-header">
-        <h3 class="chart-title">Chi tiết hoạt động theo tuần</h3>
-    </div>
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Tuần</th>
-                    <th>Số sự kiện</th>
-                    <th>Trẻ tham gia</th>
-                    <th>Tiền ủng hộ</th>
-                    <th>Hiện vật</th>
-                    <th>Tình nguyện viên</th>
-                    <th>Giờ tình nguyện</th>
-                </tr>
-            </thead>
-            <tbody id="weeklyTable">
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<div class="chart-card">
-    <div class="chart-header">
-        <h3 class="chart-title">Top 10 tình nguyện viên tích cực nhất</h3>
-    </div>
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Họ tên</th>
-                    <th>Số sự kiện</th>
-                    <th>Giờ tình nguyện</th>
-                    <th>Đánh giá</th>
-                </tr>
-            </thead>
-            <tbody id="topVolunteersTable">
-            </tbody>
-        </table>
-    </div>
-</div>
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="~/Scripts/BaoCaoThongKe.js"></script>
+    <script src="~/Scripts/BaoCaoThongKe.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            // Tải tất cả dữ liệu song song
+            $.when(
+                loadTongQuan(),
+                loadTreEmTheoThang(),
+                loadNguonUngHo()
+            ).fail(function () {
+                console.error("Lỗi khi tải dữ liệu báo cáo");
+                alert("Đã có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau.");
+            });
+        });
+
+        function loadTongQuan() {
+            return $.ajax({
+                url: 'https://localhost:44362/api/BaoCaoThongKe/TongQuan',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    debugger
+                    $('#soSuKien').text(data.soSuKien || 0);
+                    $('#soTreHoTro').text(data.soTreDuocHoTro || 0);
+                    $('#tongUngHo').text((data.tongUngHo ? (data.tongUngHo / 1000000).toFixed(1) : 0) + 'M');
+                    $('#soTinhNguyenVien').text(data.soTinhNguyenVien || 0);
+
+                    // Tạm thời để mặc định phần trăm thay đổi
+                    $('#suKienChange').text('↑ 0%');
+                    $('#treHoTroChange').text('↑ 0%');
+                    $('#ungHoChange').text('↑ 0%');
+                    $('#tnvChange').text('↑ 0%');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Lỗi loadTongQuan:', error, xhr.status);
+                    throw new Error('Lỗi loadTongQuan');
+                }
+            });
+        }
+
+
+        function loadTreEmTheoThang() {
+            return $.ajax({
+                url: 'https://localhost:44362/api/BaoCaoThongKe/TreHoTroTheoKy?',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    const labels = data.map(item => item.label || 'Tháng không xác định');
+                    const values = data.map(item => item.countTreDistinct || 0);
+
+                    new Chart(document.getElementById('childrenChart'), {
+                        type: 'line',
+                        data: {
+                            labels,
+                            datasets: [{
+                                label: 'Trẻ được hỗ trợ',
+                                data: values,
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: { beginAtZero: true }
+                            }
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Lỗi loadTreEmTheoThang:', error, xhr.status);
+                    throw new Error('Lỗi loadTreEmTheoThang');
+                }
+            });
+        }
+
+        function loadNguonUngHo() {
+            return $.ajax({
+                url: 'https://localhost:44362/api/BaoCaoThongKe/UngHoTheoLoai',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    const labels = data.map(item => item.loaiUngHo || 'Không xác định');
+                    const values = data.map(item => item.tongSoTien || 0);
+
+                    new Chart(document.getElementById('donationsChart'), {
+                        type: 'pie',
+                        data: {
+                            labels,
+                            datasets: [{
+                                label: 'Ủng hộ theo loại',
+                                data: values,
+                                backgroundColor: [
+                                    '#4CAF50',
+                                    '#FFC107',
+                                    '#FF5722',
+                                    '#03A9F4',
+                                    '#9C27B0',
+                                    '#009688'
+                                ],
+                                hoverOffset: 20
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Lỗi loadNguonUngHo:', error, xhr.status);
+                    throw new Error('Lỗi loadNguonUngHo');
+                }
+            });
+        }
+    </script>
 }

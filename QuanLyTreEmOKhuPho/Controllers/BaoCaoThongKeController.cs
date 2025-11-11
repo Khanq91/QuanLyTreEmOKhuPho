@@ -15,9 +15,9 @@ namespace QuanLyTreEmOKhuPho.Controllers
         }
         public ActionResult BaoCaoThongKe()
         {
-            ViewBag.ActivePage = "BaoCaoThongKe";
-            ViewBag.PageTitle = "Báo Cáo & Thống Kê";
+            ViewBag.PageTitle = "Báo cáo & Thống kê";
             ViewBag.PageDescription = "Xem báo cáo và thống kê hệ thống";
+            ViewBag.ActivePage = "BaoCaoThongKe";
             return View();
         }
     }

@@ -1,234 +1,222 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "SuKien";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Content/css/SuKien.css" rel="stylesheet" />
-
 <link rel="stylesheet" href="~/Content/css/media.css" />
+
 <style>
-    .header-right {
-        display: flex;
-        align-items: center;
-        gap: 20px;
+    :root {
+        --primary: #4361ee;
+        --primary-hover: #3b5bcc;
+        --warning: #f39c12;
+        --bg-light: #f6f8fc;
+        --text-dark: #222;
+        --radius: 10px;
+        --shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
     }
 
-    .user-info {
+    body {
+        background: var(--bg-light);
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    /* Thanh hành động */
+    .action-bar {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: 12px;
-        padding: 8px 16px;
-        background: var(--gray-50);
-        border-radius: 50px;
-        cursor: pointer;
-        transition: all 0.2s;
+        padding: 16px 20px;
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 25px;
     }
 
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary), #3b82f6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-    }
+        .action-bar a,
+        .action-bar button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 15px;
+        }
+
+            .action-bar a:hover,
+            .action-bar button:hover {
+                background: var(--primary-hover);
+                transform: translateY(-1px);
+            }
+
+        .action-bar .btn-warning {
+            background: var(--warning);
+        }
+
+            .action-bar .btn-warning:hover {
+                background: #d68910;
+            }
+
+  
 </style>
 
+<div class="action-bar">
+    <a href="@Url.Action("CreateSuKien", "SuKien")">
+        <i class="fa-solid fa-plus"></i> Tạo sự kiện mới
+    </a>
+    <a href="@Url.Action("DangKySuKien", "SuKien")">
+        <i class="fa-solid fa-user-plus"></i> Đăng ký sự kiện cho người dùng
+    </a>
+    <a href="@Url.Action("DangKySuKienChoTreEm", "SuKien")">
+        <i class="fa-solid fa-user-plus"></i> Đăng ký sự kiện cho trẻ em
+    </a>
+    <button class="btn-warning" onclick="openDangKyModal()">
+        <i class="fa-solid fa-list-check"></i> Quản lý đăng ký
+    </button>
 
-<!-- Page Header -->
-<div class="page-header">
-    <div class="header-content">
-        <div class="page-title">
-            <h1><i class="fa-solid fa-star"></i> Quản Lý Sự Kiện</h1>
-            <p>Tổ chức và theo dõi các hoạt động thiếu nhi tại khu phố</p>
-        </div>
-        <button class="btn btn-primary" onclick="openCreateEventModal()">
-            <i class="fa-solid fa-circle-plus"></i> Tạo sự kiện mới
-        </button>
-    </div>
 </div>
-
-<!-- Filter Tabs -->
 <div class="filter-tabs">
     <button class="filter-tab active" onclick="filterEvents('all')">
-        <i class="fa-solid fa-bars"></i> Tất cả (18)
+        <i class="fa-solid fa-bars"></i> Tất cả
     </button>
     <button class="filter-tab" onclick="filterEvents('upcoming')">
-        <i class="fa-solid fa-calendar-days"></i> Sắp diễn ra (6)
+        <i class="fa-solid fa-calendar-days"></i> Sắp diễn ra
     </button>
     <button class="filter-tab" onclick="filterEvents('ongoing')">
-        <i class="fa-solid fa-hourglass-half"></i> Đang diễn ra (2)
+        <i class="fa-solid fa-hourglass-half"></i> Đang diễn ra
     </button>
     <button class="filter-tab" onclick="filterEvents('completed')">
-        <i class="fa-solid fa-circle-check"></i> Đã kết thúc (10)
+        <i class="fa-solid fa-circle-check"></i> Đã kết thúc
     </button>
 </div>
 
-<!-- Events Grid -->
 <div class="events-grid" id="eventsGrid"></div>
 
-
 <script>
-    // Sample events data
-    const eventsData = [
-        {
-            id: 1,
-            title: 'Ngày hội Trung thu 2025',
-            date: '15/10/2025',
-            time: '08:00 AM',
-            location: 'Sân trường TH Khu phố 2',
-            status: 'upcoming',
-            volunteers: 25,
-            children: 120,
-            icon: '🏮'
-        },
-        {
-            id: 2,
-            title: 'Khám sức khỏe định kỳ',
-            date: '22/10/2025',
-            time: '07:30 AM',
-            location: 'Trạm y tế Khu phố 5',
-            status: 'upcoming',
-            volunteers: 15,
-            children: 85,
-            icon: '🏥'
-        },
-        {
-            id: 3,
-            title: 'Trao học bổng học kỳ I',
-            date: '28/10/2025',
-            time: '09:00 AM',
-            location: 'Hội trường Ủy ban',
-            status: 'upcoming',
-            volunteers: 10,
-            children: 45,
-            icon: '🎓'
-        },
-        {
-            id: 4,
-            title: 'Ngày hội thể thao',
-            date: '05/10/2025',
-            time: '08:00 AM',
-            location: 'Sân vận động KP',
-            status: 'ongoing',
-            volunteers: 30,
-            children: 150,
-            icon: '⚽'
-        },
-        {
-            id: 5,
-            title: 'Workshop kỹ năng sống',
-            date: '04/10/2025',
-            time: '14:00 PM',
-            location: 'Trung tâm văn hóa',
-            status: 'ongoing',
-            volunteers: 8,
-            children: 40,
-            icon: '📚'
-        },
-        {
-            id: 6,
-            title: 'Ngày hội môi trường',
-            date: '15/09/2025',
-            time: '07:00 AM',
-            location: 'Công viên KP2',
-            status: 'completed',
-            volunteers: 35,
-            children: 180,
-            icon: '🌱'
-        },
-        {
-            id: 7,
-            title: 'Đêm hội trăng rằm tháng 8',
-            date: '01/09/2025',
-            time: '18:00 PM',
-            location: 'Sân trường TH KP1',
-            status: 'completed',
-            volunteers: 20,
-            children: 100,
-            icon: '🌕'
-        },
-        {
-            id: 8,
-            title: 'Hè vui khỏe 2025',
-            date: '15/07/2025',
-            time: '08:00 AM',
-            location: 'Hồ bơi KP',
-            status: 'completed',
-            volunteers: 25,
-            children: 95,
-            icon: '🏊'
-        }
-    ];
+    let eventsData = [];
 
-    // Render events
+    // 🔹 Gọi dữ liệu từ API backend thật
+    async function loadEvents() {
+        try {
+            const response = await fetch('/SuKien/GetAll');
+            const data = await response.json();
+
+            if (data.error) {
+                showNotification(data.message, "danger");
+                return;
+            }
+
+            // Gắn thêm trường trạng thái dựa trên ngày bắt đầu / kết thúc
+            const now = new Date();
+
+            eventsData = data.map(e => {
+                const a = new Date(parseInt(e.NgayBatDau.match(/\d+/)[0]));
+                const b = new Date(parseInt(e.NgayKetThuc.match(/\d+/)[0]));
+
+                let trangThai = '';
+
+                if (b < now) trangThai = 'Đã kết thúc';
+                else if (a > now) trangThai = 'Sắp diễn ra';
+                else trangThai = 'Đang diễn ra';
+
+                return {
+                    ...e,
+                    TrangThai: trangThai
+                };
+            });
+
+            renderEvents(); // render mặc định tất cả
+        } catch (error) {
+            console.error(error);
+            showNotification("Không thể kết nối đến API sự kiện!", "danger");
+        }
+    }
+
+
+    // 🔹 Render danh sách sự kiện
     function renderEvents(filter = 'all') {
         const grid = document.getElementById('eventsGrid');
         grid.innerHTML = '';
 
-        const filtered = filter === 'all'
-            ? eventsData
-            : eventsData.filter(e => e.status === filter);
+        const filtered = eventsData.filter(e => {
+            if (filter === 'all') return true;
+            if (filter === 'upcoming') return e.TrangThai === 'Sắp diễn ra';
+            if (filter === 'ongoing') return e.TrangThai === 'Đang diễn ra';
+            if (filter === 'completed') return e.TrangThai === 'Đã kết thúc';
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `<p style="text-align:center;color:gray;">Không có sự kiện nào.</p>`;
+            return;
+        }
 
         filtered.forEach(event => {
-            const statusText = {
-                'upcoming': 'Sắp diễn ra',
-                'ongoing': 'Đang diễn ra',
-                'completed': 'Đã kết thúc'
-            }[event.status];
-
-            const statusClass = {
-                'upcoming': 'status-upcoming',
-                'ongoing': 'status-ongoing',
-                'completed': 'status-completed'
-            }[event.status];
-
+            debugger
             const card = document.createElement('div');
             card.className = 'event-card';
-            card.onclick = () => viewEvent(event.id);
+            card.onclick = () => viewEvent(event.SuKienId);
+
+            const start = new Date(parseInt(event.NgayBatDau.match(/\d+/)[0])).toLocaleDateString('vi-VN');
+            const end =  new Date(parseInt(event.NgayKetThuc.match(/\d+/)[0])).toLocaleDateString('vi-VN');
+            const statusClass = getStatusClass(event.TrangThai);
 
             card.innerHTML = `
-                    <div class="event-image">
-                        <span style="font-size: 80px;">${event.icon}</span>
-                        <div class="event-status ${statusClass}">${statusText}</div>
-                    </div>
-                    <div class="event-content">
-                        <h3 class="event-title">${event.title}</h3>
-                        <div class="event-meta">
-                            <div class="meta-item">
-                                <span class="meta-icon">📅</span>
-                                <span>${event.date} - ${event.time}</span>
-                            </div>
-                            <div class="meta-item">
-                                <span class="meta-icon">📍</span>
-                                <span>${event.location}</span>
-                            </div>
+                <div class="event-image ${statusClass}">
+                    <span style="font-size: 70px;">🎉</span>
+                </div>
+                <div class="event-content">
+                    <h3 class="event-title">${event.TenSuKien}</h3>
+                    <div class="event-meta">
+                        <div class="meta-item">
+                            <span>📅</span>
+                            <span>${start} - ${end}</span>
                         </div>
-                        <div class="event-stats">
-                            <div class="stat-item">
-                                <span>👥</span>
-                                <span><span class="stat-value">${event.volunteers}</span> TNV</span>
-                            </div>
-                            <div class="stat-item">
-                                <span>👶</span>
-                                <span><span class="stat-value">${event.children}</span> Trẻ em</span>
-                            </div>
+                        <div class="meta-item">
+                            <span>📍</span>
+                            <span>${event.DiaDiem}</span>
                         </div>
-                        <div class="event-actions">
-                            <button class="btn btn-sm btn-view">👁️ Xem chi tiết</button>
-                            <button class="btn btn-sm btn-edit" onclick="event.stopPropagation(); editEvent(${event.id})">✏️ Sửa</button>
+                        <div class="meta-item">
+                            <span>🕒</span>
+                            <span class="badge ${statusClass}">${event.TrangThai}</span>
                         </div>
                     </div>
-                `;
+                    <div class="event-actions">
+                        <button class="btn btn-sm btn-view" data-id="${event.SuKienId}">👁️ Xem chi tiết</button>
+                        <button class="btn btn-sm btn-edit" onclick="event.stopPropagation(); editEvent(${event.SuKienId})">✏️ Sửa</button>
+                    </div>
+                </div>
+            `;
 
             grid.appendChild(card);
         });
     }
 
-    // Filter events
+    // 🔹 CSS trạng thái
+    function getStatusClass(status) {
+        if (!status) return '';
+        status = status.toLowerCase();
+        if (status.includes('sắp')) return 'status-upcoming';
+        if (status.includes('đang')) return 'status-ongoing';
+        if (status.includes('kết thúc')) return 'status-completed';
+        return '';
+    }
+
+    // 🔹 Chuyển định dạng ngày
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN');
+    }
+
+    // 🔹 Lọc
     function filterEvents(status) {
         const tabs = document.querySelectorAll('.filter-tab');
         tabs.forEach(tab => tab.classList.remove('active'));
@@ -236,113 +224,194 @@
         renderEvents(status);
     }
 
-    // View event detail
+    // 🔹 Giả lập các hành động
     function viewEvent(id) {
-        document.getElementById('eventDetailModal').classList.add('active');
-        showNotification('Đang tải thông tin sự kiện...', 'info');
+        showNotification(`Xem chi tiết sự kiện #${id}`, 'info');
     }
 
-    // Edit event
     function editEvent(id) {
-        showNotification(`Chỉnh sửa sự kiện #${id}`, 'info');
+        // Hiển thị thông báo (tuỳ chọn)
+        showNotification(`🔧 Đang mở trang chỉnh sửa sự kiện #${id}`, 'info');
+
+        // Chuyển hướng sang trang EditSuKien.cshtml
+        window.location.href = `/SuKien/EditSuKien/${id}`;
     }
 
-    // Close modal
-    function closeModal() {
-        document.getElementById('eventDetailModal').classList.remove('active');
-    }
 
-    // Open create event modal
     function openCreateEventModal() {
         showNotification('Mở form tạo sự kiện mới', 'info');
     }
 
-    // Switch tabs
-    function switchTab(index) {
-        const tabs = document.querySelectorAll('.tab');
-        const contents = document.querySelectorAll('.tab-content');
-
-        tabs.forEach(tab => tab.classList.remove('active'));
-        contents.forEach(content => content.classList.remove('active'));
-
-        tabs[index].classList.add('active');
-        contents[index].classList.add('active');
-    }
-
-    // Notification system
+    // 🔹 Hiển thị thông báo
     function showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         const icons = { success: '✓', warning: '⚠', info: 'ℹ', danger: '✕' };
         const colors = {
-            success: 'var(--success)',
-            warning: 'var(--warning)',
-            info: 'var(--primary)',
-            danger: 'var(--danger)'
+            success: '#4caf50',
+            warning: '#ff9800',
+            info: '#2196f3',
+            danger: '#f44336'
         };
 
         notification.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span style="font-size: 20px;">${icons[type]}</span>
-                    <span>${message}</span>
-                </div>
-            `;
-
-        notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: white;
-                padding: 16px 24px;
-                border-radius: 12px;
-                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-                z-index: 10001;
-                animation: slideIn 0.3s ease;
-                border-left: 4px solid ${colors[type]};
-                max-width: 400px;
-            `;
-
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            notification.style.animation = 'slideOut 0.3s ease';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
-    }
-
-    // Animation styles
-    const style = document.createElement('style');
-    style.textContent = `
-            @@keyframes slideIn {
-                from { transform: translateX(400px); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @@keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(400px); opacity: 0; }
-            }
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 20px;">${icons[type]}</span>
+                <span>${message}</span>
+            </div>
         `;
-    document.head.appendChild(style);
-
-    // Close modal on outside click
-    document.getElementById('eventDetailModal').addEventListener('click', function (e) {
-        if (e.target === this) {
-            closeModal();
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 10001;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid ${colors[type]};
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => { notification.remove(); }, 3000);
+    }
+    document.addEventListener('click', e => {
+        const btn = e.target.closest('.btn-view');
+        if (!btn) return;
+        const id = btn.getAttribute('data-id');
+        if (id) {
+            window.location.href = `/SuKien/ChiTiet/${id}`;
         }
     });
-
-    // Initialize
-    renderEvents();
-
-    // Animate expense bars
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            document.querySelectorAll('.expense-fill').forEach(fill => {
-                const width = fill.style.width;
-                fill.style.width = '0';
-                setTimeout(() => {
-                    fill.style.width = width;
-                }, 100);
-            });
-        }, 500);
-    });
+    // 🔹 Khởi chạy khi load trang
+    document.addEventListener("DOMContentLoaded", loadEvents);
 </script>
+
+
+<div id="dangKyModal" class="modal fade" tabindex="-1">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px;">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">📋 Quản lý đăng ký sự kiện</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Sự kiện</th>
+                            <th>Người đăng ký</th>
+                            <th>Ngày đăng ký</th>
+                            <th>Trạng thái</th>
+                            <th class="text-center">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableDangKy">
+                        <tr><td colspan="6" class="text-center text-muted">Đang tải dữ liệu...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .modal.show {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+<script>
+
+    // Mở modal
+    function openDangKyModal() {
+        const modal = new bootstrap.Modal(document.getElementById("dangKyModal"));
+        modal.show();
+        loadDangKySuKien();
+    }
+
+    // Load danh sách đăng ký từ API
+    async function loadDangKySuKien() {
+        const tbody = document.getElementById("tableDangKy");
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">⏳ Đang tải...</td></tr>`;
+
+        try {
+            const res = await fetch('https://localhost:44362/api/SuKien/getalldangkysukien');
+            if (!res.ok) throw new Error("Không thể tải danh sách");
+            const data = await res.json();
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">Không có đăng ký nào.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            data.forEach((item, idx) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${idx + 1}</td>
+                <td>${item.tenSuKien}</td>
+                <td>${item.hoTenNguoiDung}</td>
+                <td>${item.ngayDangKy}</td>
+                <td>
+                    <span class="badge ${getBadgeClass(item.trangThai)}">${item.trangThai}</span>
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-success btn-sm me-1" onclick="approveDangKy(${item.dangKySuKienId})">Duyệt</button>
+                    <button class="btn btn-danger btn-sm me-1" onclick="rejectDangKy(${item.dangKySuKienId})">Từ chối</button>
+                    <button class="btn btn-secondary btn-sm" onclick="deleteDangKy(${item.dangKySuKienId})">Xóa</button>
+                </td>
+            `;
+                tbody.appendChild(row);
+            });
+        } catch (err) {
+            console.error(err);
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">❌ Lỗi tải dữ liệu</td></tr>`;
+        }
+    }
+
+    // Badge màu trạng thái
+    function getBadgeClass(status) {
+        status = status?.toLowerCase();
+        if (status.includes('chờ')) return 'bg-warning text-dark';
+        if (status.includes('đã duyệt')) return 'bg-success';
+        if (status.includes('từ chối')) return 'bg-danger';
+        return 'bg-secondary';
+    }
+
+    // Action: Duyệt
+    async function approveDangKy(id) {
+        if (!confirm("Xác nhận duyệt đăng ký này?")) return;
+        const res = await fetch(`https://localhost:44362/api/SuKien/approve/${id}`, { method: 'PUT' });
+        if (res.ok) {
+            showNotification("✅ Đã duyệt đăng ký!", "success");
+            loadDangKySuKien();
+        } else showNotification("Lỗi duyệt đăng ký!", "danger");
+    }
+
+    // Action: Từ chối
+    async function rejectDangKy(id) {
+        if (!confirm("Bạn có chắc muốn từ chối đăng ký này?")) return;
+        const res = await fetch(`https://localhost:44362/api/SuKien/reject/${id}`, { method: 'PUT' });
+        if (res.ok) {
+            showNotification("❌ Đã từ chối đăng ký!", "warning");
+            loadDangKySuKien();
+        } else showNotification("Lỗi từ chối!", "danger");
+    }
+
+    // Action: Xóa
+    async function deleteDangKy(id) {
+        if (!confirm("Bạn có chắc muốn xóa đăng ký này?")) return;
+        const res = await fetch(`https://localhost:44362/api/SuKien/deletedangky/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            showNotification("🗑️ Đã xóa đăng ký!", "success");
+            loadDangKySuKien();
+        } else showNotification("Lỗi xóa đăng ký!", "danger");
+    }
+
+</script>
+@section scripts {
+    <!-- ✅ Thêm dòng này để có bootstrap.Modal -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+}

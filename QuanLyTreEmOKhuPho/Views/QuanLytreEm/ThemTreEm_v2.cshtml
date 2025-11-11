@@ -1,46 +1,14 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "ThemTreEm_v2";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Content/css/ThemTreEm.css" rel="stylesheet" />
 <link rel="stylesheet" href="~/Content/css/media.css" />
-<style>
-    .header-right {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
 
-    .user-info {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 8px 16px;
-        background: var(--gray-50);
-        border-radius: 50px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .user-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary), #3b82f6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-    }
-</style>
 <div class="step-container">
     <div class="step-progress">
         <div class="step-item completed">
-            <div class="step-circle">
-                <i style="color:white" class="fa-solid fa-check"></i>
-            </div>
+            <div class="step-circle"><i class="fa-solid fa-check"></i></div>
             <div class="step-label">Thông tin cơ bản</div>
         </div>
         <div class="step-item active">
@@ -54,81 +22,87 @@
     </div>
 </div>
 
-<div class="search-section">
-    <h3 class="section-title"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm phụ huynh có sẵn</h3>
-    <div class="search-header">
-        <input type="text" class="search-input" id="searchInput"
-               placeholder="Tìm theo tên, số điện thoại hoặc địa chỉ..." />
-        <button class="btn btn-primary" onclick="searchParents()">Tìm kiếm</button>
-    </div>
-    <div class="search-results" id="searchResults"></div>
-</div>
-
 <div class="form-container">
-    <h3 class="section-title"><i class="fa-solid fa-pen-nib"></i> Thông tin phụ huynh mới</h3>
+    <h3 class="section-title">Thông tin phụ huynh</h3>
+    <div id="parentsList" class="parent-list"></div>
 
     <div class="form-grid">
-        <div class="form-group">
-            <label class="form-label required">Họ và tên</label>
-            <input type="text" class="form-control" id="hoTen" placeholder="Nhập họ tên đầy đủ" />
-        </div>
-        <div class="form-group">
-            <label class="form-label required">Số điện thoại</label>
-            <input type="tel" class="form-control" id="sdt" placeholder="0912345678" maxlength="15" />
-        </div>
-        <div class="form-group">
-            <label class="form-label required">Ngày sinh</label>
-            <input type="date" class="form-control" id="ngaySinh" />
-        </div>
-        <div class="form-group">
-            <label class="form-label required">Nghề nghiệp</label>
-            <input type="text" class="form-control" id="ngheNghiep" placeholder="VD: Giáo viên, Công nhân..." />
-        </div>
-        <div class="form-group">
-            <label class="form-label">Dân tộc</label>
-            <input type="text" class="form-control" id="danToc" value="Kinh" />
-        </div>
-        <div class="form-group">
-            <label class="form-label">Tôn giáo</label>
-            <input type="text" class="form-control" id="tonGiao" placeholder="Không" />
-        </div>
-        <div class="form-group">
-            <label class="form-label">Quốc tịch</label>
-            <input type="text" class="form-control" id="quocTich" value="Việt Nam" />
-        </div>
+        <div class="form-group"><label>Họ và tên</label><input id="hoTen" class="form-control" /></div>
+        <div class="form-group"><label>Số điện thoại</label><input id="sdt" class="form-control" /></div>
+        <div class="form-group"><label>Nghề nghiệp</label><input id="ngheNghiep" class="form-control" /></div>
+        <div class="form-group"><label>Địa chỉ</label><input id="diaChi" class="form-control" /></div>
     </div>
 
-    <div class="form-grid full">
-        <div class="form-group">
-            <label class="form-label required">Địa chỉ</label>
-            <input type="text" class="form-control" id="diaChi" placeholder="Số nhà, đường, phường/xã, quận/huyện..." />
-        </div>
+    <button class="btn btn-primary" type="button" onclick="addParent()">+ Thêm phụ huynh</button>
+
+    <div class="result-section" id="resultSection" style="display:none;">
+        <h3 style="margin-bottom: 20px;">Danh sách đã thêm (<span id="totalCount">0</span>)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Họ tên</th>
+                    <th>SĐT</th>
+                    <th>Nghề nghiệp</th>
+                    <th>Địa chỉ</th>
+                </tr>
+            </thead>
+            <tbody id="parentsTableBody"></tbody>
+        </table>
     </div>
 
     <div class="form-actions" style="justify-content:flex-end">
-        <button class="btn btn-secondary" onclick="resetAll()">Hủy bỏ</button>
-        <button class="btn btn-secondary">Làm mới</button>
-        <button class="btn btn-success"><i class="fa-solid fa-floppy-disk"></i> Lưu phụ huynh</button>
-        <a href="@Url.Action("ThemTreEm_v3", "QuanLyTreEm")" class="btn btn-primary">
-            Tiếp theo
-        </a>
+        <button class="btn btn-secondary" onclick="window.history.back()">Quay lại</button>
+        <button class="btn btn-secondary">Hủy bỏ</button>
+        <button class="btn btn-primary" type="button" onclick="nextStepParent()">Tiếp theo</button>
     </div>
 </div>
 
-<div class="result-section" id="resultSection" style="display: none;">
-    <h3 style="margin-bottom: 20px;">Danh sách đã chọn (<span id="totalCount">0</span>)</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Họ tên</th>
-                <th>SĐT</th>
-                <th>Nghề nghiệp</th>
-                <th>Địa chỉ</th>
-                <th>Nguồn</th>
-            </tr>
-        </thead>
-        <tbody id="parentsTableBody"></tbody>
-    </table>
-</div>
+<script>
+    const parentList = [];
 
+    function addParent() {
+        const p = {
+            HoTen: $("#hoTen").val(),
+            SDT: $("#sdt").val(),
+            NgheNghiep: $("#ngheNghiep").val(),
+            DiaChi: $("#diaChi").val(),
+            MoiQuanHe: "Cha/Mẹ",
+            DanToc: "Kinh",         // ✅ Bổ sung bắt buộc cho backend
+            TonGiao: "Không",       // ✅
+            QuocTich: "Việt Nam"    // ✅
+        };
+
+        if (!p.HoTen) return alert("Vui lòng nhập họ tên phụ huynh!");
+        if (!p.SDT) return alert("Vui lòng nhập số điện thoại!");
+
+        parentList.push(p);
+        renderParentList();
+
+        // Xóa input sau khi thêm
+        $("#hoTen, #sdt, #ngheNghiep, #diaChi").val("");
+    }
+
+    function renderParentList() {
+        const tbody = $("#parentsTableBody");
+        tbody.empty();
+        parentList.forEach((p) => {
+            tbody.append(`
+                <tr>
+                    <td>${p.HoTen}</td>
+                    <td>${p.SDT}</td>
+                    <td>${p.NgheNghiep}</td>
+                    <td>${p.DiaChi}</td>
+                </tr>`);
+        });
+        $("#resultSection").show();
+        $("#totalCount").text(parentList.length);
+    }
+
+    function nextStepParent() {
+        if (parentList.length === 0) {
+            return alert("Vui lòng thêm ít nhất 1 phụ huynh trước khi tiếp tục!");
+        }
+        localStorage.setItem("TreEm_Parents", JSON.stringify(parentList));
+        window.location.href = "/QuanLyTreEm/ThemTreEm_v3";
+    }
+</script>
