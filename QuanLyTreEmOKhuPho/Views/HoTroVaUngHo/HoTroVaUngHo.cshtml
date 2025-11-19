@@ -2,10 +2,11 @@
 @{
     ViewBag.Title = "HoTroVaUngHo";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var ThongKe = ViewBag.ThongKe;
+    var DSHoTroPhucLoi = ViewBag.DSHoTroPhucLoi;
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 
 <link rel="stylesheet" href="~/Content/css/HoTroVaUngHo.css" />
 <link rel="stylesheet" href="~/Content/css/media.css" />
@@ -38,6 +39,50 @@
         color: white;
         font-weight: bold;
     }
+    .progress-bar {
+    width: 100%;
+    height: 12px;
+    background: var(--gray-200);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--success), var(--primary));
+    transition: width 0.5s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .progress-fill::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient( 90deg, transparent, rgba(255,255,255,0.3), transparent );
+        animation: shimmer 2s infinite;
+    }
+    .progress-text {
+        text-align: center;
+        font-size: 14px;
+        color: var(--gray-600);
+        font-weight: 600;
+    }
+@@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+
 </style>
 <!-- Page Header -->
 <div class="page-header">
@@ -45,25 +90,12 @@
         <h1><i class="fa-solid fa-heart-pulse"></i> Quản Lý Hỗ Trợ & Ủng Hộ</h1>
         <p>Quản lý hỗ trợ phúc lợi và theo dõi ủng hộ từ mạnh thường quân</p>
     </div>
-    <button class="btn btn-white" onclick="openCreateSupportModal()">
+    <button class="btn btn-white" onclick="location.href='@Url.Action("ThemUngHoPhucLoi", "HoTroVaUngHo")'">
         <i class="fa-solid fa-circle-plus"></i> Tạo đợt hỗ trợ mới
     </button>
 </div>
 
-<!-- Main Tabs -->
 <div class="main-tabs">
-    <div class="tab-buttons">
-        <button class="tab-btn active" onclick="switchMainTab(0)">
-            <i class="fa-solid fa-heart-pulse"></i> Hỗ trợ & Phúc lợi
-        </button>
-        <button class="tab-btn" onclick="switchMainTab(1)">
-            <i class="fa-solid fa-sack-dollar"></i> Mạnh thường quân
-        </button>
-        <button class="tab-btn" onclick="switchMainTab(2)">
-            <i class="fa-solid fa-clipboard"></i> Lịch sử ủng hộ
-        </button>
-    </div>
-
     <!-- Tab 1: Support & Welfare -->
     <div class="tab-content active">
         <!-- Stats -->
@@ -71,28 +103,28 @@
             <div class="stat-card">
                 <div class="stat-icon" style="background: rgba(236, 72, 153, 0.1); color: var(--pink);"><i class="fa-solid fa-heart-pulse"></i></div>
                 <div class="stat-content">
-                    <h3>342</h3>
+                    <h3>@ThongKe.SoLuongHoTro</h3>
                     <p>Tổng lượt hỗ trợ</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fa-solid fa-sack-dollar"></i></div>
                 <div class="stat-content">
-                    <h3>485M</h3>
+                    <h3>@($"{ThongKe.TongTien / 1_000_000:0.##} triệu")</h3>
                     <p>Tổng giá trị</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon" style="background: rgba(37, 99, 235, 0.1); color: var(--primary);"><i class="fa-solid fa-children"></i></div>
                 <div class="stat-content">
-                    <h3>856</h3>
+                    <h3>@ThongKe.SoLuongTreEm</h3>
                     <p>Trẻ được hỗ trợ</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--purple);"><i class="fa-solid fa-calendar-days"></i></div>
                 <div class="stat-content">
-                    <h3>28</h3>
+                    <h3>@ThongKe.SoDotHoTro</h3>
                     <p>Đợt hỗ trợ tháng này</p>
                 </div>
             </div>
@@ -137,92 +169,82 @@
         <!-- Support List -->
         <div class="support-grid" id="supportList">
             <!-- Will be populated by JavaScript -->
-        </div>
-    </div>
+            @foreach (var item in DSHoTroPhucLoi)
+            {
+                <div class="support-card">
+                    <div class="support-header">
+                        <div>
+                            <h3 class="support-title">@item.MoTa</h3>
+                            <span class="support-type">@item.LoaiUngHo</span>
+                        </div>
+                    </div>
 
-    <!-- Tab 2: Sponsors -->
-    <div class="tab-content">
-        <!-- Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: var(--purple);"><i class="fa-solid fa-users-line"></i></div>
-                <div class="stat-content">
-                    <h3>48</h3>
-                    <p>Tổng mạnh thường quân</p>
+                    <div class="support-meta">
+                        <div class="meta-item">
+                            <span><i class="fa-solid fa-calendar-days"></i></span>
+                            <span>@item.NgayUngHo</span>
+                        </div>
+                        <div class="meta-item">
+                            <span><i class="fa-solid fa-user"></i></span>
+                            <span>@item.TenManhThuongQuan</span>
+                        </div>
+                        <div class="meta-item">
+                            <span><i class="fa-solid fa-house-medical-circle-check"></i></span>
+                            <span>@item.TenKhuPho</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="support-value">
+                            @{
+                                if (item.SoTien >= 1_000_000)
+                                {
+                                    @($"{item.SoTien / 1_000_000M:0.##} triệu")
+                                }
+                                else
+                                {
+                                    @($"{item.SoTien / 1_000M:0.##} nghìn")
+                                }
+                            }
+                        </div>
+
+                        <div class="support-recipients">@item.SoLuongTreEmDuocUngHo trẻ em nhận hỗ trợ</div>
+                    </div>
+
+                    <div class="support-actions">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="location.href='@Url.Action("ChiTietUngHo", "HoTroVaUngHo", new { id = item.HoTroId })'">
+                            Chi tiết
+                        </button>
+                        @*<button class="btn btn-sm" style="background: var(--warning); color: white;" onclick="event.stopPropagation();">
+                            Sửa
+                        </button>*@
+                        @*<button class="btn btn-sm" style="background: var(--danger); color: white;" onclick="event.stopPropagation();">
+                            Xóa
+                        </button>*@
+                    </div>
+                    @*<div class="progress-text">Đã phát: @item.PercentDaPhat%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width:@item.PercentDaPhat%;"></div>
+                    </div>*@
                 </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);"><i class="fa-solid fa-sack-dollar"></i></div>
-                <div class="stat-content">
-                    <h3>485M</h3>
-                    <p>Tổng ủng hộ</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: rgba(37, 99, 235, 0.1); color: var(--primary);"><i class="fa-solid fa-user"></i></div>
-                <div class="stat-content">
-                    <h3>32</h3>
-                    <p>Cá nhân</p>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);"><i class="fa-solid fa-building"></i></div>
-                <div class="stat-content">
-                    <h3>16</h3>
-                    <p>Tổ chức</p>
-                </div>
-            </div>
-        </div>
+            }
 
-        <!-- Sponsor Actions -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <div class="form-group" style="max-width: 400px; margin: 0;">
-                <input type="text" class="form-control" placeholder="Tìm kiếm mạnh thường quân..." id="searchSponsor">
-            </div>
-            <button class="btn btn-primary" onclick="openAddSponsorModal()"><i class="fa-solid fa-circle-plus"></i> Thêm MTQ mới</button>
-        </div>
-
-        <!-- Sponsor Grid -->
-        <div class="sponsor-grid" id="sponsorList">
-            <!-- Will be populated by JavaScript -->
-        </div>
-    </div>
-
-    <!-- Tab 3: Donation History -->
-    <div class="tab-content">
-        <div style="background: white; border-radius: 12px; padding: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-clipboard"></i> Lịch sử ủng hộ chi tiết</h3>
-
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead style="background: var(--gray-50);">
-                    <tr>
-                        <th style="padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600;">Ngày</th>
-                        <th style="padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600;">Mạnh thường quân</th>
-                        <th style="padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600;">Loại</th>
-                        <th style="padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600;">Giá trị</th>
-                        <th style="padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600;">Đối tượng</th>
-                        <th style="padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600;">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody id="donationHistory">
-                    <!-- Will be populated by JavaScript -->
-                </tbody>
-            </table>
         </div>
     </div>
 </div>
 
 <!-- Create Support Modal -->
-<div class="modal" id="createSupportModal">
+<!--<div class="modal" id="createSupportModal">
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modal-title"><i class="fa-solid fa-circle-plus"></i> Tạo đợt hỗ trợ mới</h3>
             <button class="close-btn" onclick="closeModal('createSupportModal')">✕</button>
         </div>
         <div class="modal-body">
-            <form id="createSupportForm">
+            <form id="createSupportForm">-->
                 <!-- Basic Info -->
-                <div class="form-section">
+                <!--<div class="form-section">
                     <h4 class="section-title"><i class="fa-solid fa-clipboard"></i> Thông tin cơ bản</h4>
                     <div class="form-row">
                         <div class="form-group">
@@ -259,10 +281,10 @@
                             <textarea class="form-control" placeholder="Mô tả chi tiết về đợt hỗ trợ..."></textarea>
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 <!-- Select Children -->
-                <div class="form-section">
+                <!--<div class="form-section">
                     <h4 class="section-title"><i class="fa-solid fa-children"></i> Danh sách trẻ nhận hỗ trợ</h4>
                     <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                         <button type="button" class="btn btn-primary" onclick="openSelectChildrenModal()">
@@ -293,10 +315,10 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div>-->
 
                 <!-- Upload Evidence -->
-                <div class="form-section">
+                <!--<div class="form-section">
                     <h4 class="section-title"><i class="fa-solid fa-paperclip"></i> Upload minh chứng</h4>
                     <div class="file-upload-area" onclick="document.getElementById('fileInput').click()">
                         <div class="upload-icon"><i class="fa-solid fa-file"></i></div>
@@ -310,10 +332,10 @@
                     </div>
 
                     <div class="uploaded-files" id="uploadedFiles"></div>
-                </div>
+                </div>-->
 
                 <!-- Form Actions -->
-                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <!--<div style="display: flex; gap: 10px; justify-content: flex-end;">
                     <button type="button" class="btn" style="background: var(--gray-200); color: var(--gray-700);" onclick="closeModal('createSupportModal')">
                         Hủy
                     </button>
@@ -324,10 +346,10 @@
             </form>
         </div>
     </div>
-</div>
+</div>-->
 
 <!-- Select Children Modal -->
-<div class="modal" id="selectChildrenModal">
+<!--<div class="modal" id="selectChildrenModal">
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modal-title"><i class="fa-solid fa-children"></i> Chọn trẻ em nhận hỗ trợ</h3>
@@ -350,9 +372,9 @@
                             <th>Giá trị</th>
                         </tr>
                     </thead>
-                    <tbody id="childrenSelectList">
+                    <tbody id="childrenSelectList">-->
                         <!-- Sample data -->
-                        <tr>
+                        <!--<tr>
                             <td><input type="checkbox" class="child-checkbox" data-id="1"></td>
                             <td>Nguyễn Văn A</td>
                             <td>10 tuổi</td>
@@ -390,14 +412,14 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->
 
 <!-- Add Sponsor Modal -->
-<div class="modal" id="addSponsorModal">
+@*<div class="modal" id="addSponsorModal">
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modal-title"><i class="fa-solid fa-sack-dollar"></i> Thêm mạnh thường quân</h3>
-            <button class="close-btn" onclick="closeModal('addSponsorModal')">✕</button>
+            <button class="close-btn" >✕</button>
         </div>
         <div class="modal-body">
             <form id="addSponsorForm">
@@ -452,10 +474,10 @@
             </form>
         </div>
     </div>
-</div>
+</div>*@
 
 <!-- Record Donation Modal -->
-<div class="modal" id="recordDonationModal">
+<!--<div class="modal" id="recordDonationModal">
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modal-title">📝 Ghi nhận ủng hộ</h3>
@@ -534,149 +556,10 @@
             </form>
         </div>
     </div>
-</div>
+</div>-->
 
 <script>
     // Sample data
-    const supportsData = [
-        {
-            id: 1,
-            name: 'Học bổng học kỳ I năm 2025',
-            type: 'scholarship',
-            typeName: 'Học bổng',
-            date: '01/09/2025',
-            responsible: 'Nguyễn Thị Hương',
-            value: 45000000,
-            recipients: 45,
-            khuPho: 'Khu phố 2'
-        },
-        {
-            id: 2,
-            name: 'Quà Trung thu 2025',
-            type: 'gift',
-            typeName: 'Quà tặng',
-            date: '15/09/2025',
-            responsible: 'Trần Văn Nam',
-            value: 25000000,
-            recipients: 120,
-            khuPho: 'Tất cả'
-        },
-        {
-            id: 3,
-            name: 'Khám sức khỏe định kỳ',
-            type: 'health',
-            typeName: 'Khám sức khỏe',
-            date: '20/08/2025',
-            responsible: 'Lê Thị Mai',
-            value: 18000000,
-            recipients: 85,
-            khuPho: 'Khu phố 1, 3'
-        }
-    ];
-
-    const sponsorsData = [
-        {
-            id: 1,
-            name: 'Nguyễn Văn A',
-            type: 'individual',
-            typeName: 'Cá nhân',
-            phone: '0901234567',
-            totalDonation: 15000000,
-            donationCount: 8
-        },
-        {
-            id: 2,
-            name: 'Công ty TNHH ABC',
-            type: 'organization',
-            typeName: 'Tổ chức',
-            phone: '0287654321',
-            totalDonation: 50000000,
-            donationCount: 5
-        },
-        {
-            id: 3,
-            name: 'Trần Thị B',
-            type: 'individual',
-            typeName: 'Cá nhân',
-            phone: '0912345678',
-            totalDonation: 8000000,
-            donationCount: 12
-        }
-    ];
-
-    const donationHistoryData = [
-        {
-            date: '05/10/2025',
-            sponsor: 'Nguyễn Văn A',
-            type: 'Tiền mặt',
-            value: '5,000,000 VNĐ',
-            target: 'Học bổng - Trẻ em Nguyễn Văn C'
-        },
-        {
-            date: '01/10/2025',
-            sponsor: 'Công ty ABC',
-            type: 'Hiện vật',
-            value: '20,000,000 VNĐ',
-            target: 'Sự kiện Trung thu 2025'
-        }
-    ];
-
-    // Render support list
-    function renderSupportList() {
-        const container = document.getElementById('supportList');
-        container.innerHTML = '';
-
-        supportsData.forEach(support => {
-            const card = document.createElement('div');
-            card.className = 'support-card';
-            card.onclick = () => viewSupportDetail(support.id);
-
-            card.innerHTML = `
-                    <div class="support-header">
-                        <div>
-                            <h3 class="support-title">${support.name}</h3>
-                            <span class="support-type">${support.typeName}</span>
-                        </div>
-                    </div>
-
-                    <div class="support-meta">
-                        <div class="meta-item">
-                            <span><i class="fa-solid fa-calendar-days"></i></span>
-                            <span>${support.date}</span>
-                        </div>
-                        <div class="meta-item">
-                            <span><i class="fa-solid fa-user"></i></span>
-                            <span>${support.responsible}</span>
-                        </div>
-                        <div class="meta-item">
-                            <span><i class="fa-solid fa-house-medical-circle-check"></i></span>
-                            <span>${support.khuPho}</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="support-value">${formatMoney(support.value)}</div>
-                        <div class="support-recipients">${support.recipients} trẻ em nhận hỗ trợ</div>
-                    </div>
-
-                    <div class="support-actions">
-                        <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); viewSupportDetail(${support.id})">
-                            Chi tiết
-                        </button>
-                        <button class="btn btn-sm" style="background: var(--warning); color: white;" onclick="event.stopPropagation(); editSupport(${support.id})">
-                            Sửa
-                        </button>
-                        <button class="btn btn-sm" style="background: var(--danger); color: white;" onclick="event.stopPropagation(); deleteSupport(${support.id})">
-                            Xóa
-                        </button>
-                    </div>
-                `;
-
-            container.appendChild(card);
-        });
-    }
-
-    // Render sponsor list
     function renderSponsorList() {
         const container = document.getElementById('sponsorList');
         container.innerHTML = '';

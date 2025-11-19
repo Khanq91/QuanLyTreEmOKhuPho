@@ -12,6 +12,8 @@ namespace QuanLyTreEmOKhuPho.Models
         public decimal? SoTien { get; set; }
 
         public string LoaiUngHo { get; set; }
+        public int SoLuongVatPham { get; set; }
+        public int SoLuongConLai { get; set; }
 
         public DateTime NgayUngHo { get; set; }
 

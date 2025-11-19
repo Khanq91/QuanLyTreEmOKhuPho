@@ -1,0 +1,151 @@
+﻿@using QuanLyTreEmOKhuPho.Models
+@model QuanLyTreEmOKhuPho.Models.ManhThuongQuan.SuaThongTinUngHoManhThuongQuan
+
+@{
+    ViewBag.Title = "SuaUngHoManhThuongQuan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    //var LichSuUngHo = ViewBag.LichSuUngHo;
+
+}
+
+<link rel="stylesheet" href="~/Content/css/Site.css" />
+<link rel="stylesheet" href="~/Content/css/GhiNhanUngHo.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    .back-button {
+        margin-bottom: 10px;
+    }
+
+    .btn-back {
+        display: inline-block;
+        background-color: #f0f0f0;
+        color: #333;
+        padding: 8px 14px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.2s ease;
+    }
+
+        .btn-back:hover {
+            background-color: #e2e2e2;
+        }
+</style>
+<div class="content-wrapper">
+    <div class="form-section">
+        <h2 class="section-title">
+            <span><i class="fa-solid fa-pen-to-square"></i></span>
+            Sửa thông tin ủng hộ
+        </h2>
+        <div id="alertContainer"></div>
+        <form id="donationForm" method="post" action="@Url.Action("SuaUngHoManhThuongQuan", "ManhThuongQuan")">
+
+            <!-- Hidden field cho UngHoId -->
+            <input type="hidden" name="UngHoId" value="@Model.UngHoId">
+
+            <div class="form-group">
+                <label>Mạnh thường quân <span class="required">*</span></label>
+                <input type="text"
+                       id="donorName"
+                       value="@Model.TenManhThuongQuan"
+                       class="form-control"
+                       readonly
+                       style="background-color: #f5f5f5; cursor: not-allowed;">
+                <input type="hidden" id="ManhThuongQuanId" name="ManhThuongQuanId" value="@Model.UngHoId" required>
+            </div>
+
+            <div class="form-group">
+                <label>Số tiền (VNĐ) <span class="required">*</span></label>
+                <input type="number"
+                       name="SoTien"
+                       id="amount"
+                       value="@Model.SoTien.ToString("F0")"
+                       placeholder="0"
+                       min="0"
+                       step="1000"
+                       required>
+            </div>
+            <div class="form-group">
+                <label>Số lượng quà <span class="required">*</span></label>
+                <input type="number"
+                       name="SoLuongVatPham"
+                       id="amount"
+                       value="@Model.SoLuongVatPham"
+                       placeholder="0"
+                       min="0"
+                       step="1"
+                       required>
+            </div>
+    </div>
+    <div class="form-group">
+        <label>Ngày ủng hộ <span class="required">*</span></label>
+        <input type="date"
+               name="NgayUngHo"
+               id="date"
+               value="@Model.NgayUngHo"
+               required>
+    </div>
+    <div class="form-group">
+        <label>Hình thức</label>
+        <select name="LoaiUngHo" id="method">
+            <option value="Tiền Mặt" @(Model.LoaiUngHo == "Tiền Mặt" ? "selected" : "")>Tiền mặt</option>
+            <option value="Chuyển Khoản" @(Model.LoaiUngHo == "Chuyển Khoản" ? "selected" : "")>Chuyển khoản</option>
+            <option value="Hàng Hóa" @(Model.LoaiUngHo == "Hàng Hóa" ? "selected" : "")>Hàng hóa</option>
+            <option value="Khác" @(Model.LoaiUngHo == "Khác" ? "selected" : "")>Khác</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Ghi chú</label>
+        <textarea name="GhiChu"
+                  id="note"
+                  placeholder="Thông tin bổ sung...">@Model.GhiChu</textarea>
+    </div>
+
+    @if (ViewBag.MessageError != null)
+    {
+        <div class="alert alert-error" id="alertError">
+            <span>@ViewBag.MessageError</span>
+        </div>
+    }
+    @if (TempData["MessageSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["MessageSuccess"]</div>
+    }
+
+
+    <div class="button-group">
+        <button type="button" class="btn btn-outline"
+                onclick="window.location.href='@Url.Action("ChiTietManhThuongQuan", "ManhThuongQuan", new { ManhThuongQuanId = Model.ManhThuongQuanId })'">
+            <i class="fa-solid fa-xmark"></i> Hủy
+        </button>
+        <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi
+        </button>
+    </div>
+    </form>
+</div>
+
+<script>
+    // Set ngày hiện tại nếu không có ngày
+    if (!document.getElementById('date').value) {
+        document.getElementById('date').value = new Date().toISOString().split('T')[0];
+    }
+
+    // Auto hide alerts
+    setTimeout(function () {
+        const errorAlert = document.getElementById('alertError');
+        const successAlert = document.getElementById('alertSuccess');
+
+        if (errorAlert) {
+            errorAlert.style.transition = 'opacity 0.5s';
+            errorAlert.style.opacity = '0';
+            setTimeout(() => errorAlert.remove(), 500);
+        }
+        if (successAlert) {
+            successAlert.style.transition = 'opacity 0.5s';
+            successAlert.style.opacity = '0';
+            setTimeout(() => successAlert.remove(), 500);
+        }
+    }, 5000);
+</script>

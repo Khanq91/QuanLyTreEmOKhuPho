@@ -264,9 +264,8 @@ namespace QuanLyTreEmOKhuPho.Controllers
             {
                 var errorJson = await response.Content.ReadAsStringAsync();
                 dynamic errObj = JsonConvert.DeserializeObject(errorJson);
-
-                ViewBag.Error = errObj?.message ?? "Cập nhật thất bại!";
-
+                TempData["Error"] = errObj?.message?.ToString() ?? "Cập nhật thất bại!";
+                ViewBag.TTNguoiDung = taikhoan;
                 return View(taikhoan);
             }
             TempData["Success"] = "Cập nhật tài khoản thành công!";

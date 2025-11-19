@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using QuanLyTreEmOKhuPho.Models;
+using QuanLyTreEmOKhuPho.Models.AI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,7 +71,20 @@ namespace QuanLyTreEmOKhuPho.Controllers
                          ?? new List<TreEmTheoKhuPho>();
             return result;
         }
+        public async Task<KetQuaPhanCumDto> KetQuaPhanCum()
+        {
+            var response = await _client.GetAsync("AIPhanCum/PhanCumDoUuTienCapBach");
+            if (!response.IsSuccessStatusCode)
+            {
 
+                return new KetQuaPhanCumDto();
+            }
+
+            string data = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<KetQuaPhanCumDto>(data)
+                         ?? new KetQuaPhanCumDto();
+            return result;
+        }
         public async Task<ActionResult> TrangChu(int? KhuPhoID)
         {
             List<KhuPho> khuPhos = await GetDataAsync<KhuPho>("KhuPho");
@@ -90,10 +104,11 @@ namespace QuanLyTreEmOKhuPho.Controllers
             ViewBag.TongTNV = tnvs.Count();
             ViewBag.TongSoTien = await LayTongTienTrongThang();
             ViewBag.KhuPho = khuPhos;
-
             ViewBag.TongTreEmTungKhuPho = await LayTongTreEmTungKhuPho();
 
             ViewBag.SuKienSapToi = await LaySuKienSapToiAsync(KhuPhoID);
+            ViewBag.KetQuaPhanCum = await KetQuaPhanCum();
+
             ViewBag.ActivePage = "TrangChu";
             ViewBag.PageTitle = "Trang Chủ";
             ViewBag.PageDescription = "Tổng quan hệ thống quản lý trẻ em";

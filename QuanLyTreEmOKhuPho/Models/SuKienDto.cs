@@ -12,20 +12,29 @@ namespace QuanLyTreEmOKhuPho.Models
         public DateTime? NgayBatDau { get; set; }
         public DateTime? NgayKetThuc { get; set; }
         public string NguoiChiuTrachNhiem { get; set; }
-        public string KhuPho { get; set; }
+        public KhuPhoVM KhuPho { get; set; }
+
 
         public List<ThoiGianChiTietVM> ThoiGianChiTiet { get; set; } = new List<ThoiGianChiTietVM>();
-        public List<TietMucVM> TietMuc { get; set; } = new List<TietMucVM>();
 
         public List<ChiPhiItemVM> ChiPhi { get; set; } = new List<ChiPhiItemVM>();
     }
-
+    public class KhuPhoVM
+    {
+        public int KhuPhoId { get; set; }
+        public string TenKhuPho { get; set; }
+        public string DiaChi { get; set; }
+        public string QuanHuyen { get; set; }
+        public string ThanhPho { get; set; }
+    }
     public class ThoiGianChiTietVM
     {
         public int ThoiGianChiTietSuKienId { get; set; }
         public string MoTa { get; set; }
         public DateTime? ThoiGianBatDau { get; set; }
         public DateTime? ThoiGianKetThuc { get; set; }
+        public List<TietMucVM> TietMuc { get; set; } = new List<TietMucVM>();
+
     }
 
     public class TietMucVM

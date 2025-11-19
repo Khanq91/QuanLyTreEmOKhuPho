@@ -18,7 +18,9 @@
 <!-- Profile Card -->
 <div class="profile-card">
     <div class="profile-header">
-        <div class="profile-avatar" id="profileAvatar">NVA</div>
+        <div class="table-avatar-img">
+            <img src="https://localhost:44362//@TTChiTietTinhNguyenVien.Anh" alt="@TTChiTietTinhNguyenVien.TenTinhNguyenVien" style="border-radius:50%;width:100px;height:100px; object-fit :cover;" />
+        </div>
         <div class="profile-info">
             <h2 class="profile-name" id="profileName">@TTChiTietTinhNguyenVien.TenTinhNguyenVien</h2>
             <div class="profile-meta">
@@ -35,7 +37,14 @@
                     <span id="profileRole">@TTChiTietTinhNguyenVien.ChucVu</span>
                 </div>
             </div>
-            <span class="profile-status status-active" id="profileStatus">Đang hoạt động</span>
+            @if (TTChiTietTinhNguyenVien.TrangThai == "Đang hoạt động")
+            {
+                <span class="profile-status status-active" id="profileStatus">@TTChiTietTinhNguyenVien.TrangThai</span>
+            }
+            else
+            {
+                <span class="profile-status status-inactive" id="profileStatus">@TTChiTietTinhNguyenVien.TrangThai</span>
+            }
         </div>
     </div>
 
@@ -49,9 +58,9 @@
             <div class="stat-label">Ca rảnh/tuần</div>
         </div>
         @*<div class="stat-box">
-            <div class="stat-value" id="statYears">3</div>
-            <div class="stat-label">Năm hoạt động</div>
-        </div>*@
+                <div class="stat-value" id="statYears">3</div>
+                <div class="stat-label">Năm hoạt động</div>
+            </div>*@
     </div>
 
 </div>
@@ -78,7 +87,7 @@
         </div>
         <div class="info-item">
             <span class="info-label">Ngày sinh</span>
-            <span class="info-value" id="detailBirthday">@TTChiTietTinhNguyenVien.NgaySinh</span>
+            <span class="info-value" id="detailBirthday"> @TTChiTietTinhNguyenVien.NgaySinh.ToString("dd/MM/yyyy")</span>
         </div>
         @*<div class="info-item">
                 <span class="info-label">Tuổi</span>
@@ -94,12 +103,12 @@
         </div>
         <div class="info-item">
             <span class="info-label">Trạng thái</span>
-            <span class="info-value" id="detailStatus">Đang hoạt động</span>
+            <span class="info-value" id="detailStatus">@TTChiTietTinhNguyenVien.TrangThai</span>
         </div>
         @*<div class="info-item">
-            <span class="info-label">Ngày tham gia</span>
-            <span class="info-value" id="detailJoinDate">@TTChiTietTinhNguyenVien.NgayTao</span>
-        </div>*@
+                <span class="info-label">Ngày tham gia</span>
+                <span class="info-value" id="detailJoinDate">@TTChiTietTinhNguyenVien.NgayTao</span>
+            </div>*@
     </div>
 </div>
 

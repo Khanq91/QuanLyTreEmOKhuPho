@@ -1,0 +1,314 @@
+﻿@{
+    ViewBag.Title = "GhiNhanManhThuongQuan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var LichSuUngHo = ViewBag.LichSuUngHo;
+}
+<link rel="stylesheet" href="~/Content/css/Site.css" />
+<link rel="stylesheet" href="~/Content/css/GhiNhanManhThuongQuan.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+    .checkbox-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .checkbox-item:hover {
+            background-color: #f8f9fa;
+            border-color: #0066cc;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-item.checked {
+            background-color: #e3f2fd;
+            border-color: #0066cc;
+        }
+</style>
+
+<div class="back-button">
+    <a href="@Url.Action("ManhThuongQuan", "ManhThuongQuan")" class="btn-back">
+        <i class="fa-solid fa-arrow-left"></i> Quay lại
+    </a>
+</div>
+<div class="card">
+    <form id="donorForm" method="post" action="@Url.Action("GhiNhanManhThuongQuan","ManhThuongQuan")">
+        <!-- Thông tin cơ bản -->
+        <div class="form-section">
+            <div class="section-title">
+                <span><i class="fa-solid fa-file"></i></span>
+                Thông tin cơ bản
+            </div>
+
+            <div class="form-group">
+                <label>
+                    Loại mạnh thường quân <span class="required">*</span>
+                </label>
+                <div class="radio-group">
+                    <label class="radio-item" onclick="selectType('Cá nhân')">
+                        <input type="radio" name="loai" value="Cá nhân" required>
+                        <span><i class="fa-regular fa-user"></i> Cá nhân</span>
+                    </label>
+                    <label class="radio-item" onclick="selectType('Tổ chức')">
+                        <input type="radio" name="loai" value="Tổ chức">
+                        <span><i class="fa-regular fa-building"></i> Tổ chức</span>
+                    </label>
+                </div>
+                <span class="error-message">Vui lòng chọn loại mạnh thường quân</span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>
+                        Tên đầy đủ <span class="required">*</span>
+                    </label>
+                    <input type="text"
+                           id="ten"
+                           name="ten"
+                           placeholder="Nhập tên cá nhân hoặc tổ chức"
+                           maxlength="100"
+                           required>
+                    <span class="error-message">Vui lòng nhập tên</span>
+                </div>
+                <div class="form-group">
+                    <label>
+                        Số điện thoại <span class="required">*</span>
+                    </label>
+                    <input type="tel"
+                           id="sdt"
+                           name="sdt"
+                           placeholder="0xxx xxx xxx"
+                           maxlength="15"
+                           pattern="[0-9]{10,15}"
+                           title="Chỉ được nhập số từ 0-9, độ dài 10 số"
+                           required>
+                    <span class="error-message">Vui lòng nhập số điện thoại hợp lệ</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thông tin liên hệ -->
+        <div class="form-section">
+            <div class="section-title">
+                <span><i class="fa-solid fa-phone"></i></span>
+                Thông tin liên hệ
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           placeholder="email@example.com"
+                           maxlength="100">
+                    <span class="help-text">Để gửi thông báo và thư cảm ơn</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Địa chỉ</label>
+                    <input type="text"
+                           required
+                           id="diaChi"
+                           name="diaChi"
+                           title="Nhập địa chỉ cá nhân hoặc tổ chức"
+                           placeholder="Số nhà, đường, phường, quận/huyện, tỉnh/thành"
+                           maxlength="200">
+                </div>
+            </div>
+        </div>
+
+        <!-- Lĩnh vực quan tâm (THÊM MỚI) -->
+        <div class="form-section">
+            <div class="section-title">
+                <span><i class="fa-solid fa-heart"></i></span>
+                Lĩnh vực quan tâm
+            </div>
+
+            <div class="form-group">
+                <label>Chọn các lĩnh vực mạnh thường quân quan tâm</label>
+                <div class="checkbox-group" id="interestGroup">
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="Giáo dục trẻ em" onchange="updateInterests()">
+                        <span>Giáo dục trẻ em</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="Y tế sức khỏe" onchange="updateInterests()">
+                        <span>Y tế sức khỏe</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="Hỗ trợ học tập" onchange="updateInterests()">
+                        <span>Hỗ trợ học tập</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="Dinh dưỡng" onchange="updateInterests()">
+                        <span>Dinh dưỡng</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="Văn hóa văn nghệ" onchange="updateInterests()">
+                        <span>Văn hóa văn nghệ</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="Thể thao" onchange="updateInterests()">
+                        <span>Thể thao</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="Môi trường" onchange="updateInterests()">
+                        <span>Môi trường</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="Từ thiện xã hội" onchange="updateInterests()">
+                        <span>Từ thiện xã hội</span>
+                    </label>
+                </div>
+                <input type="hidden" id="selectedInterests" name="selectedInterests" value="">
+                <span class="help-text" id="selectedCount">Chưa chọn lĩnh vực nào</span>
+            </div>
+        </div>
+
+        <!-- Ghi chú -->
+        <div class="form-section">
+            <div class="section-title">
+                <span><i class="fa-solid fa-file"></i></span>
+                Thông tin bổ sung
+            </div>
+
+            <div class="form-group">
+                <label>Ghi chú</label>
+                <textarea id="ghiChu"
+                          name="ghiChu"
+                          placeholder="Thông tin bổ sung, quan hệ, lưu ý đặc biệt..."
+                          maxlength="500"></textarea>
+                <span class="help-text" id="noteCounter">0/500 ký tự</span>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="form-actions">
+            <button type="button" class="btn btn-outline" onclick="resetForm()">
+                <span><i class="fa-solid fa-rotate"></i></span> Làm mới
+            </button>
+            <button type="submit" class="btn btn-success">
+                <span><i class="fa-solid fa-check"></i></span> Lưu thông tin
+            </button>
+        </div>
+    </form>
+    @if (ViewBag.MessageError != null)
+    {
+        <div class="alert alert-error" id="alertError">
+            <span>@ViewBag.MessageError</span>
+        </div>
+    }
+    @if (ViewBag.MessageSuccess != null)
+    {
+        <div class="alert alert-success" id="alertSuccess">
+            <span>@ViewBag.MessageSuccess</span>
+        </div>
+    }
+</div>
+
+<script>
+    // Character counter for note
+    document.getElementById('ghiChu').addEventListener('input', function () {
+        const length = this.value.length;
+        document.getElementById('noteCounter').textContent = `${length}/500 ký tự`;
+    });
+
+    function selectType(type) {
+        document.querySelectorAll('.radio-item').forEach(item => {
+            item.classList.remove('selected');
+        });
+
+        event.currentTarget.classList.add('selected');
+
+        const formGroup = document.querySelector('input[name="loai"]').closest('.form-group');
+        formGroup.classList.remove('error');
+    }
+
+    // CẬP NHẬT: Hàm cập nhật lĩnh vực quan tâm
+    function updateInterests() {
+        const checkboxes = document.querySelectorAll('#interestGroup input[type="checkbox"]');
+        const selected = [];
+
+        checkboxes.forEach(checkbox => {
+            const label = checkbox.closest('.checkbox-item');
+            if (checkbox.checked) {
+                selected.push(checkbox.value);
+                label.classList.add('checked');
+            } else {
+                label.classList.remove('checked');
+            }
+        });
+
+        // Lưu vào hidden input, phân cách bởi dấu phẩy
+        document.getElementById('selectedInterests').value = selected.join(', ');
+
+        // Cập nhật text hiển thị
+        const countText = selected.length > 0
+            ? `Đã chọn ${selected.length} lĩnh vực: ${selected.join(', ')}`
+            : 'Chưa chọn lĩnh vực nào';
+        document.getElementById('selectedCount').textContent = countText;
+
+        // Tự động thêm vào ghi chú nếu có chọn
+        if (selected.length > 0) {
+            const currentNote = document.getElementById('ghiChu').value;
+            const interestNote = `Quan tâm: ${selected.join(', ')}`;
+
+            // Chỉ thêm nếu chưa có trong ghi chú
+            if (!currentNote.includes('Quan tâm:')) {
+                document.getElementById('ghiChu').value = currentNote
+                    ? `${currentNote}\n${interestNote}`
+                    : interestNote;
+            } else {
+                // Cập nhật phần quan tâm trong ghi chú
+                document.getElementById('ghiChu').value = currentNote.replace(
+                    /Quan tâm:.*$/m,
+                    interestNote
+                );
+            }
+
+            // Cập nhật counter
+            const newLength = document.getElementById('ghiChu').value.length;
+            document.getElementById('noteCounter').textContent = `${newLength}/500 ký tự`;
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('donorForm').reset();
+        document.querySelectorAll('.form-group').forEach(group => {
+            group.classList.remove('error');
+        });
+        document.querySelectorAll('.radio-item').forEach(item => {
+            item.classList.remove('selected');
+        });
+        document.querySelectorAll('.checkbox-item').forEach(item => {
+            item.classList.remove('checked');
+        });
+        document.getElementById('noteCounter').textContent = '0/500 ký tự';
+        document.getElementById('selectedCount').textContent = 'Chưa chọn lĩnh vực nào';
+        document.getElementById('selectedInterests').value = '';
+    }
+
+    // Tự động ẩn thông báo sau 5 giây
+    setTimeout(function () {
+        const alertError = document.getElementById('alertError');
+        const alertSuccess = document.getElementById('alertSuccess');
+        if (alertError) alertError.style.display = 'none';
+        if (alertSuccess) alertSuccess.style.display = 'none';
+    }, 5000);
+</script>

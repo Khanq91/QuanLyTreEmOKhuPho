@@ -87,6 +87,8 @@
                     <th>Ngày ủng hộ</th>
                     <th>Số tiền</th>
                     <th>Loại ủng hộ</th>
+                    <th>Số lượng phần quà</th>
+                    <th>Còn lại</th>
                     <th>Ghi chú</th>
                     <th>Hành động</th>
                 </tr>
@@ -99,6 +101,8 @@
                         <td>@item.NgayUngHo.ToString("dd/MM/yyyy")</td>
                         <td><span class="amount-highlight">  @String.Format("{0:N2} triệu", @item.SoTien / 1000000)</span></td>
                         <td>@item.LoaiUngHo</td>
+                        <td>@item.SoLuongVatPham</td>
+                        <td>@item.SoLuongConLai</td>
                         <td>@item.GhiChu</td>
                         <td>
                             <a href="@Url.Action("SuaUngHoManhThuongQuan", "ManhThuongQuan", new { UngHoID = item.UngHoId })"

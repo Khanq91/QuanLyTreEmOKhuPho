@@ -95,7 +95,7 @@
                     <option value="">Tất cả chức vụ</option>
                     <option value="Trưởng nhóm" @(Request.QueryString["ChucVu"] == "Trưởng nhóm" ? "selected" : "")>Trưởng nhóm</option>
                     <option value="Phó nhóm" @(Request.QueryString["ChucVu"] == "Phó nhóm" ? "selected" : "")>Phó nhóm</option>
-                    <option value="Thành viên" @(Request.QueryString["ChucVu"] == "Thành viên" ? "selected" : "")>Thành viên</option>
+                    <option value="Tình nguyện viên" @(Request.QueryString["ChucVu"] == "Thành viên" ? "selected" : "")>Thành viên</option>
                 </select>
             </div>
 
@@ -103,8 +103,8 @@
                 <label class="filter-label">Trạng thái</label>
                 <select class="filter-select" id="filterTrangThai" name="TrangThai">
                     <option value="">Tất cả</option>
-                    <option value="active" @(Request.QueryString["TrangThai"] == "active" ? "selected" : "")>Đang hoạt động</option>
-                    <option value="inactive" @(Request.QueryString["TrangThai"] == "inactive" ? "selected" : "")>Ngừng hoạt động</option>
+                    <option value="Đang hoạt động" @(Request.QueryString["TrangThai"] == "active" ? "selected" : "")>Đang hoạt động</option>
+                    <option value="Ngưng hoạt động" @(Request.QueryString["TrangThai"] == "inactive" ? "selected" : "")>Ngừng hoạt động</option>
                 </select>
             </div>
         </div>
@@ -193,7 +193,7 @@
                     <td>
                         <div class="table-avatar">
                             <div class="table-avatar-img">
-                                <img src="https://localhost:44362//@item.Anh" alt="@item.TenTinhNguyenVien" style="width:50px;height:50px;object-fit:cover" , />
+                                <img src="https://localhost:44362//@item.Anh" alt="@item.TenTinhNguyenVien" style="object-fit:cover" , />
                             </div>
                         </div>
                     </td>

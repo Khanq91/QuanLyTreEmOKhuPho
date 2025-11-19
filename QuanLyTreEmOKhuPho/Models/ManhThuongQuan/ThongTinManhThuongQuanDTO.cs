@@ -11,7 +11,10 @@ namespace QuanLyTreEmOKhuPho.Models.ManhThuongQuan
         public string Ten { get; set; }
         public string Loai { get; set; }
         public string SDT { get; set; }
+        public int SoLUongVatPham { get; set; }
         public string Email { get; set; }
+        public string TenVatPham { get; set; }
+
         public string DiaChi { get; set; }
         public decimal TongUngHo { get; set; }
         public int SoLanUngHo { get; set; }

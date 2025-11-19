@@ -55,7 +55,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Khu phố</label>
-                <input type="text" class="form-control" value="@Model.KhuPho" readonly />
+                <input type="text" class="form-control" value="@Model.KhuPho.TenKhuPho" readonly />
             </div>
             <div class="form-group full">
                 <label class="form-label">Người phụ trách</label>
@@ -117,32 +117,40 @@
     <div class="form-step" id="tab2">
         <h3 class="section-title text-primary">🎤 Danh sách tiết mục</h3>
 
-        @if (Model.TietMuc != null && Model.TietMuc.Count > 0)
+        @foreach (var tg in Model.ThoiGianChiTiet)
         {
-            <table class="styled-table">
-                <thead>
-                    <tr>
-                        <th>Tên tiết mục</th>
-                        <th>Người thực hiện</th>
-                        <th>Chi phí tiết mục</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var t in Model.TietMuc)
-                    {
+            <h4 class="text-info">
+                @tg.MoTa - (@tg.ThoiGianBatDau.Value.ToString("dd/MM/yyyy HH:mm"))
+            </h4>
+
+            if (tg.TietMuc != null && tg.TietMuc.Count > 0)
+            {
+                <table class="styled-table">
+                    <thead>
                         <tr>
-                            <td>@t.TenTietMuc</td>
-                            <td>@t.NguoiThucHien</td>
-                            <td>@string.Format("{0:N0} đ", t.ChiPhiTietMuc)</td>
+                            <th>Tên tiết mục</th>
+                            <th>Người thực hiện</th>
+                            <th>Chi phí tiết mục</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var t in tg.TietMuc)
+                        {
+                            <tr>
+                                <td>@t.TenTietMuc</td>
+                                <td>@t.NguoiThucHien</td>
+                                <td>@string.Format("{0:N0} đ", t.ChiPhiTietMuc)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info">Chưa có tiết mục nào trong khung thời gian này.</div>
+            }
         }
-        else
-        {
-            <div class="alert alert-info">Chưa có tiết mục nào được thêm vào.</div>
-        }
+
     </div>
 
     <!-- TAB 3: Chi phí -->
@@ -262,6 +270,7 @@
         border: 2px solid #eee;
         box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
+
     .cost-card {
         background: #fff;
         border-radius: 12px;

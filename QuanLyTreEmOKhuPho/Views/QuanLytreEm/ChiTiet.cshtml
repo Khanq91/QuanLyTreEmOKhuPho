@@ -15,7 +15,7 @@
         <div class="step-item"><div class="step-circle">2</div><div class="step-label">Học tập</div></div>
         <div class="step-item"><div class="step-circle">3</div><div class="step-label">Hỗ trợ</div></div>
         <div class="step-item"><div class="step-circle">4</div><div class="step-label">Vận động</div></div>
-        <div class="step-item"><div class="step-circle">5</div><div class="step-label">Sự kiện</div></div>
+        @*<div class="step-item"><div class="step-circle">5</div><div class="step-label">Sự kiện</div></div>*@
     </div>
 </div>
 
@@ -34,7 +34,7 @@
                 </div>
                 @if (isEdit)
                 {
-                <input type="file" id="photoInput" accept="image/*" style="display:none;" />
+                    <input type="file" id="photoInput" accept="image/*" style="display:none;" />
                 }
             </div>
         </div>
@@ -44,11 +44,11 @@
                 <label class="form-label">Họ và tên</label>
                 @if (isEdit)
                 {
-                <input type="text" class="form-control" id="HoTen" value="@Model.HoTen" />
+                    <input type="text" class="form-control" id="HoTen" value="@Model.HoTen" />
                 }
                 else
                 {
-                <input type="text" class="form-control" value="@Model.HoTen" readonly />
+                    <input type="text" class="form-control" value="@Model.HoTen" readonly />
                 }
             </div>
 
@@ -57,26 +57,29 @@
                 @if (isEdit)
                 {
                     <input type="date" class="form-control" id="NgaySinh"
+                           name="NgaySinh"
                            value="@(Model.NgaySinh?.ToString("yyyy-MM-dd"))" />
                 }
                 else
                 {
-                    <input type="text" class="form-control" value="@Model.NgaySinh" readonly />
+                    <input type="text" class="form-control"
+                           value="@(Model.NgaySinh?.ToString("dd/MM/yyyy"))" readonly />
                 }
             </div>
+
 
             <div class="form-group">
                 <label class="form-label">Giới tính</label>
                 @if (isEdit)
                 {
-             <select id="GioiTinh" class="form-control">
-                 <option value="Nam" @(Model.GioiTinh == "Nam" ? "selected" : "" )>Nam</option>
-                 <option value="Nữ" @(Model.GioiTinh == "Nữ" ? "selected" : "" )>Nữ</option>
-             </select>
+                    <select id="GioiTinh" class="form-control">
+                        <option value="Nam" @(Model.GioiTinh == "Nam" ? "selected" : "" )>Nam</option>
+                        <option value="Nữ" @(Model.GioiTinh == "Nữ" ? "selected" : "" )>Nữ</option>
+                    </select>
                 }
                 else
                 {
-                <input type="text" class="form-control" value="@Model.GioiTinh" readonly />
+                    <input type="text" class="form-control" value="@Model.GioiTinh" readonly />
                 }
             </div>
 
@@ -84,11 +87,11 @@
                 <label class="form-label">Dân tộc</label>
                 @if (isEdit)
                 {
-                <input type="text" id="DanToc" class="form-control" value="@Model.DanToc" />
+                    <input type="text" id="DanToc" class="form-control" value="@Model.DanToc" />
                 }
                 else
                 {
-                <input type="text" class="form-control" value="@Model.DanToc" readonly />
+                    <input type="text" class="form-control" value="@Model.DanToc" readonly />
                 }
             </div>
 
@@ -96,11 +99,11 @@
                 <label class="form-label">Tôn giáo</label>
                 @if (isEdit)
                 {
-                <input type="text" id="TonGiao" class="form-control" value="@Model.TonGiao" />
+                    <input type="text" id="TonGiao" class="form-control" value="@Model.TonGiao" />
                 }
                 else
                 {
-                <input type="text" class="form-control" value="@Model.TonGiao" readonly />
+                    <input type="text" class="form-control" value="@Model.TonGiao" readonly />
                 }
             </div>
 
@@ -118,11 +121,11 @@
                 <label class="form-label">Tình trạng</label>
                 @if (isEdit)
                 {
-                <input type="text" id="TinhTrang" class="form-control" value="@Model.TinhTrang" />
+                    <input type="text" id="TinhTrang" class="form-control" value="@Model.TinhTrang" />
                 }
                 else
                 {
-                <input type="text" class="form-control" value="@Model.TinhTrang" readonly />
+                    <input type="text" class="form-control" value="@Model.TinhTrang" readonly />
                 }
             </div>
         </div>
@@ -134,12 +137,12 @@
                 <tbody>
                     @foreach (var ph in Model.PhuHuynh)
                     {
-                    <tr>
-                        <td>@ph.HoTen</td>
-                        <td>@ph.MoiQuanHe</td>
-                        <td>@ph.Sdt</td>
-                        <td>@ph.NgheNghiep</td>
-                    </tr>
+                        <tr>
+                            <td>@ph.HoTen</td>
+                            <td>@ph.MoiQuanHe</td>
+                            <td>@ph.Sdt</td>
+                            <td>@ph.NgheNghiep</td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -147,7 +150,7 @@
 
         <h3 class="section-title">Hoàn cảnh gia đình</h3>
         <div class="form-grid full">
-            <p>@string.Join(", ", Model.HoanCanh)</p>
+            <p>@string.Join(", ", Model.HoanCanh?.Select(h => h.LoaiHoanCanh) ?? new List<string>())</p>
         </div>
     </div>
 
@@ -159,13 +162,13 @@
             <tbody>
                 @foreach (var ht in Model.HocTap)
                 {
-                <tr>
-                    <td>@ht.NgayCapNhat.ToString("dd/MM/yyyy")</td>
-                    <td>@ht.DiemTrungBinh</td>
-                    <td>@ht.XepLoai</td>
-                    <td>@ht.HanhKiem</td>
-                    <td>@ht.GhiChu</td>
-                </tr>
+                    <tr>
+                        <td>@(ht.NamHoc.HasValue ? ht.NamHoc.Value.ToString("dd/MM/yyyy") : "-")</td>
+                        <td>@ht.DiemTrungBinh</td>
+                        <td>@ht.XepLoai</td>
+                        <td>@ht.HanhKiem</td>
+                        <td>@ht.GhiChu</td>
+                    </tr>
                 }
             </tbody>
         </table>
@@ -175,21 +178,28 @@
     <div class="form-step" id="tab3">
         <h3 class="section-title">Hỗ trợ & Phúc lợi</h3>
         <table class="styled-table">
-            <thead><tr><th>Loại</th><th>Ngày cấp</th><th>Mô tả</th><th>File</th></tr></thead>
+            <thead>
+                <tr>
+                    <th>Loại</th>
+                    <th>Ngày cấp</th>
+                    <th>Mô tả</th>
+                    @*<th>File</th>*@
+                </tr>
+            </thead>
             <tbody>
                 @foreach (var ht in Model.HoTro)
                 {
-                <tr>
-                    <td>@ht.LoaiHoTro</td>
-                    <td>@ht.NgayCap.ToString("dd/MM/yyyy")</td>
-                    <td>@ht.MoTa</td>
-                    <td>
-                        @foreach (var f in ht.File)
-                        {
-                        <a href="@f" target="_blank">📄</a>
-                        }
-                    </td>
-                </tr>
+                    <tr>
+                        <td>@ht.LoaiHoTro</td>
+                        <td>@(ht.NgayCap.HasValue ? ht.NgayCap.Value.ToString("dd/MM/yyyy") : "-")</td>
+                        <td>@ht.MoTa</td>
+                        <td>
+                            @*@foreach (var f in ht.FileViewModel)
+            {
+            <a href="@f" target="_blank">📄</a>
+            }*@
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>
@@ -203,12 +213,12 @@
             <tbody>
                 @foreach (var v in Model.VanDong)
                 {
-                <tr>
-                    <td>@v.NgayVanDong.ToString("dd/MM/yyyy")</td>
-                    <td>@v.LyDo</td>
-                    <td>@v.KetQua</td>
-                    <td>@v.SoLan</td>
-                </tr>
+                    <tr>
+                        <td>@v.NgayVanDong</td>
+                        <td>@v.LyDo</td>
+                        <td>@v.KetQua</td>
+                        <td>@v.SoLan</td>
+                    </tr>
                 }
             </tbody>
         </table>
@@ -226,7 +236,7 @@
 
 <script>
     let currentStep = 1;
-    const totalSteps = 5;
+    const totalSteps = 4;
     const isEdit = @isEdit.ToString().ToLower();
 
     function showStep(step) {

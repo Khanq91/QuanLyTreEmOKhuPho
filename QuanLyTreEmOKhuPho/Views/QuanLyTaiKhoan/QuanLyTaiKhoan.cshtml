@@ -106,6 +106,7 @@
             <label>Vai trò</label>
             <select id="filterRole" onchange="filterTable()">
                 <option value="">Tất cả</option>
+                <option value="cán bộ">Cán bộ</option>
                 <option value="tình nguyện viên">Tình nguyện viên</option>
                 <option value="phụ huynh">Phụ huynh</option>
             </select>
@@ -210,16 +211,15 @@
                                     </button>
                                 }
                             }
-
                             <!-- Xóa -->
-                            @using (Html.BeginForm("XoaTaiKhoan", "QuanLyTaiKhoan", FormMethod.Post, new { @class = "inline-form" }))
+                            <!--@using (Html.BeginForm("XoaTaiKhoan", "QuanLyTaiKhoan", FormMethod.Post, new { @class = "inline-form" }))
                             {
                                 <input type="hidden" name="id" value="@DsTaiKhoan[i].UserId" />
                                 <button type="submit" class="btn btn-sm btn-danger" title="Xóa tài khoản"
                                         onclick="return confirm('Bạn có chắc muốn xóa tài khoản này không?');">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
-                            }
+                            }-->
                         </td>
 
                     </tr>

@@ -196,16 +196,16 @@ namespace QuanLyTreEmOKhuPho.Controllers
             var data = JsonConvert.DeserializeObject<List<UngHo>>(json);
             return data;
         }
-        //Ghi nhận ủng hộ của mạnh thường quân
         public async Task<ActionResult> GhiNhanUngHo()
         {
             ViewBag.ThongTinManhThuongQuan = await ThongTinManhThuongQuan();
-
             ViewBag.ActivePage = "ManhThuongQuan";
             ViewBag.PageTitle = "Mạnh Thường Quân";
             ViewBag.PageDescription = "Ghi nhận ủng hộ của mạnh thường quân";
-            return View();
+
+            return View(new UngHoViewModel()); // Trả về model rỗng
         }
+
         [HttpPost]
         public async Task<ActionResult> GhiNhanUngHo(UngHoViewModel model)
         {
@@ -217,69 +217,60 @@ namespace QuanLyTreEmOKhuPho.Controllers
             if (model.ManhThuongQuanId == null)
             {
                 ViewBag.MessageError = "Vui lòng chọn mạnh thường quân.";
-                return View("GhiNhanUngHo", model);
+                return View(model);
             }
-
             if (model.SoTien == null || model.SoTien <= 0)
             {
                 ViewBag.MessageError = "Vui lòng nhập số tiền hợp lệ.";
-                return View("GhiNhanUngHo", model);
+                return View(model);
             }
-
-            if (model.NgayUngHo == default(DateTime))
+            // ✅ SỬA VALIDATION CHO NgayUngHo
+            if (model.NgayUngHo == null || model.NgayUngHo == default(DateTime))
             {
                 ViewBag.MessageError = "Vui lòng chọn ngày ủng hộ.";
-                return View("GhiNhanUngHo", model);
+                return View(model);
             }
-
-            if (string.IsNullOrWhiteSpace(model.HinhThuc))
+            if (string.IsNullOrWhiteSpace(model.LoaiUngHo))
             {
                 ViewBag.MessageError = "Vui lòng chọn hình thức ủng hộ.";
-                return View("GhiNhanUngHo", model);
+                return View(model);
             }
 
             try
             {
-                // ✅ Tạo anonymous object với format đúng cho API
                 var apiDto = new
                 {
-                    ManhThuongQuanId = model.ManhThuongQuanId,  // Giữ nguyên tên
+                    ManhThuongQuanId = model.ManhThuongQuanId,
                     SoTien = model.SoTien,
-                    NgayUngHo = model.NgayUngHo.ToString("yyyy-MM-dd"), // ✅ Format thành string "2025-10-22"
-                    HinhThuc = model.HinhThuc,
+                    LoaiUngHo = model.LoaiUngHo,
+                    DoiTuong=model.DoiTuong,
+                    SoLuongVatPham=model.SoLuongVatPham,
+                    TenVatPham= model.TenVatPham,
+                    NgayUngHo = model.NgayUngHo.Value.ToString("yyyy-MM-dd"), // ✅ Thêm .Value
                     GhiChu = model.GhiChu
                 };
 
                 var json = JsonConvert.SerializeObject(apiDto);
-                System.Diagnostics.Debug.WriteLine("=== JSON SENT ===");
-                System.Diagnostics.Debug.WriteLine(json);
-                // Sẽ ra: {"ManhThuongQuanId":1,"SoTien":1000000,"NgayUngHo":"2025-10-22","HinhThuc":"tien-mat","GhiChu":"test"}
-
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync("ManhThuongQuan/LuuThongTinUngHo", content);
-
                 var responseBody = await response.Content.ReadAsStringAsync();
-                System.Diagnostics.Debug.WriteLine("=== RESPONSE ===");
-                System.Diagnostics.Debug.WriteLine($"Status: {response.StatusCode}");
-                System.Diagnostics.Debug.WriteLine($"Body: {responseBody}");
 
                 if (response.IsSuccessStatusCode)
                 {
                     ViewBag.MessageSuccess = "Lưu thông tin ủng hộ thành công!";
                     ModelState.Clear();
-                    return View("GhiNhanUngHo", new UngHoViewModel());
+                    return View(new UngHoViewModel());
                 }
                 else
                 {
                     ViewBag.MessageError = $"Lỗi API: {responseBody}";
-                    return View("GhiNhanUngHo", model);
+                    return View(model);
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Exception: {ex.Message}");
                 ViewBag.MessageError = "Đã xảy ra lỗi: " + ex.Message;
-                return View("GhiNhanUngHo", model);
+                return View(model);
             }
         }
         //Ghi nhận ủng hộ của mạnh thường quân
@@ -405,6 +396,10 @@ namespace QuanLyTreEmOKhuPho.Controllers
         public async Task<ActionResult> SuaUngHoManhThuongQuan(SuaThongTinUngHoManhThuongQuan ttmtq)
         {
             var relust = await SuaThongTinUngHo(ttmtq);
+            if (relust!=null)
+            {
+                TempData["MessageSuccess"] = "Sửa ủng hộ thành công";
+            }
             ViewBag.ActivePage = "ManhThuongQuan";
             ViewBag.PageTitle = "Mạnh Thường Quân";
             ViewBag.PageDescription = "Sửa ủng hộ mạnh thường quân";

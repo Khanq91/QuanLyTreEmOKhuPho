@@ -1,0 +1,1454 @@
+﻿
+@{
+    ViewBag.Title = "ChiTietUngHo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var ChiTietUngHo = ViewBag.ChiTietUngHo;
+}
+<style>
+    /* Modal Styles */
+    .evidence-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.85);
+        animation: fadeIn 0.3s ease;
+    }
+
+        .evidence-modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+    .modal-content {
+        background: white;
+        border-radius: 20px;
+        width: 95%;
+        max-width: 1200px;
+        max-height: 90vh;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .modal-header {
+        padding: 24px 32px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+    }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+        }
+
+    .modal-close {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 22px;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+    .modal-body {
+        padding: 32px;
+        max-height: calc(90vh - 100px);
+        overflow-y: auto;
+    }
+
+    /* File List Grid */
+    .files-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .file-item {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 16px;
+        padding: 20px;
+        transition: all 0.3s;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .file-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+    .file-preview {
+        width: 100%;
+        height: 200px;
+        border-radius: 12px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        position: relative;
+    }
+
+        .file-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+    .file-item:hover .file-preview img {
+        transform: scale(1.1);
+    }
+
+    .file-preview .file-icon {
+        font-size: 80px;
+        opacity: 0.8;
+    }
+
+    .file-preview .pdf-icon {
+        color: #dc2626;
+    }
+
+    .file-preview .word-icon {
+        color: #2563eb;
+    }
+
+    .file-preview .excel-icon {
+        color: #059669;
+    }
+
+    .file-preview .image-icon {
+        color: #d97706;
+    }
+
+    .file-info {
+        text-align: left;
+    }
+
+    .file-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 8px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .file-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .file-date {
+        font-size: 13px;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .file-type-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-pdf {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .badge-word {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+
+    .badge-excel {
+        background: #d1fae5;
+        color: #059669;
+    }
+
+    .badge-image {
+        background: #fed7aa;
+        color: #d97706;
+    }
+
+    .download-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s;
+        margin-top: 12px;
+    }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .download-btn i {
+            font-size: 16px;
+        }
+
+    /* Preview Modal */
+    .preview-modal {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.95);
+        animation: fadeIn 0.3s ease;
+    }
+
+        .preview-modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+    .preview-content {
+        width: 90%;
+        height: 90%;
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .preview-header {
+        padding: 20px 24px;
+        background: #212529;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .preview-body {
+        flex: 1;
+        overflow: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+    }
+
+        .preview-body img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .preview-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+        .empty-state i {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state h4 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* Scrollbar */
+    .modal-body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .modal-body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .modal-body::-webkit-scrollbar-thumb {
+        background: #667eea;
+        border-radius: 4px;
+    }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+    /* Action Buttons Container */
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    /* Base Button Style */
+    .btn {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        position: relative;
+        overflow: visible;
+    }
+
+    /* Small Button */
+    .btn-sm {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    /* Success Button (Đã nhận) */
+    .btn-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+    /* Warning Button (Chưa nhận) */
+    .btn-warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+    /* Delete Button */
+    .btn-delete {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    }
+
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+    /* Button Icon */
+    .btn i {
+        font-size: 14px;
+        transition: transform 0.3s ease;
+    }
+
+    .btn:hover i {
+        transform: scale(1.1);
+    }
+
+    /* Button Text - Ẩn trên màn hình nhỏ */
+    .btn-text {
+        display: inline;
+    }
+
+    @@media (max-width: 768px) {
+        .btn-text {
+            display: none;
+        }
+
+        .btn-sm {
+            padding: 8px;
+        }
+    }
+
+    /* Custom Tooltip */
+    .btn[data-tooltip] {
+        position: relative;
+    }
+
+        .btn[data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 12px;
+            background: #1f2937;
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            border-radius: 6px;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            animation: tooltipFadeIn 0.2s ease 0.3s forwards;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn[data-tooltip]:hover::before {
+            content: '';
+            position: absolute;
+            bottom: calc(100% + 4px);
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #1f2937;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            animation: tooltipFadeIn 0.2s ease 0.3s forwards;
+        }
+
+    /* Animations */
+    @@keyframes tooltipFadeIn {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+
+    @@keyframes tooltipFadeInArrow {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Focus State for Accessibility */
+    .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
+
+    .btn-success:focus {
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.5);
+    }
+
+    .btn-warning:focus {
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.5);
+    }
+
+    .btn-delete:focus {
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.5);
+    }
+
+    /* Disabled State */
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+    <style>
+    /* Modal Overlay cho thêm trẻ em */
+    .add-child-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 9999;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .add-child-modal-overlay.active {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Modal Container */
+    .add-child-modal-container {
+        background: white;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 700px;
+        max-height: 90vh;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    /* Modal Header */
+    .add-child-modal-header {
+        padding: 24px 32px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .add-child-modal-header h3 {
+        margin: 0;
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+    }
+
+    /* Modal Body */
+    .add-child-modal-body {
+        padding: 32px;
+        max-height: calc(90vh - 200px);
+        overflow-y: auto;
+    }
+
+    /* Form Groups */
+    .add-child-form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .add-child-form-group {
+        margin-bottom: 16px;
+    }
+
+    .add-child-form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .add-child-form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #212529;
+        font-size: 14px;
+    }
+
+    .add-child-required {
+        color: #ef4444;
+        margin-left: 4px;
+    }
+
+    .add-child-form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        font-size: 14px;
+        transition: all 0.3s;
+        font-family: inherit;
+    }
+
+    .add-child-form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    select.add-child-form-control {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        padding-right: 40px;
+    }
+
+    textarea.add-child-form-control {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    /* Info Box hiển thị thông tin quà tặng */
+    .add-child-info-box {
+        background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+        border-left: 4px solid #667eea;
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+    }
+
+    .add-child-info-box-title {
+        font-weight: 700;
+        color: #667eea;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 16px;
+    }
+
+    .add-child-info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        font-size: 14px;
+    }
+
+    .add-child-info-item:last-child {
+        border-bottom: none;
+    }
+
+    .add-child-info-label {
+        font-weight: 600;
+        color: #667eea;
+    }
+
+    .add-child-info-value {
+        color: #1f2937;
+        font-weight: 500;
+    }
+
+    /* Modal Footer */
+    .add-child-modal-footer {
+        padding: 20px 32px;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+
+    /* Alert Messages */
+    .add-child-alert {
+        padding: 14px 16px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 14px;
+    }
+
+    .add-child-alert-success {
+        background: #d1fae5;
+        color: #065f46;
+        border-left: 4px solid #10b981;
+    }
+
+    .add-child-alert-error {
+        background: #fee2e2;
+        color: #991b1b;
+        border-left: 4px solid #ef4444;
+    }
+
+    .add-child-alert i {
+        font-size: 18px;
+    }
+
+    /* Loading State */
+    .btn.loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .btn.loading::after {
+        content: '';
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+        margin-left: 8px;
+    }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Nút thêm trẻ em trong gift-card */
+    .btn-add-child {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+        margin-top: 16px;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-add-child:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .add-child-form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .add-child-modal-container {
+            width: 95%;
+        }
+
+        .add-child-modal-header,
+        .add-child-modal-body,
+        .add-child-modal-footer {
+            padding: 20px;
+        }
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+<link rel="stylesheet" href="~/Content/css/ChiTietUngHo.css" />
+<link rel="stylesheet" href="~/Content/css/media.css" />
+<div class="action-buttons" style="display: flex; justify-content: space-between;">
+    <button class="btn btn-secondary" onclick="window.history.back()">
+        <i class="fa-solid fa-arrow-left"></i> Quay lại
+    </button>
+    <button class="btn btn-success">
+        <i class="fa-solid fa-file-excel"></i> Xuất báo cáo
+    </button>
+</div>
+<div class="detail-container">
+    <div class="detail-header">
+        <div class="detail-title">
+            <h2>@ChiTietUngHo.GhiChu</h2>
+            <div class="detail-meta">
+                <div class="meta-badge">
+                    <i class="fa-solid fa-calendar"></i>
+                    <span>@ChiTietUngHo.NgayUngHo.ToString("dd/MM/yyyy")</span>
+                </div>
+                <div class="meta-badge">
+                    <i class="fa-solid fa-user"></i>
+                    <span>@ChiTietUngHo.TenManhThuongQuan</span>
+                </div>
+                <div class="meta-badge">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>@ChiTietUngHo.TenKhuPho, @ChiTietUngHo.QuanHuyen,@ChiTietUngHo.ThanhPho</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-item">
+            <div class="info-label"><i class="fa-solid fa-tag"></i> Loại ủng hộ</div>
+            <div class="info-value">@ChiTietUngHo.LoaiUngHo</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label"><i class="fa-solid fa-sack-dollar"></i> Tổng giá trị</div>
+            <div class="info-value" style="color: var(--success);">@ChiTietUngHo.SoTien</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label"><i class="fa-solid fa-users"></i> Đối tượng</div>
+            <div class="info-value">Trẻ em khó khăn</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label"><i class="fa-solid fa-children"></i> Số trẻ được hỗ trợ</div>
+            <div class="info-value">@ChiTietUngHo.SoLuongTreEmDuocUngHo trẻ</div>
+        </div>
+    </div>
+
+    @*<div class="summary-cards">
+            <div class="summary-card" style="background: linear-gradient(135deg, var(--success), #059669);">
+                <h3>38</h3>
+                <p>Đã nhận đầy đủ</p>
+            </div>
+            <div class="summary-card" style="background: linear-gradient(135deg, var(--warning), #d97706);">
+                <h3>5</h3>
+                <p>Chờ nhận</p>
+            </div>
+            <div class="summary-card" style="background: linear-gradient(135deg, var(--danger), #dc2626);">
+                <h3>2</h3>
+                <p>Vắng mặt</p>
+            </div>
+        </div>*@
+</div>
+<div class="detail-container">
+    <h3 class="section-title">
+        <i class="fa-solid fa-gift"></i>
+        Danh Sách Quà Tặng
+    </h3>
+    <!-- Lặp qua từng quà tặng -->
+    @foreach (var qua in ChiTietUngHo.DanhSachQuaTang)
+    {
+        <!-- Tính thống kê riêng cho quà tặng này -->
+        var tongSoLuong = qua.DanhSachTreNhan.Count;
+        var daPhat = ((IEnumerable<dynamic>)qua.DanhSachTreNhan).Count(t => t.TrangThai == "Đã nhận");
+        var conLai = tongSoLuong - daPhat;
+        var percentDaPhat = tongSoLuong > 0 ? (int)((double)daPhat / tongSoLuong * 100) : 0;
+
+        <div class="gift-card">
+            <div class="gift-header">
+                <div style="display: flex; align-items: start;">
+                    <div class="gift-image">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <div class="gift-info">
+                        <div class="gift-name">@qua.TenQua</div>
+                        <p class="gift-desc">@qua.MoTa</p>
+                    </div>
+                </div>
+                @*<div class="gift-price">
+                        <div class="price-label">Đơn giá</div>
+                        <div class="price-value">@qua.DonGia.ToString("N0") VNĐ</div>
+                    </div>*@
+            </div>
+
+            <!-- Thống kê riêng của quà này -->
+            <div class="gift-stats">
+                <div class="stat-box">
+                    <div class="stat-label">Tổng số lượng</div>
+                    <div class="stat-value">@tongSoLuong</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Đã phát</div>
+                    <div class="stat-value">@daPhat</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Còn lại</div>
+                    <div class="stat-value">@conLai</div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" style="width:@percentDaPhat%;"></div>
+            </div>
+            <div class="progress-text">Đã phát: @percentDaPhat%</div>
+            <!-- Bảng trẻ nhận quà CỦA QUÀ NÀY -->
+            <table class="recipients-table">
+                <thead>
+                    <tr>
+                        <th>Tên trẻ</th>
+                        <th>Ngày sinh</th>
+                        <th>Khu phố</th>
+                        <th>Số lượng</th>
+                        <th>Ngày nhận</th>
+                        <th>Người phát</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- CHỈ lặp qua trẻ em của quà này -->
+                    @foreach (var tre in qua.DanhSachTreNhan)
+                    {
+                        <tr>
+                            <td>
+                                <div class="student-info">
+                                    <div>
+                                        <div class="student-name">@tre.HoTen</div>
+                                        <div class="student-status">@tre.TinhTrang</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@tre.NgaySinh.ToString("dd/MM/yyyy")</td>
+                            <td>@tre.TenKhuPho</td>
+                            <td style="font-weight: 600;">@tre.SoLuongNhan</td>
+                            <td>@tre.NgayPhanPhat.ToString("dd/MM/yyyy")</td>
+                            <td>@tre.NguoiPhanPhat</td>
+                            <td>
+                                @if (tre.TrangThai == "Đã nhận")
+                                {
+                                    <span class="status-badge status-received">
+                                        <i class="fa-solid fa-circle-check"></i> Đã nhận
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge status-pending">
+                                        <i class="fa-solid fa-clock"></i> @tre.TrangThai
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    @if (tre.TrangThai == "Đã nhận")
+                                    {
+                                        using (Html.BeginForm("SuaTrangThai", "HoTroVaUngHo", FormMethod.Post, new { @class = "inline-form" }))
+                                        {
+                                            <input type="hidden" name="UngHoID" value="@ChiTietUngHo.UngHoID" />
+                                            <input type="hidden" name="id" value="@tre.PhanPhatID" />
+                                            <input type="hidden" name="TrangThai" value="Chưa phát" />
+                                            <button class="btn btn-sm btn-warning"
+                                                    data-tooltip="Đánh dấu chưa nhận quà">
+                                                <i class="fa-solid fa-rotate-left"></i>
+                                            </button>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        using (Html.BeginForm("SuaTrangThai", "HoTroVaUngHo", FormMethod.Post, new { @class = "inline-form" }))
+                                        {
+                                            <input type="hidden" name="UngHoID" value="@ChiTietUngHo.UngHoID" />
+                                            <input type="hidden" name="id" value="@tre.PhanPhatID" />
+                                            <input type="hidden" name="TrangThai" value="Đã nhận" />
+                                            <button class="btn btn-sm btn-success"
+                                                    data-tooltip="Đánh dấu đã nhận quà">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                        }
+
+                                    }
+                                    @using (Html.BeginForm("XoaHoTro", "HoTroVaUngHo", FormMethod.Post, new { @class = "inline-form" }))
+                                    {
+                                        <input type="hidden" name="id" value="@tre.PhanPhatID" />
+                                        <input type="hidden" name="UngHoID" value="@ChiTietUngHo.UngHoID" />
+
+                                        <button class="btn btn-sm btn-delete"
+                                                data-tooltip="Xóa trẻ em khỏi danh sách">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+</div>
+
+<!-- Thay thế phần Minh chứng & Tài Liệu cũ bằng đoạn này -->
+<div class="detail-container">
+    <h3 class="section-title">
+        <i class="fa-solid fa-paperclip"></i>
+        Minh Chứng & Tài Liệu
+    </h3>
+
+    <div class="evidence-grid">
+        <div class="evidence-card" onclick="openEvidenceModal()" style="cursor: pointer;">
+            <div class="evidence-icon">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <div class="evidence-name">Xem tất cả minh chứng</div>
+            <div class="evidence-date">
+                @if (ChiTietUngHo.DanhSachMinhChung != null && ChiTietUngHo.DanhSachMinhChung.Count > 0)
+                {
+                    <span>@ChiTietUngHo.DanhSachMinhChung.Count tài liệu</span>
+                }
+                else
+                {
+                    <span>4 tài liệu mẫu</span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal xem danh sách minh chứng -->
+<div id="evidenceModal" class="evidence-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>
+                <i class="fa-solid fa-folder-open"></i>
+                <span>Danh Sách Minh Chứng</span>
+            </h3>
+            <button class="modal-close" onclick="closeEvidenceModal()">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="files-grid" id="filesGrid">
+                @if (ChiTietUngHo.DanhSachMinhChung != null && ChiTietUngHo.DanhSachMinhChung.Count > 0)
+                {
+                    foreach (var minhChung in ChiTietUngHo.DanhSachMinhChung)
+                    {
+                        var extension = System.IO.Path.GetExtension(minhChung.FilePath).ToLower();
+                        var isImage = extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".gif" || extension == ".bmp";
+                        var isPdf = extension == ".pdf";
+                        var isWord = extension == ".doc" || extension == ".docx";
+                        var isExcel = extension == ".xls" || extension == ".xlsx";
+
+                        var iconClass = isPdf ? "fa-file-pdf pdf-icon" :
+                                       isWord ? "fa-file-word word-icon" :
+                                       isExcel ? "fa-file-excel excel-icon" :
+                                       isImage ? "fa-image image-icon" : "fa-file";
+
+                        var badgeClass = isPdf ? "badge-pdf" :
+                                        isWord ? "badge-word" :
+                                        isExcel ? "badge-excel" :
+                                        isImage ? "badge-image" : "";
+
+                        var fileTypeName = isPdf ? "PDF" :
+                                          isWord ? "WORD" :
+                                          isExcel ? "EXCEL" :
+                                          isImage ? "IMAGE" : "FILE";
+
+                        var fullPath = "https://localhost:44362" + minhChung.FilePath;
+
+                        <div class="file-item" onclick='previewFile(@minhChung.MinhChungID, "@fullPath", "@minhChung.LoaiMinhChung", @isImage.ToString().ToLower())'>
+                            <div class="file-preview">
+                                @if (isImage)
+                                {
+                                    <img src="@fullPath" alt="@minhChung.LoaiMinhChung" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fa-solid @iconClass\'></i>';">
+                                }
+                                else
+                                {
+                                    <i class="fa-solid @iconClass file-icon"></i>
+                                }
+                            </div>
+                            <div class="file-info">
+                                <div class="file-name">@minhChung.LoaiMinhChung</div>
+                                <div class="file-meta">
+                                    <div class="file-date">
+                                        <i class="fa-solid fa-calendar"></i>
+                                        @minhChung.NgayCap.ToString("dd/MM/yyyy")
+                                    </div>
+                                    <span class="file-type-badge @badgeClass">@fileTypeName</span>
+                                </div>
+                            </div>
+                            <button class="download-btn" onclick="event.stopPropagation(); downloadFile('@fullPath', '@minhChung.LoaiMinhChung')">
+                                <i class="fa-solid fa-download"></i>
+                                Tải xuống
+                            </button>
+                        </div>
+                    }
+                }
+                else
+                {
+                    @:<!-- Dữ liệu mẫu -->
+                    <div class="file-item" onclick="previewFile(1, 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', 'Biên nhận học phí học kỳ 1', false)">
+                        <div class="file-preview">
+                            <i class="fa-solid fa-file-pdf pdf-icon file-icon"></i>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">Biên nhận học phí học kỳ 1</div>
+                            <div class="file-meta">
+                                <div class="file-date">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    25/01/2025
+                                </div>
+                                <span class="file-type-badge badge-pdf">PDF</span>
+                            </div>
+                        </div>
+                        <button class="download-btn" onclick="event.stopPropagation(); downloadFile('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', 'Biên nhận học phí học kỳ 1.pdf')">
+                            <i class="fa-solid fa-download"></i>
+                            Tải xuống
+                        </button>
+                    </div>
+
+                    <div class="file-item" onclick="alert('File Word - Cần có đường dẫn file thực tế')">
+                        <div class="file-preview">
+                            <i class="fa-solid fa-file-word word-icon file-icon"></i>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">Xác nhận chuyển khoản ngân hàng</div>
+                            <div class="file-meta">
+                                <div class="file-date">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    20/02/2025
+                                </div>
+                                <span class="file-type-badge badge-word">WORD</span>
+                            </div>
+                        </div>
+                        <button class="download-btn" onclick="event.stopPropagation(); alert('Cần có file thực tế để download')">
+                            <i class="fa-solid fa-download"></i>
+                            Tải xuống
+                        </button>
+                    </div>
+
+                    <div class="file-item" onclick="previewFile(3, 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800', 'Ảnh hoạt động phát quà trung thu', true)">
+                        <div class="file-preview">
+                            <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800" alt="Ảnh phát quà">
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">Ảnh hoạt động phát quà trung thu</div>
+                            <div class="file-meta">
+                                <div class="file-date">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    10/09/2025
+                                </div>
+                                <span class="file-type-badge badge-image">IMAGE</span>
+                            </div>
+                        </div>
+                        <button class="download-btn" onclick="event.stopPropagation(); downloadFile('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800', 'Anh_phat_qua.jpg')">
+                            <i class="fa-solid fa-download"></i>
+                            Tải xuống
+                        </button>
+                    </div>
+
+                    <div class="file-item" onclick="alert('File Excel - Cần có đường dẫn file thực tế')">
+                        <div class="file-preview">
+                            <i class="fa-solid fa-file-excel excel-icon file-icon"></i>
+                        </div>
+                        <div class="file-info">
+                            <div class="file-name">Danh sách trẻ em nhận quà chi tiết</div>
+                            <div class="file-meta">
+                                <div class="file-date">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    10/09/2025
+                                </div>
+                                <span class="file-type-badge badge-excel">EXCEL</span>
+                            </div>
+                        </div>
+                        <button class="download-btn" onclick="event.stopPropagation(); alert('Cần có file thực tế để download')">
+                            <i class="fa-solid fa-download"></i>
+                            Tải xuống
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal preview file -->
+<div id="previewModal" class="preview-modal">
+    <div class="preview-content">
+        <div class="preview-header">
+            <h4 id="previewTitle" style="margin: 0; font-size: 18px;">
+                <i class="fa-solid fa-eye"></i>
+                <span style="margin-left: 8px;">Xem trước</span>
+            </h4>
+            <button class="modal-close" onclick="closePreviewModal()" style="background: rgba(255,255,255,0.1);">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="preview-body" id="previewBody">
+            <p style="color: #6c757d;">Đang tải...</p>
+        </div>
+    </div>
+</div>
+<div id="addChildModal" class="add-child-modal-overlay">
+    <div class="add-child-modal-container">
+        <!-- Header -->
+        <div class="add-child-modal-header">
+            <h3>
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Thêm Trẻ Em Vào Quà Tặng</span>
+            </h3>
+            <button class="modal-close" onclick="closeAddChildModal()">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="add-child-modal-body">
+            <!-- Alert Message -->
+            <div id="addChildAlertMessage" style="display: none;"></div>
+
+            <!-- Thông tin quà tặng được chọn -->
+            <div class="add-child-info-box">
+                <div class="add-child-info-box-title">
+                    <i class="fa-solid fa-gift"></i>
+                    Thông Tin Quà Tặng
+                </div>
+                <div class="add-child-info-item">
+                    <span class="add-child-info-label">Tên quà:</span>
+                    <span class="add-child-info-value" id="modalTenQua">-</span>
+                </div>
+                <div class="add-child-info-item">
+                    <span class="add-child-info-label">Số lượng còn lại:</span>
+                    <span class="add-child-info-value" id="modalSoLuongConLai">-</span>
+                </div>
+                <div class="add-child-info-item">
+                    <span class="add-child-info-label">Mô tả:</span>
+                    <span class="add-child-info-value" id="modalMoTa">-</span>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form id="addChildForm">
+                <!-- Hidden Fields -->
+                <input type="hidden" id="formUngHoId" name="ungHoId">
+                <input type="hidden" id="formQuaTangUngHoId" name="quaTangUngHoId">
+                <input type="hidden" id="formNguoiDungID" name="nguoiDungID" value="1">
+
+                <!-- Row 1 -->
+                <div class="add-child-form-row">
+                    <div class="add-child-form-group">
+                        <label class="add-child-form-label">
+                            Chọn trẻ em <span class="add-child-required">*</span>
+                        </label>
+                        <select class="add-child-form-control" id="formTreEmId" name="treEmId" required>
+                            <option value="">-- Chọn trẻ em --</option>
+                            @* Dữ liệu từ controller *@
+                            @if (ViewBag.DanhSachTreEm != null)
+                            {
+                                foreach (var tre in ViewBag.DanhSachTreEm)
+                                {
+                                    <option value="@tre.TreEmId">@tre.HoTen - @tre.TenKhuPho</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="add-child-form-group">
+                        <label class="add-child-form-label">
+                            Số lượng nhận <span class="add-child-required">*</span>
+                        </label>
+                        <input type="number" class="add-child-form-control" id="formSoLuongNhan"
+                               name="soLuongNhan" min="1" value="1" required>
+                    </div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="add-child-form-row">
+                    <div class="add-child-form-group">
+                        <label class="add-child-form-label">
+                            Ngày phân phát <span class="add-child-required">*</span>
+                        </label>
+                        <input type="date" class="add-child-form-control" id="formNgayPhanPhat"
+                               name="ngayPhanPhat" required>
+                    </div>
+
+                    <div class="add-child-form-group">
+                        <label class="add-child-form-label">
+                            Người phân phát <span class="add-child-required">*</span>
+                        </label>
+                        <input type="text" class="add-child-form-control" id="formNguoiPhanPhat"
+                               name="nguoiPhanPhat" placeholder="Nhập tên người phát" required>
+                    </div>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="add-child-form-row">
+                    <div class="add-child-form-group">
+                        <label class="add-child-form-label">
+                            Trạng thái <span class="add-child-required">*</span>
+                        </label>
+                        <select class="add-child-form-control" id="formTrangThaiPhat" name="trangThaiPhat" required>
+                            <option value="Chưa phát">Chưa phát</option>
+                            <option value="Đã phát">Đã phát</option>
+                        </select>
+                    </div>
+
+                    <div class="add-child-form-group">
+                        <label class="add-child-form-label">
+                            Loại hỗ trợ <span class="add-child-required">*</span>
+                        </label>
+                        <input type="text" class="add-child-form-control" id="formLoaiHoTro"
+                               name="loaiHoTro" value="Phát quà" required>
+                    </div>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="add-child-form-row">
+                    <div class="add-child-form-group">
+                        <label class="add-child-form-label">
+                            Ngày cấp <span class="add-child-required">*</span>
+                        </label>
+                        <input type="date" class="add-child-form-control" id="formNgayCap"
+                               name="ngayCap" required>
+                    </div>
+
+                    <div class="add-child-form-group">
+                        <label class="add-child-form-label">
+                            Ngày hẹn lại
+                        </label>
+                        <input type="date" class="add-child-form-control" id="formNgayHenLai"
+                               name="ngayHenLai">
+                    </div>
+                </div>
+
+                <!-- Row 5 -->
+                <div class="add-child-form-group full-width">
+                    <label class="add-child-form-label">
+                        Người chịu trách nhiệm
+                    </label>
+                    <input type="text" class="add-child-form-control" id="formNguoiChiuTrachNhiemHoTro"
+                           name="nguoiChiuTrachNhiemHoTro" placeholder="Nhập tên người chịu trách nhiệm">
+                </div>
+
+                <!-- Row 6 -->
+                <div class="add-child-form-group full-width">
+                    <label class="add-child-form-label">
+                        Ghi chú
+                    </label>
+                    <textarea class="add-child-form-control" id="formGhiChu" name="ghiChu"
+                              placeholder="Nhập ghi chú thêm..."></textarea>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="add-child-modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeAddChildModal()">
+                <i class="fa-solid fa-times"></i>
+                Hủy
+            </button>
+            <button type="button" class="btn btn-primary" id="submitAddChildBtn" onclick="submitAddChildForm()">
+                <i class="fa-solid fa-check"></i>
+                Xác Nhận Thêm
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openEvidenceModal() {
+        document.getElementById('evidenceModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEvidenceModal() {
+        document.getElementById('evidenceModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    function previewFile(id, filePath, fileName, isImage) {
+        const modal = document.getElementById('previewModal');
+        const previewBody = document.getElementById('previewBody');
+        const previewTitle = document.getElementById('previewTitle');
+
+        previewTitle.innerHTML = `<i class="fa-solid fa-eye"></i><span style="margin-left: 8px;">${fileName}</span>`;
+        modal.classList.add('active');
+
+        const extension = filePath.split('.').pop().toLowerCase();
+
+        if (isImage) {
+            previewBody.innerHTML = `<img src="${filePath}" alt="${fileName}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+        } else if (extension === 'pdf') {
+            previewBody.innerHTML = `<iframe src="${filePath}" style="width: 100%; height: 100%; border: none;"></iframe>`;
+        } else if (['doc', 'docx', 'xls', 'xlsx'].includes(extension)) {
+            // Sử dụng Google Docs Viewer hoặc Office Online
+            const encodedUrl = encodeURIComponent(window.location.origin + filePath);
+            previewBody.innerHTML = `<iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}" style="width: 100%; height: 100%; border: none;"></iframe>`;
+        } else {
+            previewBody.innerHTML = `
+                                                                            <div style="text-align: center; padding: 40px;">
+                                                                                <i class="fa-solid fa-file" style="font-size: 80px; color: #667eea; margin-bottom: 20px;"></i>
+                                                                                <p style="color: #6c757d; font-size: 16px;">Không thể xem trước loại file này</p>
+                                                                                <button class="download-btn" onclick="downloadFile('${filePath}', '${fileName}')" style="max-width: 300px; margin: 20px auto;">
+                                                                                    <i class="fa-solid fa-download"></i>
+                                                                                    Tải xuống để xem
+                                                                                </button>
+                                                                            </div>
+                                                                        `;
+        }
+    }
+
+    function closePreviewModal() {
+        document.getElementById('previewModal').classList.remove('active');
+    }
+
+    function downloadFile(filePath, fileName) {
+        // Tạo link download
+        const link = document.createElement('a');
+        link.href = filePath;
+        link.download = fileName || 'download';
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Đóng modal khi click bên ngoài
+    document.getElementById('evidenceModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeEvidenceModal();
+        }
+    });
+
+    document.getElementById('previewModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            closePreviewModal();
+        }
+    });
+
+    // Đóng modal bằng phím ESC
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeEvidenceModal();
+            closePreviewModal();
+        }
+    });
+</script>

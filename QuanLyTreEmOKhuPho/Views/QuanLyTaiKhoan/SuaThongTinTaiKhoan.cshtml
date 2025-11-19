@@ -202,9 +202,9 @@
                 </div>
             </div>
 
-            @if (ViewBag.Error != null)
+            @if (TempData["Error"] != null)
             {
-                <div class="alert error">@ViewBag.Error</div>
+                <div class="alert error">@TempData["Error"]</div>
             }
             @if (TempData["Success"] != null)
             {

@@ -33,6 +33,9 @@ namespace QuanLyTreEmOKhuPho.Controllers
         }
         public async Task<ActionResult> ChiTiet(int id)
         {
+            ViewBag.ActivePage = "TreEm";
+            ViewBag.PageTitle = "Quản Lý Trẻ Em";
+            ViewBag.PageDescription = "Quản lý thông tin trẻ em trong khu phố";
             if (id <= 0) return HttpNotFound("ID không hợp lệ");
 
 

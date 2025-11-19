@@ -134,7 +134,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AI\KetQuaPhanCumDto.cs" />
     <Compile Include="Models\ApiHelper.cs" />
+    <Compile Include="Models\HoTroVaUngHo\ChiTietUngHoDTO.cs" />
+    <Compile Include="Models\HoTroVaUngHo\DanhSachUngHo.cs" />
+    <Compile Include="Models\HoTroVaUngHo\DsTreEm.cs" />
+    <Compile Include="Models\HoTroVaUngHo\PhanPhatQuaUngHoDTO.cs" />
+    <Compile Include="Models\HoTroVaUngHo\TreEmNhanDTO.cs" />
+    <Compile Include="Models\HoTroVaUngHo\UngHoListDTO.cs" />
     <Compile Include="Models\KhuPho.cs" />
     <Compile Include="Models\ManhThuongQuan\ChiTietManhThuongQuan.cs" />
     <Compile Include="Models\ManhThuongQuan\GhiNhanManhThuongQuan.cs" />
@@ -169,6 +176,7 @@
     <Compile Include="Models\TT_ThanhVienSuKien.cs" />
     <Compile Include="Models\TinhNguyenVien\TT_TNV.cs" />
     <Compile Include="Models\UngHo.cs" />
+    <Compile Include="Models\HoTroVaUngHo\ThongKeHoTroThangDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -189,8 +197,12 @@
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
     <Content Include="Content\css\BaoCaoThongKe.css" />
+    <Content Include="Content\css\ChiTietManhThuongQuan.css" />
     <Content Include="Content\css\ChiTietSuKien.css" />
+    <Content Include="Content\css\ChiTietUngHo.css" />
     <Content Include="Content\css\DangNhap.css" />
+    <Content Include="Content\css\GhiNhanManhThuongQuan.css" />
+    <Content Include="Content\css\GhiNhanUngHo.css" />
     <Content Include="Content\css\HoTroVaUngHo.css" />
     <Content Include="Content\css\ManhThuongQuan.css" />
     <Content Include="Content\css\media.css" />
@@ -199,6 +211,7 @@
     <Content Include="Content\css\Site.css" />
     <Content Include="Content\css\SuKien.css" />
     <Content Include="Content\css\taotaikhoan.css" />
+    <Content Include="Content\css\ThemHoTroPhucLoi.css" />
     <Content Include="Content\css\ThemSuKien.css" />
     <Content Include="Content\css\ThemTreEm.css" />
     <Content Include="Content\css\ThongTinChiTietTinhNguyenVien.css" />
@@ -206,6 +219,7 @@
     <Content Include="Content\css\trangchu.css" />
     <Content Include="Content\css\TreEm.css" />
     <Content Include="Content\css\VanDongTreEm.css" />
+    <Content Include="Content\ThemUngHoPhucLoi.js" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -254,17 +268,17 @@
     <Content Include="Views\TinhNguyenVien\TinhNguyenVien.cshtml" />
     <Content Include="Views\VanDongTreEm\VanDongTreEm.cshtml" />
     <Content Include="Views\TinhNguyenVien\ThongTinChiTietTinhNguyenVien.cshtml" />
-<<<<<<< HEAD
-    <Content Include="Views\ManhThuongQuan\GhiNhanUngHo.cshtml" />
-    <Content Include="Views\ManhThuongQuan\GhiNhanManhThuongQuan.cshtml" />
     <Content Include="Views\ManhThuongQuan\ChiTietManhThuongQuan.cshtml" />
-    <Content Include="Views\ManhThuongQuan\SuaManhThuongQuan.cshtml" />
-    <Content Include="Views\ManhThuongQuan\SuaUngHoManhThuongQuan.cshtml" />
     <Content Include="Views\QuanLyTaiKhoan\SuaThongTinTaiKhoan.cshtml" />
     <Content Include="Views\QuanLyTaiKhoan\TaoTaiKhoan.cshtml" />
-=======
     <Content Include="Views\QuanLytreEm\ChiTiet.cshtml" />
->>>>>>> origin/KimAnh
+    <Content Include="Views\ManhThuongQuan\GhiNhanUngHo.cshtml" />
+    <Content Include="Views\ManhThuongQuan\LayThongTinUngHo.cshtml" />
+    <Content Include="Views\ManhThuongQuan\SuaManhThuongQuan.cshtml" />
+    <Content Include="Views\ManhThuongQuan\GhiNhanManhThuongQuan.cshtml" />
+    <Content Include="Views\HoTroVaUngHo\ChiTietUngHo.cshtml" />
+    <Content Include="Views\HoTroVaUngHo\ThemUngHoPhucLoi.cshtml" />
+    <Content Include="Views\ManhThuongQuan\SuaUngHoManhThuongQuan.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
