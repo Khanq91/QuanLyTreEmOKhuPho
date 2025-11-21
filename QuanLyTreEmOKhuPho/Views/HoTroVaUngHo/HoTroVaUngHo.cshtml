@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var ThongKe = ViewBag.ThongKe;
     var DSHoTroPhucLoi = ViewBag.DSHoTroPhucLoi;
+    var Lst_KhuPho = ViewBag.Lst_KhuPho;
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -39,50 +40,51 @@
         color: white;
         font-weight: bold;
     }
+
     .progress-bar {
-    width: 100%;
-    height: 12px;
-    background: var(--gray-200);
-    border-radius: 6px;
-    overflow: hidden;
-    margin-bottom: 15px;
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--success), var(--primary));
-    transition: width 0.5s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-    .progress-fill::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        background: linear-gradient( 90deg, transparent, rgba(255,255,255,0.3), transparent );
-        animation: shimmer 2s infinite;
+        width: 100%;
+        height: 12px;
+        background: var(--gray-200);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 15px;
     }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--success), var(--primary));
+        transition: width 0.5s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .progress-fill::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient( 90deg, transparent, rgba(255,255,255,0.3), transparent );
+            animation: shimmer 2s infinite;
+        }
+
     .progress-text {
         text-align: center;
         font-size: 14px;
         color: var(--gray-600);
         font-weight: 600;
     }
-@@keyframes shimmer {
-    0% {
-        transform: translateX(-100%);
+
+    @@keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
     }
-
-    100% {
-        transform: translateX(100%);
-    }
-}
-
-
 </style>
 <!-- Page Header -->
 <div class="page-header">
@@ -129,7 +131,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Filter -->
         <div class="filter-section">
             <div class="form-group">
@@ -147,25 +148,13 @@
                     <option value="other">Khác</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label class="form-label">Khu phố</label>
-                <select class="form-control" id="filterKhuPho">
-                    <option value="">Tất cả</option>
-                    <option value="kp1">Khu phố 1</option>
-                    <option value="kp2">Khu phố 2</option>
-                    <option value="kp3">Khu phố 3</option>
-                    <option value="kp4">Khu phố 4</option>
-                    <option value="kp5">Khu phố 5</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Thời gian</label>
-                <input type="date" class="form-control" id="filterDate">
-            </div>
-            <button class="btn btn-primary" onclick="applyFilters()">Lọc</button>
-            <button class="btn btn-success" onclick="exportData()"><i class="fa-solid fa-chart-area"></i> Xuất Excel</button>
+            @*<div class="form-group">
+                    <label class="form-label">Thời gian</label>
+                    <input type="date" class="form-control" id="filterDate">
+                </div>*@
+            @*<button class="btn btn-primary" onclick="applyFilters()">Lọc</button>*@
+            @*<button class="btn btn-success" onclick="exportData()"><i class="fa-solid fa-chart-area"></i> Xuất Excel</button>*@
         </div>
-
         <!-- Support List -->
         <div class="support-grid" id="supportList">
             <!-- Will be populated by JavaScript -->
@@ -175,23 +164,22 @@
                     <div class="support-header">
                         <div>
                             <h3 class="support-title">@item.MoTa</h3>
-                            <span class="support-type">@item.LoaiUngHo</span>
+                            <span class="support-type">@item.DoiTuongNhan</span>
                         </div>
                     </div>
-
                     <div class="support-meta">
                         <div class="meta-item">
                             <span><i class="fa-solid fa-calendar-days"></i></span>
-                            <span>@item.NgayUngHo</span>
+                            <span>@item.NgayUngHo.ToString("dd/MM/yyyy")</span>
                         </div>
                         <div class="meta-item">
                             <span><i class="fa-solid fa-user"></i></span>
                             <span>@item.TenManhThuongQuan</span>
                         </div>
-                        <div class="meta-item">
-                            <span><i class="fa-solid fa-house-medical-circle-check"></i></span>
-                            <span>@item.TenKhuPho</span>
-                        </div>
+                        @*<div class="meta-item">
+                                <span><i class="fa-solid fa-house-medical-circle-check"></i></span>
+                                <span>@item.TenKhuPho</span>
+                            </div>*@
                     </div>
 
                     <div>
@@ -213,351 +201,27 @@
 
                     <div class="support-actions">
                         <button class="btn btn-sm btn-primary"
-                                onclick="location.href='@Url.Action("ChiTietUngHo", "HoTroVaUngHo", new { id = item.HoTroId })'">
+                                onclick="location.href='@Url.Action("ChiTietUngHo", "HoTroVaUngHo", new { id = item.QuaTangUngHoId })'">
                             Chi tiết
                         </button>
-                        @*<button class="btn btn-sm" style="background: var(--warning); color: white;" onclick="event.stopPropagation();">
+                        <button class="btn btn-sm" style="background: var(--warning); color: white;
+                                "onclick="location.href='@Url.Action("SuaUngHo", "HoTroVaUngHo", new { id = item.QuaTangUngHoId })'">
                             Sửa
-                        </button>*@
-                        @*<button class="btn btn-sm" style="background: var(--danger); color: white;" onclick="event.stopPropagation();">
+                        </button>
+                        <button class="btn btn-sm" style="background: var(--danger); color: white;">
                             Xóa
-                        </button>*@
+                        </button>
                     </div>
                     @*<div class="progress-text">Đã phát: @item.PercentDaPhat%</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width:@item.PercentDaPhat%;"></div>
-                    </div>*@
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:@item.PercentDaPhat%;"></div>
+                        </div>*@
                 </div>
             }
 
         </div>
     </div>
 </div>
-
-<!-- Create Support Modal -->
-<!--<div class="modal" id="createSupportModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title"><i class="fa-solid fa-circle-plus"></i> Tạo đợt hỗ trợ mới</h3>
-            <button class="close-btn" onclick="closeModal('createSupportModal')">✕</button>
-        </div>
-        <div class="modal-body">
-            <form id="createSupportForm">-->
-                <!-- Basic Info -->
-                <!--<div class="form-section">
-                    <h4 class="section-title"><i class="fa-solid fa-clipboard"></i> Thông tin cơ bản</h4>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Tên đợt hỗ trợ *</label>
-                            <input type="text" class="form-control" placeholder="VD: Học bổng học kỳ I năm 2025" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Loại hỗ trợ *</label>
-                            <select class="form-control" required>
-                                <option value="">-- Chọn loại --</option>
-                                <option value="scholarship">Học bổng</option>
-                                <option value="gift">Quà tặng</option>
-                                <option value="health">Khám sức khỏe</option>
-                                <option value="food">Hỗ trợ lương thực</option>
-                                <option value="other">Khác</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Ngày cấp *</label>
-                            <input type="date" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Người chịu trách nhiệm *</label>
-                            <input type="text" class="form-control" placeholder="Họ tên người phụ trách" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row full">
-                        <div class="form-group">
-                            <label class="form-label">Mô tả chi tiết</label>
-                            <textarea class="form-control" placeholder="Mô tả chi tiết về đợt hỗ trợ..."></textarea>
-                        </div>
-                    </div>
-                </div>-->
-
-                <!-- Select Children -->
-                <!--<div class="form-section">
-                    <h4 class="section-title"><i class="fa-solid fa-children"></i> Danh sách trẻ nhận hỗ trợ</h4>
-                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                        <button type="button" class="btn btn-primary" onclick="openSelectChildrenModal()">
-                            <i class="fa-solid fa-circle-plus"></i> Chọn từ danh sách
-                        </button>
-                        <button type="button" class="btn btn-success">
-                            <i class="fa-solid fa-chart-area"></i> Import Excel
-                        </button>
-                    </div>
-
-                    <div class="selection-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Tên trẻ</th>
-                                    <th>Khu phố</th>
-                                    <th>Hoàn cảnh</th>
-                                    <th>Giá trị</th>
-                                    <th>Xóa</th>
-                                </tr>
-                            </thead>
-                            <tbody id="selectedChildren">
-                                <tr>
-                                    <td colspan="5" style="text-align: center; color: var(--gray-600); padding: 30px;">
-                                        Chưa có trẻ em nào được chọn
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>-->
-
-                <!-- Upload Evidence -->
-                <!--<div class="form-section">
-                    <h4 class="section-title"><i class="fa-solid fa-paperclip"></i> Upload minh chứng</h4>
-                    <div class="file-upload-area" onclick="document.getElementById('fileInput').click()">
-                        <div class="upload-icon"><i class="fa-solid fa-file"></i></div>
-                        <p style="color: var(--gray-700); font-weight: 600; margin-bottom: 5px;">
-                            Click để chọn file hoặc kéo thả vào đây
-                        </p>
-                        <p style="color: var(--gray-600); font-size: 13px;">
-                            Hỗ trợ: PDF, DOC, DOCX, JPG, PNG (Tối đa 10MB)
-                        </p>
-                        <input type="file" id="fileInput" style="display: none;" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                    </div>
-
-                    <div class="uploaded-files" id="uploadedFiles"></div>
-                </div>-->
-
-                <!-- Form Actions -->
-                <!--<div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" class="btn" style="background: var(--gray-200); color: var(--gray-700);" onclick="closeModal('createSupportModal')">
-                        Hủy
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        ✓ Lưu đợt hỗ trợ
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>-->
-
-<!-- Select Children Modal -->
-<!--<div class="modal" id="selectChildrenModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title"><i class="fa-solid fa-children"></i> Chọn trẻ em nhận hỗ trợ</h3>
-            <button class="close-btn" onclick="closeModal('selectChildrenModal')">✕</button>
-        </div>
-        <div class="modal-body">
-            <div class="form-group" style="margin-bottom: 20px;">
-                <input type="text" class="form-control" placeholder="Tìm kiếm trẻ em..." id="searchChildForSupport">
-            </div>
-
-            <div class="selection-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th><input type="checkbox" id="selectAll"></th>
-                            <th>Họ tên</th>
-                            <th>Tuổi</th>
-                            <th>Khu phố</th>
-                            <th>Hoàn cảnh</th>
-                            <th>Giá trị</th>
-                        </tr>
-                    </thead>
-                    <tbody id="childrenSelectList">-->
-                        <!-- Sample data -->
-                        <!--<tr>
-                            <td><input type="checkbox" class="child-checkbox" data-id="1"></td>
-                            <td>Nguyễn Văn A</td>
-                            <td>10 tuổi</td>
-                            <td>Khu phố 2</td>
-                            <td>Mồ côi cha</td>
-                            <td><input type="number" class="form-control" placeholder="Số tiền" style="width: 120px;"></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="child-checkbox" data-id="2"></td>
-                            <td>Trần Thị B</td>
-                            <td>8 tuổi</td>
-                            <td>Khu phố 1</td>
-                            <td>Hộ nghèo</td>
-                            <td><input type="number" class="form-control" placeholder="Số tiền" style="width: 120px;"></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="child-checkbox" data-id="3"></td>
-                            <td>Lê Văn C</td>
-                            <td>12 tuổi</td>
-                            <td>Khu phố 5</td>
-                            <td>Khuyết tật</td>
-                            <td><input type="number" class="form-control" placeholder="Số tiền" style="width: 120px;"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-                <button type="button" class="btn" style="background: var(--gray-200); color: var(--gray-700);" onclick="closeModal('selectChildrenModal')">
-                    Hủy
-                </button>
-                <button type="button" class="btn btn-primary" onclick="confirmChildSelection()">
-                    ✓ Xác nhận (<span id="selectedCount">0</span> trẻ)
-                </button>
-            </div>
-        </div>
-    </div>
-</div>-->
-
-<!-- Add Sponsor Modal -->
-@*<div class="modal" id="addSponsorModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title"><i class="fa-solid fa-sack-dollar"></i> Thêm mạnh thường quân</h3>
-            <button class="close-btn" >✕</button>
-        </div>
-        <div class="modal-body">
-            <form id="addSponsorForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Tên MTQ *</label>
-                        <input type="text" class="form-control" placeholder="Họ tên / Tên tổ chức" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Loại *</label>
-                        <select class="form-control" required>
-                            <option value="">-- Chọn loại --</option>
-                            <option value="individual"><i class="fa-solid fa-user"></i> Cá nhân</option>
-                            <option value="organization"><i class="fa-solid fa-building"></i> Tổ chức</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Số điện thoại</label>
-                        <input type="tel" class="form-control" placeholder="0901234567">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-control" placeholder="email@example.com">
-                    </div>
-                </div>
-
-                <div class="form-row full">
-                    <div class="form-group">
-                        <label class="form-label">Địa chỉ</label>
-                        <input type="text" class="form-control" placeholder="Địa chỉ đầy đủ">
-                    </div>
-                </div>
-
-                <div class="form-row full">
-                    <div class="form-group">
-                        <label class="form-label">Ghi chú</label>
-                        <textarea class="form-control" placeholder="Ghi chú thêm..."></textarea>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" class="btn" style="background: var(--gray-200); color: var(--gray-700);" onclick="closeModal('addSponsorModal')">
-                        Hủy
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fa-solid fa-circle-plus"></i> Thêm MTQ
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>*@
-
-<!-- Record Donation Modal -->
-<!--<div class="modal" id="recordDonationModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 class="modal-title">📝 Ghi nhận ủng hộ</h3>
-            <button class="close-btn" onclick="closeModal('recordDonationModal')">✕</button>
-        </div>
-        <div class="modal-body">
-            <form id="recordDonationForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Chọn MTQ *</label>
-                        <select class="form-control" required>
-                            <option value="">-- Chọn mạnh thường quân --</option>
-                            <option value="1">Nguyễn Văn A (Cá nhân)</option>
-                            <option value="2">Công ty ABC (Tổ chức)</option>
-                            <option value="3">Trần Thị B (Cá nhân)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Ngày ủng hộ *</label>
-                        <input type="date" class="form-control" required>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Loại ủng hộ *</label>
-                        <select class="form-control" id="donationType" required onchange="toggleDonationType()">
-                            <option value="">-- Chọn loại --</option>
-                            <option value="money"><i class="fa-solid fa-sack-dollar"></i> Tiền mặt</option>
-                            <option value="goods">📦 Hiện vật</option>
-                        </select>
-                    </div>
-                    <div class="form-group" id="moneyAmount">
-                        <label class="form-label">Số tiền *</label>
-                        <input type="number" class="form-control" placeholder="VND">
-                    </div>
-                </div>
-
-                <div class="form-row full" id="goodsDescription" style="display: none;">
-                    <div class="form-group">
-                        <label class="form-label">Mô tả hiện vật *</label>
-                        <textarea class="form-control" placeholder="Mô tả chi tiết về hiện vật..."></textarea>
-                    </div>
-                </div>
-
-                <div class="form-row full">
-                    <div class="form-group">
-                        <label class="form-label">Liên kết với</label>
-                        <select class="form-control">
-                            <option value="">-- Không liên kết --</option>
-                            <option value="child"><i class="fa-solid fa-children"></i> Trẻ em cụ thể</option>
-                            <option value="event"><i class="fa-solid fa-star"></i> Sự kiện</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <h4 class="section-title"><i class="fa-solid fa-paperclip"></i> Upload chứng từ (không bắt buộc)</h4>
-                    <div class="file-upload-area" onclick="document.getElementById('donationFile').click()">
-                        <div class="upload-icon"><i class="fa-solid fa-file"></i></div>
-                        <p style="color: var(--gray-700); font-weight: 600;">
-                            Tải lên chứng từ ủng hộ
-                        </p>
-                        <input type="file" id="donationFile" style="display: none;" multiple>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-                    <button type="button" class="btn" style="background: var(--gray-200); color: var(--gray-700);" onclick="closeModal('recordDonationModal')">
-                        Hủy
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        ✓ Ghi nhận ủng hộ
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>-->
-
 <script>
     // Sample data
     function renderSponsorList() {
@@ -876,4 +540,141 @@
             }
         });
     });
+</script>
+<script>
+    // Dữ liệu từ backend (đã có sẵn trong biến DSHoTroPhucLoi)
+    let allSupportCards = [];
+
+    // Khởi tạo khi trang load
+    document.addEventListener('DOMContentLoaded', function () {
+        // Lấy tất cả các card hiện có
+        allSupportCards = Array.from(document.querySelectorAll('.support-card'));
+
+        // Thêm event listeners cho các trường filter
+        document.getElementById('searchSupport').addEventListener('input', applyFilters);
+        document.getElementById('filterSupportType').addEventListener('change', applyFilters);
+        document.getElementById('filterDate').addEventListener('change', applyFilters);
+    });
+
+    // Áp dụng bộ lọc
+    function applyFilters() {
+        const searchText = document.getElementById('searchSupport').value.toLowerCase().trim();
+        const filterType = document.getElementById('filterSupportType').value;
+        const filterDate = document.getElementById('filterDate').value;
+
+        let visibleCount = 0;
+
+        allSupportCards.forEach(card => {
+            // Lấy thông tin từ card
+            const title = card.querySelector('.support-title')?.textContent.toLowerCase() || '';
+            const recipient = card.querySelector('.support-type')?.textContent.toLowerCase() || '';
+            const donor = card.querySelector('.meta-item:nth-child(2) span:last-child')?.textContent.toLowerCase() || '';
+            const dateText = card.querySelector('.meta-item:first-child span:last-child')?.textContent || '';
+
+            // Lọc theo tìm kiếm (tìm trong tên, đối tượng nhận, người ủng hộ)
+            const matchSearch = !searchText ||
+                title.includes(searchText) ||
+                recipient.includes(searchText) ||
+                donor.includes(searchText);
+
+            // Lọc theo loại hỗ trợ (dựa vào từ khóa trong mô tả hoặc đối tượng nhận)
+            let matchType = true;
+            if (filterType) {
+                const text = (title + ' ' + recipient).toLowerCase();
+                switch (filterType) {
+                    case 'scholarship':
+                        matchType = text.includes('học') || text.includes('bổng');
+                        break;
+                    case 'gift':
+                        matchType = text.includes('quà') || text.includes('tặng');
+                        break;
+                    case 'health':
+                        matchType = text.includes('khám') || text.includes('sức khỏe');
+                        break;
+                    case 'food':
+                        matchType = text.includes('lương thực') || text.includes('gạo') || text.includes('thực phẩm');
+                        break;
+                    case 'other':
+                        matchType = !text.includes('học') && !text.includes('quà') &&
+                            !text.includes('khám') && !text.includes('lương thực');
+                        break;
+                }
+            }
+
+            // Lọc theo ngày
+            let matchDate = true;
+            if (filterDate && dateText) {
+                // Chuyển đổi định dạng ngày dd/MM/yyyy sang yyyy-MM-dd để so sánh
+                const parts = dateText.split('/');
+                if (parts.length === 3) {
+                    const cardDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                    matchDate = cardDate === filterDate;
+                }
+            }
+
+            // Hiển thị hoặc ẩn card
+            if (matchSearch && matchType && matchDate) {
+                card.style.display = '';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Hiển thị thông báo nếu không có kết quả
+        const container = document.getElementById('supportList');
+        let noResultMsg = container.querySelector('.no-result-message');
+
+        if (visibleCount === 0) {
+            if (!noResultMsg) {
+                noResultMsg = document.createElement('div');
+                noResultMsg.className = 'no-result-message';
+                noResultMsg.style.cssText = 'text-align: center; padding: 40px; color: #666; grid-column: 1/-1;';
+                noResultMsg.textContent = 'Không tìm thấy kết quả phù hợp';
+                container.appendChild(noResultMsg);
+            }
+            noResultMsg.style.display = 'block';
+        } else {
+            if (noResultMsg) {
+                noResultMsg.style.display = 'none';
+            }
+        }
+    }
+
+    // Xuất dữ liệu Excel
+    function exportData() {
+        // Lấy tất cả các card đang hiển thị
+        const visibleCards = Array.from(document.querySelectorAll('.support-card'))
+            .filter(card => card.style.display !== 'none');
+
+        if (visibleCards.length === 0) {
+            alert('Không có dữ liệu để xuất');
+            return;
+        }
+
+        // Tạo CSV
+        let csv = 'STT,Mô tả,Đối tượng nhận,Ngày ủng hộ,Người ủng hộ,Số tiền,Số trẻ em\n';
+
+        visibleCards.forEach((card, index) => {
+            const title = card.querySelector('.support-title')?.textContent || '';
+            const recipient = card.querySelector('.support-type')?.textContent || '';
+            const date = card.querySelector('.meta-item:first-child span:last-child')?.textContent || '';
+            const donor = card.querySelector('.meta-item:nth-child(2) span:last-child')?.textContent || '';
+            const money = card.querySelector('.support-value')?.textContent || '';
+            const children = card.querySelector('.support-recipients')?.textContent.match(/\d+/)?.[0] || '0';
+
+            csv += `${index + 1},"${title}","${recipient}","${date}","${donor}","${money}",${children}\n`;
+        });
+
+        // Tải file
+        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `ho_tro_phuc_loi_${new Date().getTime()}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 </script>

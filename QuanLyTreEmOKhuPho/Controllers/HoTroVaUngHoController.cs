@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using QuanLyTreEmAPI.DTOs.HoTroVaPhucLoi;
 using QuanLyTreEmOKhuPho.Models;
 using QuanLyTreEmOKhuPho.Models.HoTroVaUngHo;
 using QuanLyTreEmOKhuPho.Models.QuanLyTaiKhoan;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -48,15 +50,27 @@ namespace QuanLyTreEmOKhuPho.Controllers
             var result = JsonConvert.DeserializeObject<List<DanhSachUngHo>>(json);
             return result ?? new List<DanhSachUngHo>();
         }
-        public async Task<ChiTietUngHoDTO> GetChiTietUngHo(int id)
+        public async Task<QuaTangDTO> GetChiTietUngHo(int id)
         {
-            var response = await _client.GetAsync($"HoTroVaUngHo/ChiTiet/{id}");
+            var response = await _client.GetAsync($"HoTroVaUngHo/ChiTietQuaTang/{id}");
 
             if (!response.IsSuccessStatusCode)
                 return null;
 
             var json = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<ChiTietUngHoDTO>(json);
+            var result = JsonConvert.DeserializeObject<QuaTangDTO>(json);
+
+            return result;
+        }
+        public async Task<ChiTietSuaUngHo> ChiTietSuaUngHo(int id)
+        {
+            var response = await _client.GetAsync($"HoTroVaUngHo/ChiTietThongTinQuaTang?quaTangUngHoId={id}");
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var json = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<ChiTietSuaUngHo>(json);
 
             return result;
         }
@@ -71,7 +85,6 @@ namespace QuanLyTreEmOKhuPho.Controllers
             var result = JsonConvert.DeserializeObject<List<UngHoListDTO>>(json);
             return result ?? new List<UngHoListDTO>();
         }
-
         private async Task<List<DsTreEm>> Lst_TreEm()
         {
             var response = await _client.GetAsync("HoTroVaUngHo/DanhSachTreEm");
@@ -83,9 +96,24 @@ namespace QuanLyTreEmOKhuPho.Controllers
             var result = JsonConvert.DeserializeObject<List<DsTreEm>>(json);
             return result ?? new List<DsTreEm>();
         }
+        private async Task<List<DsTreEm>> Lst_TreEmDaLoc(int quaTangUngHoId)
+        {
+            var response = await _client.GetAsync(
+                $"HoTroVaUngHo/LocDanhSachTreEm?quaTangUngHoId={quaTangUngHoId}"
+            );
+
+            if (!response.IsSuccessStatusCode)
+                return new List<DsTreEm>();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<List<DsTreEm>>(json);
+            return result ?? new List<DsTreEm>();
+        }
+
         public async Task<ActionResult> HoTroVaUngHo()
         {
             ViewBag.ThongKe = await ThongKe();
+            ViewBag.Lst_KhuPho = await ThongTinKhuPho();
             ViewBag.DSHoTroPhucLoi = await DSHoTroPhucLoi();
             ViewBag.ActivePage = "HoTroVaUngHo";
             ViewBag.PageTitle = "Hỗ Trợ & Phúc Lợi";
@@ -108,6 +136,22 @@ namespace QuanLyTreEmOKhuPho.Controllers
             ViewBag.PageTitle = "Thêm Hỗ Trợ Phúc Lợi";
             ViewBag.PageDescription = "Tạo hỗ trợ phúc lợi cho trẻ em từ đợt ủng hộ";
             return View();
+        }
+
+        public async Task<List<KhuPho>> ThongTinKhuPho()
+        {
+            var response = await _client.GetAsync("KhuPho");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new List<KhuPho>();
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            var data = JsonConvert.DeserializeObject<List<KhuPho>>(json);
+
+            return data ?? new List<KhuPho>();
         }
         [HttpPost]
         public async Task<ActionResult> ThemUngHoPhucLoi(FormCollection form)
@@ -308,6 +352,17 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 return View();
             }
         }
+        public async Task<SoLuongQuaConLai> SoLuongQuaConLai(int quaTangUngHoId)
+        {
+            var response = await _client.GetAsync($"HoTroVaUngHo/SoLuongQuaConLai?quaTangUngHoId={quaTangUngHoId}");
+            if (!response.IsSuccessStatusCode)
+            {
+                return new SoLuongQuaConLai();
+            }
+            var json = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<SoLuongQuaConLai>(json);
+            return result ?? new SoLuongQuaConLai();
+        }
 
         // Helper method
         private int GetCurrentUserId()
@@ -337,8 +392,9 @@ namespace QuanLyTreEmOKhuPho.Controllers
             }
         }
         [HttpPost]
-        public async Task<ActionResult> XoaHoTro(int UngHoID, int id)
+        public async Task<ActionResult> XoaHoTro(int UngHoID, int SoLuongNhan, int id)
         {
+           
             var response = await _client.DeleteAsync($"HoTroVaUngHo/XoaTreKhoiDanhSachPhatQua/{id}");
             if (response.IsSuccessStatusCode)
             {
@@ -352,5 +408,74 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 return RedirectToAction("ChiTietUngHo", new { id = UngHoID });
             }
         }
+        public async Task<ActionResult> SuaUngHo(int id)
+        {
+            ViewBag.ChiTietSuaUngHo = await ChiTietSuaUngHo(id);
+            ViewBag.ActivePage = "HoTroVaUngHo";
+            ViewBag.PageTitle = "Hỗ Trợ & Phúc Lợi";
+            ViewBag.PageDescription = "Quản lý các chương trình hỗ trợ và phúc lợi";
+            return View();
+        }
+        [HttpPost]
+        public async Task<ActionResult> SuaUngHo(SuaUngHoDTO suh)
+        {
+            var json = JsonConvert.SerializeObject(suh);
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("HoTroVaUngHo/SuaUngHo", content);
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessage"] = "Cập nhật thành công!";
+
+                return RedirectToAction("SuaUngHo", new { id = suh.QuaTangUngHoId });
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                TempData["ErrorMessage"] = $"Lỗi cập nhật: {error}";
+
+                return RedirectToAction("SuaUngHo", new { id = suh.QuaTangUngHoId });
+            }
+        }
+        public async Task<ActionResult> ThemTreEm(int id)
+        {
+            ViewBag.ChiTietSuaUngHo = await ChiTietSuaUngHo(id);
+            ViewBag.Lst_TreEm = await Lst_TreEmDaLoc(id);
+            ViewBag.SoLuongQuaConLai = await SoLuongQuaConLai(id);
+            ViewBag.ActivePage = "HoTroVaUngHo";
+            ViewBag.PageTitle = "Hỗ Trợ & Phúc Lợi";
+            ViewBag.PageDescription = "Quản lý các chương trình hỗ trợ và phúc lợi";
+            return View();
+        }
+        [HttpPost]
+        public async Task<ActionResult> ThemTreEm(ThemTreVaoPhanPhatDTO model)
+        {
+            var json = JsonConvert.SerializeObject(model);
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            // Gửi POST API
+            var response = await _client.PostAsync("HoTroVaUngHo/ThemTreVaoPhanPhat", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+
+                // Giải mã JSON từ API
+                var errorObj = JsonConvert.DeserializeObject<dynamic>(errorContent);
+
+                string message = errorObj?.message ?? "Lỗi không xác định";
+
+                TempData["Notification"] = message;
+                TempData["NotificationType"] = "error";
+                return RedirectToAction("ThemTreEm", new { id = model.QuaTangUngHoId });
+            }
+            TempData["Notification"] = "Đã thêm trẻ em thành công";
+            TempData["NotificationType"] = "success";
+
+            ViewBag.ActivePage = "HoTroVaUngHo";
+            ViewBag.PageTitle = "Hỗ Trợ & Phúc Lợi";
+            ViewBag.PageDescription = "Quản lý các chương trình hỗ trợ và phúc lợi";
+            return RedirectToAction("ThemTreEm", new { id = model.QuaTangUngHoId });
+        }
     }
+
 }

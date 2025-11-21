@@ -1,0 +1,888 @@
+﻿@using Newtonsoft.Json
+
+@{
+    ViewBag.Title = "ThemUngHoPhucLoi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var ChiTietSuaUngHo = ViewBag.ChiTietSuaUngHo;
+    var SoLuongQuaConLai = ViewBag.SoLuongQuaConLai;
+}
+<style>
+    .notification-toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 350px;
+        max-width: 500px;
+        padding: 16px 20px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInRight 0.4s ease-out;
+        font-size: 14px;
+    }
+
+        .notification-toast.success {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .notification-toast.error {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .notification-toast i {
+            font-size: 24px;
+        }
+
+        .notification-toast .close-btn {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+            .notification-toast .close-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
+            }
+
+    @@keyframes slideInRight {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @@keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+
+    .notification-toast.hiding {
+        animation: slideOutRight 0.3s ease-in forwards;
+    }
+</style>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="notification-toast success" id="successToast">
+        <i class="fa-solid fa-check-circle"></i>
+        <div>
+            <strong>Thành công!</strong><br>
+            @TempData["SuccessMessage"]
+        </div>
+        <button class="close-btn" onclick="closeToast('successToast')">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="notification-toast error" id="errorToast">
+        <i class="fa-solid fa-exclamation-circle"></i>
+        <div>
+            <strong>Lỗi!</strong><br>
+            @TempData["ErrorMessage"]
+        </div>
+        <button class="close-btn" onclick="closeToast('errorToast')">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    </div>
+}
+
+<script>
+    function closeToast(id) {
+        const toast = document.getElementById(id);
+        if (toast) {
+            toast.classList.add('hiding');
+            setTimeout(() => toast.remove(), 300);
+        }
+    }
+
+    // Auto hide
+    setTimeout(() => {
+        const successToast = document.getElementById('successToast');
+        if (successToast) closeToast('successToast');
+    }, 5000);
+
+    setTimeout(() => {
+        const errorToast = document.getElementById('errorToast');
+        if (errorToast) closeToast('errorToast');
+    }, 8000);
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="~/Content/css/ThemHoTroPhucLoi.css" />
+<link rel="stylesheet" href="~/Content/css/media.css" />
+
+
+<div class="content-grid">
+    <!-- Thông tin ủng hộ -->
+    <div class="info-card">
+        <h3><i class="fa-solid fa-heart-circle-check"></i> Thông tin ủng hộ</h3>
+        <!-- Hiển thị thông tin ủng hộ đã chọn -->
+        <div id="ungHoInfo">
+            <div class="info-row">
+                <span class="info-label">Mạnh thường quân</span>
+                <span class="info-value">@ChiTietSuaUngHo.TenManhThuongQuan</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Loại ủng hộ</span>
+                <span class="info-value"><span class="badge badge-warning">@ChiTietSuaUngHo.LoaiUngHo</span></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Vật phẩm</span>
+                <span class="info-value">@ChiTietSuaUngHo.TenVatPham</span>
+            </div>
+            @*<div class="info-row">
+                    <span class="info-label">Số lượng tổng</span>
+                    <span class="info-value">@ChiTietSuaUngHo.SoLuongVatPham</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Đã phát</span>
+                    <span class="info-value" style="color: var(--success);">@soLuongDaPhat</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Còn lại</span>
+                    <span class="info-value" id="soLuongConLaiDisplay" style="color: var(--warning);">@ChiTietSuaUngHo.SoLuongConLaiQuaTang</span>
+                </div>*@
+            <div class="info-row">
+                <span class="info-label">Đối tượng</span>
+                <span class="info-value">@ChiTietSuaUngHo.DoiTuong</span>
+            </div>
+        </div>
+    </div>
+    @using (Html.BeginForm("ThemTreEm", "HoTroVaUngHo", FormMethod.Post, new { id = "formHoTro" }))
+    {
+        <input type="hidden" name="QuaTangUngHoId" value="@ChiTietSuaUngHo.QuaTangUngHoId" />
+        <!-- Form thêm hỗ trợ -->
+        <div class="form-card">
+            <div id="formHoTro">
+                <!-- Thông tin cơ bản -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-clipboard"></i> Thông tin hỗ trợ
+                    </h3>
+                    <div class="alert alert-warning" id="alertConLai" style="display: flex;">
+                        <i class="fa-solid fa-exclamation-triangle"></i>
+                        <span>Còn lại <strong id="conLaiAlert">@SoLuongQuaConLai.SoLuongConLai @SoLuongQuaConLai.TenQuaTang</strong> có thể phân phát</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Loại hỗ trợ <span class="required">*</span></label>
+                            <select class="form-control" id="loaiHoTro" name="LoaiHoTro" required disabled>
+                                <option value="">-- Chọn loại hỗ trợ --</option>
+                                <option value="Học bổng" @(ChiTietSuaUngHo.LoaiHoTro == "Học bổng" ? "selected" : "")>Học bổng</option>
+                                <option value="Hỗ trợ học phí" @(ChiTietSuaUngHo.LoaiHoTro == "Hỗ trợ học phí" ? "selected" : "")>Hỗ trợ học phí</option>
+                                <option value="Quà tặng" @(ChiTietSuaUngHo.LoaiHoTro == "Quà tặng" ? "selected" : "")>Quà tặng</option>
+                                <option value="Đồ dùng học tập" @(ChiTietSuaUngHo.LoaiHoTro == "Đồ dùng học tập" ? "selected" : "")>Đồ dùng học tập</option>
+                                <option value="Quần áo" @(ChiTietSuaUngHo.LoaiHoTro == "Quần áo" ? "selected" : "")>Quần áo</option>
+                                <option value="Hỗ trợ y tế" @(ChiTietSuaUngHo.LoaiHoTro == "Hỗ trợ y tế" ? "selected" : "")>Hỗ trợ y tế</option>
+                                <option value="Hỗ trợ sinh hoạt" @(ChiTietSuaUngHo.LoaiHoTro == "Hỗ trợ sinh hoạt" ? "selected" : "")>Hỗ trợ sinh hoạt</option>
+                                <option value="Khác" @(ChiTietSuaUngHo.LoaiHoTro == "Khác" ? "selected" : "")>Khác</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Người chịu trách nhiệm <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="NguoiChiuTrachNhiem" name="NguoiChiuTrachNhiem" placeholder="Nhập họ tên" value="@ChiTietSuaUngHo.NguoiChiuTrachNhiem" required disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group full">
+                        <label class="form-label">Mô tả chi tiết</label>
+                        <textarea class="form-control" id="MoTaQua" name="MoTaQua" rows="3" placeholder="Mô tả chi tiết về hỗ trợ..." disabled>@ChiTietSuaUngHo.MoTaQua</textarea>
+                    </div>
+
+                </div>
+                <!-- PHẦN MỚI: THÔNG TIN QUÀ TẶNG (NẾU CẦN TÙY CHỈNH) -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-gift"></i> Thông tin quà tặng/vật phẩm
+                        <span style="font-size: 12px; font-weight: normal; color: var(--gray-600); margin-left: 8px;">
+                            (Tùy chọn - mặc định lấy từ ủng hộ)
+                        </span>
+                    </h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Tên quà tặng</label>
+                            <input type="text" class="form-control" id="TenQuaTang" name="TenQuaTang" placeholder="Để trống = lấy tên vật phẩm từ ủng hộ" value="@ChiTietSuaUngHo.TenQua" disabled>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Người nhận phát quà</label>
+                            <input type="text" class="form-control" id="NguoiNhanPhat" name="NguoiNhanPhat" value="@ChiTietSuaUngHo.NguoiPhanPhat" disabled>
+                            <input type="hidden"  id="NguoiPhat" name="NguoiPhat" value="@ChiTietSuaUngHo.NguoiPhanPhat" >
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Đối tượng nhận</label>
+                            <input type="text" class="form-control" id="DoiTuongNhan" name="DoiTuongNhan" placeholder="Để trống = lấy từ ủng hộ" value="@ChiTietSuaUngHo.DoiTuongNhan" disabled>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- Chọn trẻ em -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-children"></i> Chọn trẻ em nhận hỗ trợ
+                    </h3>
+
+                    <button type="button" class="btn btn-primary" id="btnChonTreEm" onclick="openChildModal()" disabled>
+                        <i class="fa-solid fa-plus"></i> Chọn trẻ em
+                    </button>
+
+                    <div class="selected-children" id="selectedChildren">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-users"></i>
+                            <p>Chưa có trẻ em nào được chọn</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("HoTroVaUngHo", "HoTroVaUngHo")'">
+                    <i class="fa-solid fa-times"></i> Hủy
+                </button>
+                <button type="submit" class="btn btn-success" id="btnSubmit">
+                    <i class="fa-solid fa-check"></i> Lưu hỗ trợ
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Notification -->
+<div class="notification" id="notification">
+    <i class="fa-solid fa-check-circle"></i>
+    <span id="notificationText"></span>
+</div>
+<script>
+    // Lưu dữ liệu vào biến global TRƯỚC
+    var danhSachTreEm = @Html.Raw(Json.Encode(ViewBag.Lst_TreEm));
+    console.log("📦 Dữ liệu từ ViewBag:", danhSachTreEm);
+</script>
+<script>
+    // ============================================
+    // SCRIPT SỬA LẠI THỨ TỰ KHỞI TẠO
+    // ============================================
+
+    // ============================================
+    // 1. CLASS MODAL TRẺ EM HANDLER
+    // ============================================
+    class ModalTreEmHandler {
+        constructor(options = {}) {
+            this.config = {
+                modalId: 'childModal',
+                searchInputId: 'searchChild',
+                tableBodyId: 'childrenList',
+                selectAllId: 'selectAll',
+                selectedCountId: 'selectedCount',
+                selectedContainerId: 'selectedChildren',
+                ...options
+            };
+
+            this.danhSachTreEm = [];
+            this.selectedChildren = [];
+            this.currentFilteredChildren = [];
+            this.selectedUngHo = null;
+
+            this.init();
+        }
+
+        init() {
+            console.log("🚀 Khởi tạo ModalTreEmHandler");
+            // Đợi DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => this.bindEvents());
+            } else {
+                this.bindEvents();
+            }
+        }
+
+        bindEvents() {
+            const searchInput = document.getElementById(this.config.searchInputId);
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => this.handleSearch(e));
+            }
+
+            const selectAll = document.getElementById(this.config.selectAllId);
+            if (selectAll) {
+                selectAll.addEventListener('change', (e) => this.handleSelectAll(e));
+            }
+
+            const modal = document.getElementById(this.config.modalId);
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) this.closeModal();
+                });
+            }
+
+            console.log("✅ Đã gắn sự kiện");
+        }
+
+        loadDanhSachTreEm(rawData) {
+            try {
+                console.log("📥 Load danh sách trẻ em...");
+                console.log("Raw data:", rawData);
+
+                if (rawData && typeof rawData === 'object') {
+                    if (Array.isArray(rawData)) {
+                        this.danhSachTreEm = rawData;
+                    } else if (Array.isArray(rawData.value)) {
+                        this.danhSachTreEm = rawData.value;
+                    } else if (Array.isArray(rawData.$values)) {
+                        this.danhSachTreEm = rawData.$values;
+                    } else {
+                        console.warn("⚠️ Cấu trúc dữ liệu không nhận dạng được");
+                        this.danhSachTreEm = [];
+                    }
+                } else {
+                    this.danhSachTreEm = [];
+                }
+
+                console.log(`✅ Đã load ${this.danhSachTreEm.length} trẻ em`);
+                if (this.danhSachTreEm.length > 0) {
+                    console.log("Trẻ đầu tiên:", this.danhSachTreEm[0]);
+                }
+                return this.danhSachTreEm;
+            } catch (error) {
+                console.error("❌ Lỗi load dữ liệu:", error);
+                this.danhSachTreEm = [];
+                return [];
+            }
+        }
+
+        setSelectedUngHo(ungHo) {
+            this.selectedUngHo = ungHo;
+            console.log("📋 Đã set đợt ủng hộ:", ungHo);
+        }
+
+        openModal() {
+            if (!this.selectedUngHo) {
+                this.showNotification('Vui lòng chọn đợt ủng hộ trước!', 'error');
+                return;
+            }
+
+            if (!this.danhSachTreEm || this.danhSachTreEm.length === 0) {
+                this.showNotification('Không có dữ liệu trẻ em!', 'error');
+                console.error("❌ Danh sách trẻ em rỗng");
+                return;
+            }
+
+            console.log("🔓 Mở modal với", this.danhSachTreEm.length, "trẻ");
+            this.renderChildrenList();
+
+            const modal = document.getElementById(this.config.modalId);
+            if (modal) {
+                modal.classList.add("active");
+                modal.style.display = "flex";
+
+                setTimeout(() => {
+                    const searchInput = document.getElementById(this.config.searchInputId);
+                    if (searchInput) searchInput.focus();
+                }, 100);
+            }
+        }
+
+        closeModal() {
+            console.log("🔒 Đóng modal");
+            const modal = document.getElementById(this.config.modalId);
+            if (modal) {
+                modal.classList.remove("active");
+                modal.style.display = "none";
+            }
+
+            const searchInput = document.getElementById(this.config.searchInputId);
+            if (searchInput) searchInput.value = "";
+        }
+
+        renderChildrenList() {
+            const tbody = document.getElementById(this.config.tableBodyId);
+            if (!tbody) {
+                console.error("❌ Không tìm thấy table body");
+                return;
+            }
+
+            tbody.innerHTML = "";
+
+            if (!this.danhSachTreEm || this.danhSachTreEm.length === 0) {
+                tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fa-solid fa-inbox" style="font-size: 48px; display: block; margin-bottom: 12px; color: #ddd;"></i>
+                        <strong>Không có dữ liệu trẻ em</strong>
+                        <p style="font-size: 13px; margin-top: 8px;">Vui lòng kiểm tra lại dữ liệu từ server</p>
+                    </td>
+                </tr>
+            `;
+                return;
+            }
+
+            console.log(`📋 Đang render ${this.danhSachTreEm.length} trẻ em`);
+
+            const soLuongConLai = this.getProp(this.selectedUngHo, 'soLuongConLai') || 999;
+
+            this.danhSachTreEm.forEach((child, index) => {
+                const treEmID = this.getProp(child, 'treEmId') || this.getProp(child, 'treEmID');
+                const hoTen = this.getProp(child, 'tenTreEm') || this.getProp(child, 'hoTen') || 'N/A';
+                const ngaySinhDisplay = this.getProp(child, 'ngaySinhDisplay') || this.formatDate(this.getProp(child, 'ngaySinh'));
+                const khuPho = this.getProp(child, 'khuPho') || this.getProp(child, 'tenKhuPho') || 'N/A';
+                const tinhTrang = this.getProp(child, 'tinhTrang') || 'N/A';
+
+                if (index === 0) {
+                    console.log("Render trẻ đầu:", { treEmID, hoTen, khuPho });
+                }
+
+                const isSelected = this.selectedChildren.find(c => {
+                    const selectedID = this.getProp(c, 'treEmId') || this.getProp(c, 'treEmID');
+                    return selectedID === treEmID;
+                });
+
+                const row = document.createElement("tr");
+                row.setAttribute("data-id", treEmID);
+                row.innerHTML = `
+                <td>
+                    <input type="checkbox" class="checkbox child-checkbox"
+                           ${isSelected ? 'checked' : ''} data-id="${treEmID}">
+                </td>
+                <td>${hoTen}</td>
+                <td>${ngaySinhDisplay}</td>
+                <td>${khuPho}</td>
+                <td>${tinhTrang}</td>
+                <td>
+                    <input type="number" class="form-control quantity-input"
+                           value="${isSelected ? isSelected.soLuong : 1}"
+                           min="1" max="${soLuongConLai}" data-id="${treEmID}">
+                </td>
+            `;
+
+                const checkbox = row.querySelector('.child-checkbox');
+                checkbox.addEventListener('change', () => this.updateSelectedCount());
+
+                const quantityInput = row.querySelector('.quantity-input');
+                quantityInput.addEventListener('change', (e) => this.validateQuantity(e.target));
+
+                tbody.appendChild(row);
+            });
+
+            this.updateSelectedCount();
+            console.log("✅ Đã render xong danh sách");
+        }
+
+        handleSearch(e) {
+            const keyword = e.target.value.trim().toLowerCase();
+            const rows = document.querySelectorAll(`#${this.config.tableBodyId} tr`);
+
+            if (keyword === "") {
+                rows.forEach(row => row.style.display = "");
+                return;
+            }
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(keyword) ? "" : "none";
+            });
+        }
+
+        handleSelectAll(e) {
+            const checkboxes = document.querySelectorAll('.child-checkbox');
+            checkboxes.forEach(cb => {
+                const row = cb.closest('tr');
+                if (row && row.style.display !== 'none') {
+                    cb.checked = e.target.checked;
+                }
+            });
+            this.updateSelectedCount();
+        }
+
+        updateSelectedCount() {
+            const count = document.querySelectorAll('.child-checkbox:checked').length;
+            const countElement = document.getElementById(this.config.selectedCountId);
+            if (countElement) countElement.textContent = count;
+        }
+
+        validateQuantity(input) {
+            const value = parseInt(input.value) || 1;
+            if (value < 1) {
+                input.value = 1;
+                return;
+            }
+
+            const soLuongConLai = this.getProp(this.selectedUngHo, 'soLuongConLai') || 999;
+            if (value > soLuongConLai) {
+                input.value = soLuongConLai;
+                this.showNotification(`Chỉ còn ${soLuongConLai}! Đã điều chỉnh`, 'warning');
+            }
+        }
+
+        confirmSelection() {
+            const checkboxes = document.querySelectorAll('.child-checkbox:checked');
+
+            if (checkboxes.length === 0) {
+                this.showNotification('Vui lòng chọn ít nhất 1 trẻ em!', 'error');
+                return null;
+            }
+
+            this.selectedChildren = [];
+            let tongSoLuong = 0;
+
+            checkboxes.forEach(cb => {
+                const treEmID = parseInt(cb.dataset.id);
+                const child = this.danhSachTreEm.find(c => {
+                    const childID = this.getProp(c, 'treEmId') || this.getProp(c, 'treEmID');
+                    return childID === treEmID;
+                });
+
+                if (!child) return;
+
+                const quantityInput = document.querySelector(`.quantity-input[data-id="${treEmID}"]`);
+                const soLuong = parseInt(quantityInput.value) || 1;
+                tongSoLuong += soLuong;
+
+                this.selectedChildren.push({
+                    treEmID: treEmID,
+                    hoTen: this.getProp(child, 'tenTreEm') || this.getProp(child, 'hoTen'),
+                    ngaySinh: this.getProp(child, 'ngaySinh'),
+                    ngaySinhDisplay: this.getProp(child, 'ngaySinhDisplay') || this.formatDate(this.getProp(child, 'ngaySinh')),
+                    khuPho: this.getProp(child, 'khuPho') || this.getProp(child, 'tenKhuPho'),
+                    tinhTrang: this.getProp(child, 'tinhTrang'),
+                    soLuong: soLuong
+                });
+            });
+
+            this.closeModal();
+            this.showNotification(`Đã chọn ${this.selectedChildren.length} trẻ em (${tongSoLuong} phần)`, 'success');
+
+            return { children: this.selectedChildren, tongSoLuong };
+        }
+
+        renderSelectedChildren() {
+            const container = document.getElementById(this.config.selectedContainerId);
+            if (!container) return;
+
+            if (this.selectedChildren.length === 0) {
+                container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-solid fa-users"></i>
+                    <p>Chưa có trẻ em nào được chọn</p>
+                </div>
+            `;
+                return;
+            }
+
+            container.innerHTML = "";
+
+            this.selectedChildren.forEach(child => {
+                const childID = child.treEmID || child.treEmId;
+                const item = document.createElement("div");
+                item.className = "child-item";
+                item.innerHTML = `
+                <div class="child-info">
+                    <div class="child-name">${child.hoTen}</div>
+                    <div class="child-meta">
+                        <span><i class="fa-solid fa-location-dot"></i> ${child.khuPho}</span>
+                        <span><i class="fa-solid fa-info-circle"></i> ${child.tinhTrang}</span>
+                        <span><i class="fa-solid fa-box"></i> Số lượng: <strong>${child.soLuong}</strong></span>
+                    </div>
+                </div>
+                <button type="button" class="remove-btn" data-child-id="${childID}">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            `;
+
+                const removeBtn = item.querySelector('.remove-btn');
+                removeBtn.addEventListener('click', () => this.removeChild(childID));
+
+                container.appendChild(item);
+            });
+        }
+
+        removeChild(treEmID) {
+            const child = this.selectedChildren.find(c => {
+                const childID = c.treEmID || c.treEmId;
+                return childID === treEmID;
+            });
+
+            if (!child) return;
+
+            this.selectedChildren = this.selectedChildren.filter(c => {
+                const childID = c.treEmID || c.treEmId;
+                return childID !== treEmID;
+            });
+
+            this.renderSelectedChildren();
+            this.showNotification(`Đã xóa ${child.hoTen}`, 'success');
+
+            const tongSoLuong = this.selectedChildren.reduce((sum, c) => sum + (parseInt(c.soLuong) || 0), 0);
+            return { children: this.selectedChildren, tongSoLuong };
+        }
+
+        getSelectedChildren() {
+            return this.selectedChildren;
+        }
+
+        resetSelection() {
+            this.selectedChildren = [];
+            this.renderSelectedChildren();
+        }
+
+        getProp(obj, propName) {
+            if (!obj) return null;
+            if (obj[propName] !== undefined) return obj[propName];
+            const pascalCase = propName.charAt(0).toUpperCase() + propName.slice(1);
+            if (obj[pascalCase] !== undefined) return obj[pascalCase];
+            return null;
+        }
+
+        formatDate(dateStr) {
+            if (!dateStr) return "N/A";
+            try {
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return "N/A";
+
+                const day = String(d.getDate()).padStart(2, '0');
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const year = d.getFullYear();
+                return `${day}/${month}/${year}`;
+            } catch (e) {
+                return "N/A";
+            }
+        }
+
+        showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notificationText');
+
+            if (!notification || !text) {
+                console.log(`[${type}] ${message}`);
+                alert(message); // Fallback
+                return;
+            }
+
+            notification.className = `notification ${type} show`;
+            text.textContent = message;
+
+            setTimeout(() => notification.classList.remove('show'), 3000);
+        }
+    }
+
+    // ============================================
+    // 2. BIẾN GLOBAL
+    // ============================================
+    let modalHandler;
+
+    // ============================================
+    // 3. CÁC HÀM GLOBAL
+    // ============================================
+    function openChildModal() {
+        if (modalHandler) {
+            modalHandler.openModal();
+        } else {
+            console.error("❌ Modal handler chưa được khởi tạo");
+            alert("Lỗi: Modal chưa sẵn sàng!");
+        }
+    }
+
+    function closeChildModal() {
+        if (modalHandler) {
+            modalHandler.closeModal();
+        }
+    }
+
+    function confirmSelection() {
+        if (!modalHandler) {
+            console.error("❌ Modal handler chưa được khởi tạo");
+            return;
+        }
+
+        const result = modalHandler.confirmSelection();
+        if (result) {
+            modalHandler.renderSelectedChildren();
+            console.log("✅ Đã chọn:", result);
+        }
+    }
+
+    // ============================================
+    // 4. KHỞI TẠO ĐÚNG THỨ TỰ
+    // ============================================
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log("=== BẮT ĐẦU KHỞI TẠO ===");
+
+        // Bước 1: Tạo modal HTML trước
+        if (!document.getElementById('childModal')) {
+            const modalHTML = `
+        <div class="modal" id="childModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <i class="fa-solid fa-children"></i> Chọn trẻ em nhận hỗ trợ
+                    </h3>
+                    <button class="close-btn" onclick="closeChildModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <input type="text" class="form-control" id="searchChild"
+                               placeholder="Tìm kiếm trẻ em...">
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th width="50">
+                                    <input type="checkbox" class="checkbox" id="selectAll">
+                                </th>
+                                <th>Họ tên</th>
+                                <th>Ngày sinh</th>
+                                <th>Khu phố</th>
+                                <th>Tình trạng</th>
+                                <th width="100">Số lượng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="childrenList"></tbody>
+                    </table>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeChildModal()">
+                            Hủy
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="confirmSelection()">
+                            <i class="fa-solid fa-check"></i> Xác nhận (<span id="selectedCount">0</span>)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            console.log("✅ Đã thêm modal HTML");
+        }
+
+        // Bước 2: Khởi tạo modal handler
+        modalHandler = new ModalTreEmHandler();
+        console.log("✅ Đã khởi tạo modal handler");
+
+        // Bước 3: Load dữ liệu trẻ em (nếu có sẵn từ window)
+        if (typeof danhSachTreEm !== 'undefined' && danhSachTreEm) {
+            console.log("📥 Phát hiện danhSachTreEm từ window");
+            modalHandler.loadDanhSachTreEm(danhSachTreEm);
+        }
+
+        // Bước 4: Set thông tin ủng hộ
+        const ungHoInfo = {
+            soLuongConLai: 999,
+            tenVatPham: "Quà tặng"
+        };
+        modalHandler.setSelectedUngHo(ungHoInfo);
+
+        // Bước 5: Enable button
+        const btnChonTreEm = document.getElementById('btnChonTreEm');
+        if (btnChonTreEm) {
+            btnChonTreEm.disabled = false;
+            console.log("✅ Đã enable button chọn trẻ");
+        }
+
+        console.log("=== HOÀN TẤT KHỞI TẠO ===");
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('formHoTro');
+
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                // Kiểm tra đã chọn trẻ em chưa
+                if (!modalHandler || modalHandler.getSelectedChildren().length === 0) {
+                    showNotification('Vui lòng chọn ít nhất 1 trẻ em!', 'error');
+                    return false;
+                }
+
+                // Lấy dữ liệu từ form
+                const nguoiPhat = document.getElementById('NguoiPhat').value.trim();
+
+                if (!nguoiPhat) {
+                    showNotification('Vui lòng nhập người nhận phát quà!', 'error');
+                    return false;
+                }
+
+                // XÓA TẤT CẢ INPUT HIDDEN CŨ (NẾU CÓ)
+                const oldInputs = form.querySelectorAll('input[name^="DanhSachTreEm"]');
+                oldInputs.forEach(input => input.remove());
+
+                // LẤY DANH SÁCH TRẺ EM
+                const danhSachTreEm = modalHandler.getSelectedChildren();
+
+                console.log('📤 Đang tạo', danhSachTreEm.length, 'trẻ em...');
+
+                // TẠO INPUT HIDDEN THEO PATTERN: DanhSachTreEm[index].Property
+                danhSachTreEm.forEach((child, index) => {
+                    // TreEmId
+                    const inputTreEmId = document.createElement('input');
+                    inputTreEmId.type = 'hidden';
+                    inputTreEmId.name = `DanhSachTreEm[${index}].TreEmId`;
+                    inputTreEmId.value = child.treEmID;
+                    form.appendChild(inputTreEmId);
+
+                    // SoLuongNhan
+                    const inputSoLuong = document.createElement('input');
+                    inputSoLuong.type = 'hidden';
+                    inputSoLuong.name = `DanhSachTreEm[${index}].SoLuongNhan`;
+                    inputSoLuong.value = child.soLuong;
+                    form.appendChild(inputSoLuong);
+
+                    // GhiChu
+                    const inputGhiChu = document.createElement('input');
+                    inputGhiChu.type = 'hidden';
+                    inputGhiChu.name = `DanhSachTreEm[${index}].GhiChu`;
+                    inputGhiChu.value = `${child.hoTen} - ${child.khuPho}`;
+                    form.appendChild(inputGhiChu);
+
+                    console.log(`✅ Trẻ ${index + 1}:`, {
+                        TreEmId: child.treEmID,
+                        SoLuongNhan: child.soLuong,
+                        GhiChu: `${child.hoTen} - ${child.khuPho}`
+                    });
+                });
+
+                // KIỂM TRA LẠI TẤT CẢ INPUT VỪA TẠO
+                const allInputs = form.querySelectorAll('input[name^="DanhSachTreEm"]');
+                console.log('📋 Tổng số input đã tạo:', allInputs.length);
+
+                // Hiển thị loading
+                const btnSubmit = document.getElementById('btnSubmit');
+                btnSubmit.disabled = true;
+                btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
+
+                // Submit form
+                form.submit();
+            });
+        }
+    });
+</script>

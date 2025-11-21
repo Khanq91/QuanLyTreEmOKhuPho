@@ -1,0 +1,269 @@
+﻿@using Newtonsoft.Json
+
+@{
+    ViewBag.Title = "ThemUngHoPhucLoi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var ChiTietSuaUngHo = ViewBag.ChiTietSuaUngHo;
+    int soLuongDaPhat = ChiTietSuaUngHo.SoLuongVatPham - ChiTietSuaUngHo.SoLuongConLaiQuaTang;
+}
+<style>
+    .notification-toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 350px;
+        max-width: 500px;
+        padding: 16px 20px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInRight 0.4s ease-out;
+        font-size: 14px;
+    }
+
+        .notification-toast.success {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .notification-toast.error {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .notification-toast i {
+            font-size: 24px;
+        }
+
+        .notification-toast .close-btn {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+            .notification-toast .close-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
+            }
+
+    @@keyframes slideInRight {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @@keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+
+    .notification-toast.hiding {
+        animation: slideOutRight 0.3s ease-in forwards;
+    }
+</style>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="notification-toast success" id="successToast">
+        <i class="fa-solid fa-check-circle"></i>
+        <div>
+            <strong>Thành công!</strong><br>
+            @TempData["SuccessMessage"]
+        </div>
+        <button class="close-btn" onclick="closeToast('successToast')">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="notification-toast error" id="errorToast">
+        <i class="fa-solid fa-exclamation-circle"></i>
+        <div>
+            <strong>Lỗi!</strong><br>
+            @TempData["ErrorMessage"]
+        </div>
+        <button class="close-btn" onclick="closeToast('errorToast')">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    </div>
+}
+
+<script>
+    function closeToast(id) {
+        const toast = document.getElementById(id);
+        if (toast) {
+            toast.classList.add('hiding');
+            setTimeout(() => toast.remove(), 300);
+        }
+    }
+
+    // Auto hide
+    setTimeout(() => {
+        const successToast = document.getElementById('successToast');
+        if (successToast) closeToast('successToast');
+    }, 5000);
+
+    setTimeout(() => {
+        const errorToast = document.getElementById('errorToast');
+        if (errorToast) closeToast('errorToast');
+    }, 8000);
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="~/Content/css/ThemHoTroPhucLoi.css" />
+<link rel="stylesheet" href="~/Content/css/media.css" />
+
+
+<div class="content-grid">
+    <!-- Thông tin ủng hộ -->
+    <div class="info-card">
+        <h3><i class="fa-solid fa-heart-circle-check"></i> Thông tin ủng hộ</h3>
+        <!-- Hiển thị thông tin ủng hộ đã chọn -->
+        <div id="ungHoInfo">
+            <div class="info-row">
+                <span class="info-label">Mạnh thường quân</span>
+                <span class="info-value">@ChiTietSuaUngHo.TenManhThuongQuan</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Loại ủng hộ</span>
+                <span class="info-value"><span class="badge badge-warning">@ChiTietSuaUngHo.LoaiUngHo</span></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Vật phẩm</span>
+                <span class="info-value">@ChiTietSuaUngHo.TenVatPham</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Số lượng tổng</span>
+                <span class="info-value">@ChiTietSuaUngHo.SoLuongVatPham</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Đã phát</span>
+                <span class="info-value" style="color: var(--success);">@soLuongDaPhat</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Còn lại</span>
+                <span class="info-value" id="soLuongConLaiDisplay" style="color: var(--warning);">@ChiTietSuaUngHo.SoLuongConLaiQuaTang</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Đối tượng</span>
+                <span class="info-value">@ChiTietSuaUngHo.DoiTuong</span>
+            </div>
+        </div>
+    </div>
+    @using (Html.BeginForm("SuaUngHo", "HoTroVaUngHo", FormMethod.Post, new { id = "formHoTro" }))
+    {
+        <input type="hidden" name="QuaTangUngHoId" value="@ChiTietSuaUngHo.QuaTangUngHoId" />
+        foreach (var id in ChiTietSuaUngHo.PhanPhatQuaIds)
+        {
+            <input type="hidden" name="PhanPhatQuaIds" value="@id" />
+        }
+        <!-- Form thêm hỗ trợ -->
+        <div class="form-card">
+            <div id="formHoTro">
+                <!-- Thông tin cơ bản -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-clipboard"></i> Thông tin hỗ trợ
+                    </h3>
+                    <div class="alert alert-warning" id="alertConLai" style="display: none;"></div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Loại hỗ trợ <span class="required">*</span></label>
+                            <select class="form-control" id="loaiHoTro" name="LoaiHoTro" required>
+                                <option value="">-- Chọn loại hỗ trợ --</option>
+                                <option value="Học bổng" @(ChiTietSuaUngHo.LoaiHoTro == "Học bổng" ? "selected" : "")>Học bổng</option>
+                                <option value="Hỗ trợ học phí" @(ChiTietSuaUngHo.LoaiHoTro == "Hỗ trợ học phí" ? "selected" : "")>Hỗ trợ học phí</option>
+                                <option value="Quà tặng" @(ChiTietSuaUngHo.LoaiHoTro == "Quà tặng" ? "selected" : "")>Quà tặng</option>
+                                <option value="Đồ dùng học tập" @(ChiTietSuaUngHo.LoaiHoTro == "Đồ dùng học tập" ? "selected" : "")>Đồ dùng học tập</option>
+                                <option value="Quần áo" @(ChiTietSuaUngHo.LoaiHoTro == "Quần áo" ? "selected" : "")>Quần áo</option>
+                                <option value="Hỗ trợ y tế" @(ChiTietSuaUngHo.LoaiHoTro == "Hỗ trợ y tế" ? "selected" : "")>Hỗ trợ y tế</option>
+                                <option value="Hỗ trợ sinh hoạt" @(ChiTietSuaUngHo.LoaiHoTro == "Hỗ trợ sinh hoạt" ? "selected" : "")>Hỗ trợ sinh hoạt</option>
+                                <option value="Khác" @(ChiTietSuaUngHo.LoaiHoTro == "Khác" ? "selected" : "")>Khác</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Người chịu trách nhiệm <span class="required">*</span></label>
+                            <input type="text" class="form-control" id="NguoiChiuTrachNhiem" name="NguoiChiuTrachNhiem" placeholder="Nhập họ tên" value="@ChiTietSuaUngHo.NguoiChiuTrachNhiem" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group full">
+                        <label class="form-label">Mô tả chi tiết</label>
+                        <textarea class="form-control" id="MoTaQua" name="MoTaQua" rows="3" placeholder="Mô tả chi tiết về hỗ trợ...">@ChiTietSuaUngHo.MoTaQua</textarea>
+                    </div>
+
+                </div>
+                <!-- PHẦN MỚI: THÔNG TIN QUÀ TẶNG (NẾU CẦN TÙY CHỈNH) -->
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-gift"></i> Thông tin quà tặng/vật phẩm
+                        <span style="font-size: 12px; font-weight: normal; color: var(--gray-600); margin-left: 8px;">
+                            (Tùy chọn - mặc định lấy từ ủng hộ)
+                        </span>
+                    </h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Tên quà tặng</label>
+                            <input type="text" class="form-control" id="TenQuaTang" name="TenQuaTang" placeholder="Để trống = lấy tên vật phẩm từ ủng hộ" value="@ChiTietSuaUngHo.TenQua">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Người nhận phát quà</label>
+                            <input type="text" class="form-control" id="NguoiNhanPhat" name="NguoiNhanPhat" value="@ChiTietSuaUngHo.NguoiPhanPhat">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Đối tượng nhận</label>
+                            <input type="text" class="form-control" id="DoiTuongNhan" name="DoiTuongNhan" placeholder="Để trống = lấy từ ủng hộ" value="@ChiTietSuaUngHo.DoiTuongNhan">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("HoTroVaUngHo", "HoTroVaUngHo")'">
+                    <i class="fa-solid fa-times"></i> Hủy
+                </button>
+                <button type="submit" class="btn btn-success" id="btnSubmit">
+                    <i class="fa-solid fa-check"></i> Lưu hỗ trợ
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Notification -->
+<div class="notification" id="notification">
+    <i class="fa-solid fa-check-circle"></i>
+    <span id="notificationText"></span>
+</div>
+
