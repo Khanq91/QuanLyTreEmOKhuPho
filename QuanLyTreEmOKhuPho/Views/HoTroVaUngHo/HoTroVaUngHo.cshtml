@@ -205,17 +205,14 @@
                             Chi tiết
                         </button>
                         <button class="btn btn-sm" style="background: var(--warning); color: white;
-                                "onclick="location.href='@Url.Action("SuaUngHo", "HoTroVaUngHo", new { id = item.QuaTangUngHoId })'">
+                                " onclick="location.href='@Url.Action("SuaUngHo", "HoTroVaUngHo", new { id = item.QuaTangUngHoId })'">
                             Sửa
                         </button>
-                        <button class="btn btn-sm" style="background: var(--danger); color: white;">
+                        <button class="btn btn-sm" style="background: var(--danger); color: white;"
+                                onclick="location.href='@Url.Action("XoaUngHo", "HoTroVaUngHo", new { id = item.QuaTangUngHoId })'">
                             Xóa
                         </button>
                     </div>
-                    @*<div class="progress-text">Đã phát: @item.PercentDaPhat%</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width:@item.PercentDaPhat%;"></div>
-                        </div>*@
                 </div>
             }
 
@@ -223,7 +220,6 @@
     </div>
 </div>
 <script>
-    // Sample data
     function renderSponsorList() {
         const container = document.getElementById('sponsorList');
         container.innerHTML = '';
@@ -542,10 +538,8 @@
     });
 </script>
 <script>
-    // Dữ liệu từ backend (đã có sẵn trong biến DSHoTroPhucLoi)
     let allSupportCards = [];
 
-    // Khởi tạo khi trang load
     document.addEventListener('DOMContentLoaded', function () {
         // Lấy tất cả các card hiện có
         allSupportCards = Array.from(document.querySelectorAll('.support-card'));

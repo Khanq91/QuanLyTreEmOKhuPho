@@ -839,8 +839,15 @@
         </div>
         <div class="info-item">
             <div class="info-label"><i class="fa-solid fa-children"></i> Số lượng phần quà còn lại </div>
-            <div class="info-value">@ChiTietUngHo.SoLuongConLai trẻ</div>
+            <div class="info-value">@ChiTietUngHo.SoLuongConLai quà</div>
         </div>
+        @if (!string.IsNullOrEmpty(ChiTietUngHo.TenSuKien))
+        {
+            <div class="info-item">
+                <div class="info-label"><i class="fa-solid fa-gifts"></i> Sự kiện</div>
+                <div class="info-value">@ChiTietUngHo.TenSuKien</div>
+            </div>
+        }
     </div>
 </div>
 <div class="detail-container">

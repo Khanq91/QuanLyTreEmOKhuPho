@@ -139,6 +139,7 @@
     <Compile Include="Models\HoTroVaUngHo\ChiTietSuaUngHo.cs" />
     <Compile Include="Models\HoTroVaUngHo\ChiTietUngHoDTO.cs" />
     <Compile Include="Models\HoTroVaUngHo\DanhSachUngHo.cs" />
+    <Compile Include="Models\HoTroVaUngHo\SuKienTuongLai.cs" />
     <Compile Include="Models\HoTroVaUngHo\DsTreEm.cs" />
     <Compile Include="Models\HoTroVaUngHo\PhanPhatQuaUngHoDTO.cs" />
     <Compile Include="Models\HoTroVaUngHo\SoLuongQuaConLai.cs" />

@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var DsUngHo = ViewBag.DsUngHo;
     var Lst_TreEm = ViewBag.Lst_TreEm;
+    var lst_SuKienTuongLai = ViewBag.lst_SuKienTuongLai;
 }
 <style>
     .notification-toast {
@@ -23,96 +24,69 @@
         animation: slideInRight 0.4s ease-out;
         font-size: 14px;
     }
-    
-    .notification-toast.success {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
-    
-    .notification-toast.error {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        color: white;
-    }
-    
-    .notification-toast i {
-        font-size: 24px;
-    }
-    
-    .notification-toast .close-btn {
-        margin-left: auto;
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
-        color: white;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-    }
-    
-    .notification-toast .close-btn:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: scale(1.1);
-    }
-    
+
+        .notification-toast.success {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .notification-toast.error {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .notification-toast i {
+            font-size: 24px;
+        }
+
+        .notification-toast .close-btn {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+            .notification-toast .close-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
+            }
+
     @@keyframes slideInRight {
         from {
             transform: translateX(400px);
             opacity: 0;
         }
+
         to {
             transform: translateX(0);
             opacity: 1;
         }
     }
-    
+
     @@keyframes slideOutRight {
         from {
             transform: translateX(0);
             opacity: 1;
         }
+
         to {
             transform: translateX(400px);
             opacity: 0;
         }
     }
-    
+
     .notification-toast.hiding {
         animation: slideOutRight 0.3s ease-in forwards;
     }
 </style>
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="notification-toast success" id="successToast">
-        <i class="fa-solid fa-check-circle"></i>
-        <div>
-            <strong>Thành công!</strong><br>
-            @TempData["SuccessMessage"]
-        </div>
-        <button class="close-btn" onclick="closeToast('successToast')">
-            <i class="fa-solid fa-times"></i>
-        </button>
-    </div>
-}
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="notification-toast error" id="errorToast">
-        <i class="fa-solid fa-exclamation-circle"></i>
-        <div>
-            <strong>Lỗi!</strong><br>
-            @TempData["ErrorMessage"]
-        </div>
-        <button class="close-btn" onclick="closeToast('errorToast')">
-            <i class="fa-solid fa-times"></i>
-        </button>
-    </div>
-}
-
 <script>
     function closeToast(id) {
         const toast = document.getElementById(id);
@@ -121,13 +95,13 @@
             setTimeout(() => toast.remove(), 300);
         }
     }
-    
+
     // Auto hide
     setTimeout(() => {
         const successToast = document.getElementById('successToast');
         if (successToast) closeToast('successToast');
     }, 5000);
-    
+
     setTimeout(() => {
         const errorToast = document.getElementById('errorToast');
         if (errorToast) closeToast('errorToast');
@@ -282,9 +256,9 @@
                         </div>
 
                         @*<div class="form-group">
-                            <label class="form-label">Đơn giá (VNĐ)</label>
-                            <input type="number" class="form-control" id="donGia" placeholder="0" min="0" disabled>
-                        </div>*@
+                                <label class="form-label">Đơn giá (VNĐ)</label>
+                                <input type="number" class="form-control" id="donGia" placeholder="0" min="0" disabled>
+                            </div>*@
                     </div>
 
                     <div class="form-row">
@@ -297,6 +271,10 @@
                             <label class="form-label">Sự kiện (nếu có)</label>
                             <select class="form-control" id="suKienId" disabled>
                                 <option value="">-- Không liên quan sự kiện cụ thể --</option>
+                                @foreach (var item in lst_SuKienTuongLai)
+                                {
+                                    <option value="@item.SuKienId">-- @item.TenSuKien --</option>
+                                }
                                 <!-- Sẽ được load từ API -->
                             </select>
                         </div>
@@ -1612,40 +1590,6 @@ function updateDonGia() {
 document.getElementById("formHoTro").addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    // Kiểm tra giá trị ngày trước khi submit
-    const ngayCap = document.getElementById("ngayCap").value;
-    const ngayPhanPhat = document.getElementById("ngayPhanPhat").value;
-    const ngayHenLai = document.getElementById("ngayHenLai").value;
-
-    console.log("📅 Kiểm tra ngày tháng:");
-    console.log("  NgayCap:", ngayCap);
-    console.log("  NgayPhanPhat:", ngayPhanPhat);
-    console.log("  NgayHenLai:", ngayHenLai);
-
-    // Validate format yyyy-MM-dd
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-
-    if (!dateRegex.test(ngayCap)) {
-        showNotification('Ngày cấp không đúng định dạng!', 'error');
-        console.error("❌ NgayCap sai format:", ngayCap);
-        return;
-    }
-
-    if (!dateRegex.test(ngayPhanPhat)) {
-        showNotification('Ngày phân phát không đúng định dạng!', 'error');
-        console.error("❌ NgayPhanPhat sai format:", ngayPhanPhat);
-        return;
-    }
-
-    // NgayHenLai optional, nhưng nếu có thì phải đúng format
-    if (ngayHenLai && !dateRegex.test(ngayHenLai)) {
-        showNotification('Ngày hẹn lại không đúng định dạng!', 'error');
-        console.error("❌ NgayHenLai sai format:", ngayHenLai);
-        return;
-    }
-
-    console.log("✅ Các ngày đều hợp lệ");
-
     // Validate
     if (!selectedUngHo) {
         showNotification('Vui lòng chọn đợt ủng hộ!', 'error');
@@ -1654,6 +1598,22 @@ document.getElementById("formHoTro").addEventListener("submit", async function(e
 
     if (selectedChildren.length === 0) {
         showNotification('Vui lòng chọn ít nhất 1 trẻ em!', 'error');
+        return;
+    }
+
+    // Lấy giá trị ngày
+    const ngayCap = document.getElementById("ngayCap").value;
+    const ngayPhanPhat = document.getElementById("ngayPhanPhat").value;
+    const ngayHenLai = document.getElementById("ngayHenLai").value;
+
+    // Validate ngày
+    if (!ngayCap) {
+        showNotification('Vui lòng chọn ngày cấp!', 'error');
+        return;
+    }
+
+    if (!ngayPhanPhat) {
+        showNotification('Vui lòng chọn ngày phân phát!', 'error');
         return;
     }
 
@@ -1666,48 +1626,59 @@ document.getElementById("formHoTro").addEventListener("submit", async function(e
         return;
     }
 
-    // ✅ TỰ ĐỘNG TÍNH ĐƠN GIÁ KHI SUBMIT
+    // Tính đơn giá
     const tongSoTien = parseFloat(getProp(selectedUngHo, 'soTien') || getProp(selectedUngHo, 'tongSoTien') || 0);
     const donGiaTuDong = tongSoLuong > 0 ? (tongSoTien / tongSoLuong).toFixed(2) : "0";
 
-    console.log("💰 Tính đơn giá tự động:");
-    console.log("  Tổng số tiền:", tongSoTien);
-    console.log("  Tổng số lượng phát:", tongSoLuong);
-    console.log("  Đơn giá:", donGiaTuDong);
+    // ✅ LẤY UNGHO ID
+    const ungHoId = getProp(selectedUngHo, 'ungHoID') || getProp(selectedUngHo, 'ungHoId');
 
-    // Chuẩn bị dữ liệu
+    console.log("=== DEBUG TRƯỚC KHI SUBMIT ===");
+    console.log("ungHoId:", ungHoId);
+    console.log("ngayCap:", ngayCap);
+    console.log("ngayPhanPhat:", ngayPhanPhat);
+    console.log("nguoiChiuTrachNhiem:", document.getElementById("nguoiChiuTrachNhiem").value);
+    console.log("nguoiPhanPhat:", document.getElementById("nguoiPhanPhat").value);
+    console.log("==============================");
+
+    if (!ungHoId || ungHoId === 0) {
+        showNotification('Lỗi: Không xác định được ID ủng hộ!', 'error');
+        return;
+    }
+
+    // Chuẩn bị form data
     const formData = {
-        ungHoId: getProp(selectedUngHo, 'ungHoID') || getProp(selectedUngHo, 'ungHoId'),
-        loaiHoTro: loaiHoTro,
+        ungHoId: ungHoId,
+        loaiHoTro: document.getElementById("loaiHoTro").value,
         ngayCap: ngayCap,
-        nguoiChiuTrachNhiem: nguoiChiuTrachNhiem,
+        nguoiChiuTrachNhiemHoTro: document.getElementById("nguoiChiuTrachNhiem").value,
         trangThaiPhat: document.getElementById("trangThaiPhat").value,
         moTa: document.getElementById("moTa").value || "",
         ghiChuTNV: document.getElementById("ghiChuTNV").value || "",
 
         // Quà tặng
         tenQua: document.getElementById("tenQua").value || "",
-        donGia: donGiaTuDong,  // ✅ Đơn giá tự động tính (không hiển thị trên form)
+        donGia: donGiaTuDong,
         doiTuongNhan: document.getElementById("doiTuongNhan").value || "",
-        suKienId: document.getElementById("suKienId").value || "0",
+        suKienId: document.getElementById("suKienId").value || "",  // ✅ SỬA: null → ""
         moTaQua: document.getElementById("moTaQua").value || "",
         anhQua: "",
 
         // Phân phát
         ngayPhanPhat: ngayPhanPhat,
-        nguoiPhanPhat: document.getElementById("nguoiPhanPhat").value || "",  // ✅ FIX: Lấy .value
+        nguoiPhanPhat: document.getElementById("nguoiPhanPhat").value,
         ghiChuPhanPhat: document.getElementById("ghiChuPhanPhat").value || "",
-        ngayHenLai: ngayHenLai || "",
+        ngayHenLai: ngayHenLai || "",  // ✅ SỬA: null → ""
 
         // Danh sách trẻ
         danhSachTreEm: JSON.stringify(selectedChildren.map(c => ({
             TreEmId: c.treEmID || c.treEmId,
             SoLuongNhan: parseInt(c.soLuong),
-            GhiChu: null
+            GhiChu: ""
         })))
     };
 
-    console.log("📤 Gửi dữ liệu:", formData);
+    console.log("📤 FormData:", formData);
 
     // Submit form
     const form = document.createElement('form');
@@ -1718,7 +1689,7 @@ document.getElementById("formHoTro").addEventListener("submit", async function(e
         const input = document.createElement('input');
         input.type = 'hidden';
         input.name = key;
-        input.value = formData[key];
+        input.value = formData[key] !== null ? formData[key] : '';  // ✅ Convert null thành empty string
         form.appendChild(input);
     });
 

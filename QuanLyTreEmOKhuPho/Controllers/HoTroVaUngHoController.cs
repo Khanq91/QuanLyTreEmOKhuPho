@@ -109,6 +109,15 @@ namespace QuanLyTreEmOKhuPho.Controllers
             var result = JsonConvert.DeserializeObject<List<DsTreEm>>(json);
             return result ?? new List<DsTreEm>();
         }
+        private async Task<List<SuKienTuongLai>> lst_SuKienTuongLai()
+        {
+            var response = await _client.GetAsync("HoTroVaUngHo/DanhSachSuKienTuongLai");
+            if (!response.IsSuccessStatusCode)
+                return new List<SuKienTuongLai>();
+            var json = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<List<SuKienTuongLai>>(json);
+            return result ?? new List<SuKienTuongLai>();
+        }
 
         public async Task<ActionResult> HoTroVaUngHo()
         {
@@ -132,6 +141,7 @@ namespace QuanLyTreEmOKhuPho.Controllers
         {
             ViewBag.DsUngHo = await DsUngHo();
             ViewBag.Lst_TreEm = await Lst_TreEm();
+            ViewBag.lst_SuKienTuongLai = await lst_SuKienTuongLai();
             ViewBag.ActivePage = "HoTroVaUngHo";
             ViewBag.PageTitle = "Thêm Hỗ Trợ Phúc Lợi";
             ViewBag.PageDescription = "Tạo hỗ trợ phúc lợi cho trẻ em từ đợt ủng hộ";
@@ -363,6 +373,24 @@ namespace QuanLyTreEmOKhuPho.Controllers
             var result = JsonConvert.DeserializeObject<SoLuongQuaConLai>(json);
             return result ?? new SoLuongQuaConLai();
         }
+        [HttpPost]
+        public async Task<ActionResult> XoaUngHo(int QuanTangUngHoId)
+        {
+            var response = await _client.PostAsync($"HoTroVaUngHo/XoaQuaTangUngHo/{QuanTangUngHoId}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["Notification"] = "Xóa thành công!";
+                TempData["NotificationType"] = "success";
+                return RedirectToAction("HoTroVaPhucLoi");
+            }
+            else
+            {
+                TempData["Notification"] = "Đã có trẻ em nhận quà không thể xóa";
+                TempData["NotificationType"] = "error";
+                var content = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("HoTroVaPhucLoi");
+            }
+        }
 
         // Helper method
         private int GetCurrentUserId()
@@ -394,7 +422,7 @@ namespace QuanLyTreEmOKhuPho.Controllers
         [HttpPost]
         public async Task<ActionResult> XoaHoTro(int UngHoID, int SoLuongNhan, int id)
         {
-           
+
             var response = await _client.DeleteAsync($"HoTroVaUngHo/XoaTreKhoiDanhSachPhatQua/{id}");
             if (response.IsSuccessStatusCode)
             {

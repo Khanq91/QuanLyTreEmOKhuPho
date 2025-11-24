@@ -162,7 +162,7 @@
             @*<button class="btn btn-outline" onclick="location.href='@Url.Action("VanDongTreEm", "VanDongTreEm")'">Xem tất cả</button>*@
         </div>
         <ul class="priority-list">
-            @for (int i = 0; i < Math.Min(5, KetQuaPhanCum.DanhSachTreEm.Count); i++)
+            @*@for (int i = 0; i < Math.Min(5, KetQuaPhanCum.DanhSachTreEm.Count); i++)
             {
                 var treEm = KetQuaPhanCum.DanhSachTreEm[i];
                 <li class="priority-item" style="cursor:pointer;"  onclick="location.href='@Url.Action("ChiTiet", "QuanLyTreEm", new { id = treEm.TreEmId })'">
@@ -190,7 +190,7 @@
                         <span class="priority-badge badge-stable">Ổn định</span>
                     }
                 </li>
-            }
+            }*@
 
 
             @*<li class="priority-item">
