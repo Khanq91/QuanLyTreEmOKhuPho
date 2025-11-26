@@ -28,13 +28,20 @@
     <div class="form-step active" id="tab1">
         <h3 class="section-title text-primary">📋 Thông tin sự kiện</h3>
 
-        <div class="form-grid full">
-            <div class="photo-upload">
-                <div class="photo-preview" style="background-image:url('/img/event-default.jpg');">
-                    <span id="photoIcon" style="display:none;"><i class="fa-solid fa-camera"></i></span>
-                </div>
+        <div class="photo-upload">
+            <div class="photo-preview"
+                 style="
+             background-image:url('@(string.IsNullOrEmpty(Model.AnhSuKien)
+                                     ? "/img/event-default.jpg"
+                                     : "https://localhost:44362" + Model.AnhSuKien)');
+             background-size:cover;
+             background-position:center;
+             background-repeat:no-repeat;
+             border-radius:10px; ">
             </div>
         </div>
+
+
 
         <div class="form-grid">
             <div class="form-group full">
@@ -120,38 +127,35 @@
         @foreach (var tg in Model.ThoiGianChiTiet)
         {
             <h4 class="text-info">
-                @tg.MoTa - (@tg.ThoiGianBatDau.Value.ToString("dd/MM/yyyy HH:mm"))
+                @tg.MoTa - (@tg.ThoiGianBatDau)
             </h4>
-
-            if (tg.TietMuc != null && tg.TietMuc.Count > 0)
-            {
-                <table class="styled-table">
-                    <thead>
-                        <tr>
-                            <th>Tên tiết mục</th>
-                            <th>Người thực hiện</th>
-                            <th>Chi phí tiết mục</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var t in tg.TietMuc)
-                        {
-                            <tr>
-                                <td>@t.TenTietMuc</td>
-                                <td>@t.NguoiThucHien</td>
-                                <td>@string.Format("{0:N0} đ", t.ChiPhiTietMuc)</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <div class="alert alert-info">Chưa có tiết mục nào trong khung thời gian này.</div>
-            }
         }
 
+        @* ✅ Hiển thị các tiết mục không gắn thời gian *@
+        @if (Model.TietMuc != null && Model.TietMuc.Count > 0)
+        {
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Tên tiết mục</th>
+                        <th>Người thực hiện</th>
+                        <th>Chi phí tiết mục</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var tm in Model.TietMuc)
+                    {
+                        <tr>
+                            <td>@tm.TenTietMuc</td>
+                            <td>@tm.NguoiThucHien</td>
+                            <td>@string.Format("{0:N0} đ", tm.ChiPhiTietMuc ?? 0)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
     </div>
+
 
     <!-- TAB 3: Chi phí -->
     <div class="form-step" id="tab3">
@@ -232,6 +236,8 @@
             showStep(currentStep);
         }
     }
+    const baseUrl = "https://localhost:44362";
+
   document.addEventListener("DOMContentLoaded", async () => {
         const suKienId = "@Model.SuKienId";
         const tbody = document.getElementById("treEmBody");
@@ -251,7 +257,11 @@
                 const row = document.createElement("tr");
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td><img src="${tre.anh || '/img/no-avatar.png'}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;"></td>
+                  <td>
+    <img src="${tre.anh ? baseUrl + tre.anh : '/img/no-avatar.png'}"
+         style="width:50px;height:50px;border-radius:50%;object-fit:cover;">
+</td>
+
                     <td>${tre.hoTen}</td>
                     <td>${tre.gioiTinh}</td>
                     <td>${new Date(tre.ngaySinh).toLocaleDateString('vi-VN')}</td>

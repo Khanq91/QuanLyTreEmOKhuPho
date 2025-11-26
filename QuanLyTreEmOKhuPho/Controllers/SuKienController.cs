@@ -37,24 +37,6 @@ namespace QuanLyTreEmOKhuPho.Controllers
         {
             return View();
         }
-        public async Task<ActionResult> EditSuKien(int id)
-        {
-            var response = await _client.GetAsync($"SuKien/{id}");
-            if (!response.IsSuccessStatusCode)
-            {
-                TempData["Error"] = "Không lấy được thông tin sự kiện để chỉnh sửa.";
-                return RedirectToAction("SuKien");
-            }
-
-            var json = await response.Content.ReadAsStringAsync();
-            var model = JsonConvert.DeserializeObject<SuKienDetailVM>(json);
-
-            ViewBag.ActivePage = "SuKien";
-            ViewBag.PageTitle = "Chỉnh sửa sự kiện";
-            ViewBag.PageDescription = model?.TenSuKien ?? "Chỉnh sửa";
-
-            return View("EditSuKien", model);
-        }
 
         // ====== GỬI CẬP NHẬT (PUT API) ======
         [HttpPost]
@@ -103,6 +85,7 @@ namespace QuanLyTreEmOKhuPho.Controllers
             }
             return Json(new { error = true, message = "Không thể lấy dữ liệu từ API" }, JsonRequestBehavior.AllowGet);
         }
+   
         [HttpGet]
         public async Task<ActionResult> ChiTiet(int id)
         {
@@ -116,12 +99,31 @@ namespace QuanLyTreEmOKhuPho.Controllers
             var json = await response.Content.ReadAsStringAsync();
             var model = JsonConvert.DeserializeObject<SuKienDetailVM>(json);
 
-            // Truyền thêm meta cho header trang
+
             ViewBag.ActivePage = "SuKien";
             ViewBag.PageTitle = "Chi tiết sự kiện";
             ViewBag.PageDescription = model?.TenSuKien ?? "Chi tiết";
 
             return View("ChiTietSuKien", model);
+        }
+
+        public async Task<ActionResult> EditSuKien(int id)
+        {
+            var response = await _client.GetAsync($"SuKien/{id}");
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Không lấy được thông tin sự kiện để chỉnh sửa.";
+                return RedirectToAction("SuKien");
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var model = JsonConvert.DeserializeObject<SuKienDetailVM>(json);
+
+            ViewBag.ActivePage = "SuKien";
+            ViewBag.PageTitle = "Chỉnh sửa sự kiện";
+            ViewBag.PageDescription = model?.TenSuKien ?? "Chỉnh sửa";
+
+            return View("EditSuKien", model);
         }
     }
 }

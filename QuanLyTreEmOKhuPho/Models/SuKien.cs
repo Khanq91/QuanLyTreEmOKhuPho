@@ -10,6 +10,7 @@ namespace QuanLyTreEmOKhuPho.Models
         public int SuKienId { get; set; }
 
         public string TenSuKien { get; set; }
+        public string AnhSuKien { get; set; }
 
         public string NguoiChiuTrachNhiem { get; set; }
 
@@ -23,7 +24,7 @@ namespace QuanLyTreEmOKhuPho.Models
 
         public int? SoLuongTinhNguyenVien { get; set; }
 
-        public int SoLuongTreEm { get; set; }
+        public int? SoLuongTreEm { get; set; }
 
         public int UserId { get; set; }
         public int khuPhoID { get; set; }

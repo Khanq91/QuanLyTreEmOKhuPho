@@ -10,10 +10,12 @@ namespace QuanLyTreEmOKhuPho.Models
         public string MoTa { get; set; }
         public string DiaDiem { get; set; }
         public DateTime? NgayBatDau { get; set; }
+        public string AnhSuKien { get; set; }
         public DateTime? NgayKetThuc { get; set; }
         public string NguoiChiuTrachNhiem { get; set; }
         public KhuPhoVM KhuPho { get; set; }
 
+        public List<TietMucVM> TietMuc { get; set; } = new List<TietMucVM>();
 
         public List<ThoiGianChiTietVM> ThoiGianChiTiet { get; set; } = new List<ThoiGianChiTietVM>();
 

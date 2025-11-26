@@ -13,7 +13,6 @@ namespace QuanLyTreEmOKhuPho.Controllers
     {
         private readonly string _apiBaseUrl = "https://localhost:44362/api/TreEm/";
 
-
         public async Task<ActionResult> TreEm()
         {
             ViewBag.ActivePage = "TreEm";

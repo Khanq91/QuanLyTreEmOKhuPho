@@ -4,6 +4,7 @@
 }
 <link href="~/Content/css/ThemTreEm.css" rel="stylesheet" />
 <link rel="stylesheet" href="~/Content/css/media.css" />
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <div class="step-container">
     <div class="step-progress">
@@ -16,7 +17,12 @@
 <div class="form-container">
     <h3 class="section-title"><i class="fa-solid fa-graduation-cap"></i> Thông tin học tập</h3>
     <div class="form-grid">
-        <div class="form-group"><label>Tên trường</label><input id="tenTruong" class="form-control" /></div>
+        <div class="form-group">
+            <label>Tên trường</label>
+            <select id="truongSelect" class="form-control">
+                <option value="">Đang tải...</option>
+            </select>
+        </div>
         <div class="form-group"><label>Tên lớp</label><input id="tenLop" class="form-control" /></div>
         <div class="form-group"><label>Điểm trung bình</label><input id="diemTrungBinh" type="number" step="0.1" class="form-control" /></div>
         <div class="form-group">
@@ -38,7 +44,33 @@
 </div>
 
 <script>
+    async function loadTruongHoc() {
+        try {
+            debugger
+            const res = await fetch("https://localhost:44362/api/TreEm/DanhSachTruong");
+            const data = await res.json();
+
+            const select = document.getElementById("truongSelect");
+            select.innerHTML = '<option value="">-- Chọn trường học --</option>';
+
+            data.forEach(t => {
+                const opt = document.createElement("option");
+                opt.value = t.truongId;
+                opt.textContent = t.tenTruong;
+                select.appendChild(opt);
+            });
+
+        } catch (error) {
+            console.error("Lỗi load trường:", error);
+            document.getElementById("truongSelect").innerHTML =
+                '<option value="">Không tải được dữ liệu</option>';
+        }
+    }
+    $(document).ready(function () {
+        loadTruongHoc();
+    });
     async function saveTreEm() {
+        debugger
         const basic = JSON.parse(localStorage.getItem("TreEm_Basic") || "{}");
         const parents = JSON.parse(localStorage.getItem("TreEm_Parents") || "[]");
         const hocTap = [{
@@ -56,8 +88,10 @@
             TonGiao: basic.TonGiao,
             DanToc: basic.DanToc,
             QuocTich: "Việt Nam",
-            Anh: basic.Anh,
-            TruongId: 1,
+            Anh: basic.Anh && basic.Anh.trim() !== ""
+                ? basic.Anh
+                : "/Anh/default-avatar.png",
+            TruongId: parseInt($("#truongSelect").val()) || 0,
             KhuPhoId: parseInt(basic.KhuPhoId) || 1,
             TinhTrang: "Bình thường",
             HoanCanhIds: basic.TinhTrang || [],

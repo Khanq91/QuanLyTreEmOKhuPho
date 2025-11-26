@@ -467,104 +467,116 @@
 
     <!-- Form -->
     <div class="form-container">
-        <form id="createSuKienForm">
+            <form id="createSuKienForm" novalidate>
 
-            <!-- TAB 1 -->
-            <div class="form-step active" id="tab1">
-                <h3 class="section-title">Thông tin chung</h3>
-
-               
-                <div class="form-grid">
-                    <div class="form-group full">
-                        <label class="form-label required">Tên sự kiện</label>
-                        <input type="text" class="form-control" id="TenSuKien" placeholder="VD: Trung Thu 2025" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label required">Ngày bắt đầu</label>
-                        <input type="date" class="form-control" id="NgayBatDau" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Ngày kết thúc</label>
-                        <input type="date" class="form-control" id="NgayKetThuc" />
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label required">Địa điểm</label>
-                        <input type="text" class="form-control" id="DiaDiem" placeholder="VD: Nhà văn hóa khu phố 1" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label required">Khu phố</label>
-                        <select class="form-control" id="KhuPhoId" required>
-                            <option value="">-- Chọn khu phố --</option>
-                        </select>
-                    </div>
+                <!-- TAB 1 -->
+                <div class="form-step active" id="tab1">
+                    <h3 class="section-title">Thông tin chung</h3>
 
                     <div class="form-group full">
-                        <label class="form-label">Người phụ trách</label>
-                        <input type="text" class="form-control" id="NguoiChiuTrachNhiem" placeholder="VD: Nguyễn Văn A" />
+                        <label class="form-label">Ảnh sự kiện</label>
+
+                        <div class="photo-upload">
+                            <div id="photoPreview"
+                                 class="photo-preview"
+                                 style="background-image:url('/images/default-event.png')">
+                                <div id="photoIcon">Nhấn để chọn ảnh</div>
+                            </div>
+                            <input type="file" id="photoInput" accept="image/*" class="d-none" />
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Số lượng TNV</label>
-                        <input type="number" class="form-control" id="SoLuongTinhNguyenVien" min="0" placeholder="0" />
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label class="form-label required">Tên sự kiện</label>
+                            <input type="text" class="form-control" id="TenSuKien" name="TenSuKien" placeholder="VD: Trung Thu 2025" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">Ngày bắt đầu</label>
+                            <input type="date" class="form-control" id="NgayBatDau" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Ngày kết thúc</label>
+                            <input type="date" class="form-control" id="NgayKetThuc" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">Địa điểm</label>
+                            <input type="text" class="form-control" id="DiaDiem" placeholder="VD: Nhà văn hóa khu phố 1" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">Khu phố</label>
+                            <select class="form-control" id="KhuPhoId" required>
+                                <option value="">-- Chọn khu phố --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full">
+                            <label class="form-label">Người phụ trách</label>
+                            <input type="text" class="form-control" id="NguoiChiuTrachNhiem" placeholder="VD: Nguyễn Văn A" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Số lượng TNV</label>
+                            <input type="number" class="form-control" id="SoLuongTinhNguyenVien" min="0" placeholder="0" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Số lượng trẻ em</label>
+                            <input type="number" class="form-control" id="SoLuongTreEm" min="0" placeholder="0" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">Người tạo</label>
+                            <select class="form-control" id="UserId" required>
+                                <option value="">-- Chọn người tạo --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full">
+                            <label class="form-label">Mô tả</label>
+                            <textarea class="form-control" id="MoTa" rows="3" placeholder="Mô tả chi tiết về sự kiện..."></textarea>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Số lượng trẻ em</label>
-                        <input type="number" class="form-control" id="SoLuongTreEm" min="0" placeholder="0" />
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label required">Người tạo</label>
-                        <select class="form-control" id="UserId" required>
-                            <option value="">-- Chọn người tạo --</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group full">
-                        <label class="form-label">Mô tả</label>
-                        <textarea class="form-control" id="MoTa" rows="3" placeholder="Mô tả chi tiết về sự kiện..."></textarea>
+                    <h4 class="section-title mt-4">Thời gian chi tiết</h4>
+                    <div id="thoiGianList"></div>
+                    <div class="add-btn" onclick="addThoiGian()">
+                        Thêm thời gian
                     </div>
                 </div>
 
-                <h4 class="section-title mt-4">Thời gian chi tiết</h4>
-                <div id="thoiGianList"></div>
-                <div class="add-btn" onclick="addThoiGian()">
-                    Thêm thời gian
+                <!-- TAB 2 -->
+                <div class="form-step" id="tab2">
+                    <h3 class="section-title">Tiết mục biểu diễn</h3>
+                    <div id="tietMucList"></div>
+                    <div class="add-btn" onclick="addTietMuc()">
+                        Thêm tiết mục
+                    </div>
                 </div>
-            </div>
 
-            <!-- TAB 2 -->
-            <div class="form-step" id="tab2">
-                <h3 class="section-title">Tiết mục biểu diễn</h3>
-                <div id="tietMucList"></div>
-                <div class="add-btn" onclick="addTietMuc()">
-                    Thêm tiết mục
+                <!-- TAB 3 -->
+                <div class="form-step" id="tab3">
+                    <h3 class="section-title">Chi phí dự kiến</h3>
+                    <div id="chiPhiList"></div>
+                    <div class="add-btn" onclick="addChiPhi()">
+                        Thêm khoản chi
+                    </div>
                 </div>
-            </div>
 
-            <!-- TAB 3 -->
-            <div class="form-step" id="tab3">
-                <h3 class="section-title">Chi phí dự kiến</h3>
-                <div id="chiPhiList"></div>
-                <div class="add-btn" onclick="addChiPhi()">
-                    Thêm khoản chi
+                <!-- Navigation -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">Quay lại</button>
+                    <div>
+                        <button type="button" class="btn btn-primary" onclick="nextStep()">Tiếp theo</button>
+                        <button type="submit" class="btn btn-success d-none" id="submitBtn">Tạo sự kiện</button>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Navigation -->
-            <div class="form-actions">
-                <button type="button" class="btn btn-secondary" onclick="prevStep()">Quay lại</button>
-                <div>
-                    <button type="button" class="btn btn-primary" onclick="nextStep()">Tiếp theo</button>
-                    <button type="submit" class="btn btn-success d-none" id="submitBtn">Tạo sự kiện</button>
-                </div>
-            </div>
-        </form>
-    </div>
+            </form>
+</div>
 </div>
 
 <!-- Templates -->
@@ -632,6 +644,7 @@
 <script>
     let currentStep = 1;
     const totalSteps = 3;
+    let anhSuKienBase64 = null;
 
     $(document).ready(function () {
         loadKhuPho();
@@ -657,15 +670,21 @@
 
     function setupPhotoUpload() {
         $('#photoPreview, #photoIcon').click(() => $('#photoInput').click());
+
         $('#photoInput').change(e => {
             const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = ev => $('#photoPreview').css('background-image', `url(${ev.target.result})`);
-                reader.readAsDataURL(file);
-            }
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = ev => {
+                anhSuKienBase64 = ev.target.result; 
+                $('#photoPreview').css('background-image', `url(${anhSuKienBase64})`);
+                $('#photoIcon').hide();
+            };
+            reader.readAsDataURL(file);
         });
     }
+
 
     function showStep(step) {
         $('.form-step').removeClass('active').eq(step - 1).addClass('active');
@@ -697,7 +716,9 @@
         const data = {
             TenSuKien: $('#TenSuKien').val().trim(),
             MoTa: $('#MoTa').val().trim(),
+            AnhSuKien: anhSuKienBase64,
             DiaDiem: $('#DiaDiem').val().trim(),
+            NgayBatDau: $('#NgayBatDau').val(),
             NgayBatDau: $('#NgayBatDau').val(),
             NgayKetThuc: $('#NgayKetThuc').val() || null,
             NguoiChiuTrachNhiem: $('#NguoiChiuTrachNhiem').val().trim(),
@@ -762,10 +783,28 @@
     });
 
     function validateForm() {
-        const required = ['#TenSuKien', '#DiaDiem', '#KhuPhoId', '#UserId', '#NgayBatDau'];
-        for (let s of required) if (!$(s).val()) { showNotification('Vui lòng điền đầy đủ thông tin bắt buộc!', 'warning'); return false; }
+        const ten = $("#TenSuKien").val().trim();
+        if (!ten) return alert("Vui lòng nhập tên sự kiện!");
+
+        const diaDiem = $("#DiaDiem").val().trim();
+        if (!diaDiem) return alert("Vui lòng nhập địa điểm!");
+
+        const khuPho = $("#KhuPhoId").val();
+        if (!khuPho) return alert("Vui lòng chọn khu phố!");
+
+        const user = $("#UserId").val();
+        if (!user) return alert("Vui lòng chọn người tạo!");
+
+        const start = $("#NgayBatDau").val();
+        if (!start) return alert("Vui lòng chọn ngày bắt đầu!");
+
+        const end = $("#NgayKetThuc").val();
+        if (start && end && new Date(start) > new Date(end))
+            return alert("Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu!");
+
         return true;
     }
+
 
     function showNotification(msg, type) {
         const icons = { success: 'Check', warning: 'Warning', info: 'Info', danger: 'Error' };

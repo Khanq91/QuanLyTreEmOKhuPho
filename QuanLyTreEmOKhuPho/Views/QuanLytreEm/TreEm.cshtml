@@ -139,7 +139,12 @@
                                 <td style="font-weight: 600; color: var(--primary);">${child.treEmId}</td>
                                 <td>
                                     <div class="child-info">
-                                        <div class="child-avatar ${genderClass}">${child.hoTen.charAt(0)}</div>
+
+                                          <div class="child-avatar ${genderClass}">
+                <img src="${child.anh || '/images/treem/default-child.png'}"
+                     alt="${child.hoTen}"
+                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+            </div>
                                         <div class="child-details">
                                             <h4>${child.hoTen}</h4>
                                             <p>${child.gioiTinh}</p>
@@ -305,10 +310,10 @@
         function editChild(id) {
             window.location.href = `/QuanLyTreEm/ChiTiet/${id}?edit=true`;
         }
-
         async function deleteChild(id) {
+            debugger
             if (confirm(`Bạn có chắc muốn xóa trẻ ID = ${id}?`)) {
-                const res = await fetch(`https://localhost:44362/api/TreEm/Delete/${id}`, { method: 'DELETE' });
+                const res = await fetch(`https://localhost:44362/api/TreEm/Delete/${id}`, { method: 'POST' });
                 if (res.ok) {
                     showNotification('Đã xóa trẻ thành công', 'success');
                     loadChildren();
@@ -317,6 +322,7 @@
                 }
             }
         }
+
 
         // ==============================
         // 5️⃣ Modal & Notification

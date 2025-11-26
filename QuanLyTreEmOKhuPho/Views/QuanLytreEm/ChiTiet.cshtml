@@ -13,8 +13,8 @@
     <div class="step-progress">
         <div class="step-item active"><div class="step-circle">1</div><div class="step-label">Thông tin cơ bản</div></div>
         <div class="step-item"><div class="step-circle">2</div><div class="step-label">Học tập</div></div>
-        <div class="step-item"><div class="step-circle">3</div><div class="step-label">Hỗ trợ</div></div>
-        <div class="step-item"><div class="step-circle">4</div><div class="step-label">Vận động</div></div>
+        <div class="step-item"><div class="step-circle">3</div><div class="step-label">Vận động</div></div>
+        @*<div class="step-item"><div class="step-circle">4</div><div class="step-label"></div>Hỗ trợ</div>*@
         @*<div class="step-item"><div class="step-circle">5</div><div class="step-label">Sự kiện</div></div>*@
     </div>
 </div>
@@ -157,56 +157,64 @@
     <!-- TAB 2 -->
     <div class="form-step" id="tab2">
         <h3 class="section-title">Học tập</h3>
-        <table class="styled-table">
-            <thead><tr><th>Ngày</th><th>Điểm TB</th><th>Xếp loại</th><th>Hạnh kiểm</th><th>Ghi chú</th></tr></thead>
-            <tbody>
-                @foreach (var ht in Model.HocTap)
-                {
-                    <tr>
-                        <td>@(ht.NamHoc.HasValue ? ht.NamHoc.Value.ToString("dd/MM/yyyy") : "-")</td>
-                        <td>@ht.DiemTrungBinh</td>
-                        <td>@ht.XepLoai</td>
-                        <td>@ht.HanhKiem</td>
-                        <td>@ht.GhiChu</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+
+        @if (isEdit)
+        {
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Điểm trung bình</label>
+                    <input type="number" step="0.1" class="form-control" id="DiemTrungBinh"
+                           value="@(Model.HocTap.FirstOrDefault()?.DiemTrungBinh ?? 0)" />
+                </div>
+
+                <div class="form-group">
+                    <label>Xếp loại</label>
+                    <select id="XepLoai" class="form-control">
+                        <option @(Model.HocTap.FirstOrDefault()?.XepLoai == "Giỏi" ? "selected" : "")>Giỏi</option>
+                        <option @(Model.HocTap.FirstOrDefault()?.XepLoai == "Khá" ? "selected" : "")>Khá</option>
+                        <option @(Model.HocTap.FirstOrDefault()?.XepLoai == "Trung bình" ? "selected" : "")>Trung bình</option>
+                        <option @(Model.HocTap.FirstOrDefault()?.XepLoai == "Yếu" ? "selected" : "")>Yếu</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Hạnh kiểm</label>
+                    <select id="HanhKiem" class="form-control">
+                        <option @(Model.HocTap.FirstOrDefault()?.HanhKiem == "Tốt" ? "selected" : "")>Tốt</option>
+                        <option @(Model.HocTap.FirstOrDefault()?.HanhKiem == "Khá" ? "selected" : "")>Khá</option>
+                        <option @(Model.HocTap.FirstOrDefault()?.HanhKiem == "Trung bình" ? "selected" : "")>Trung bình</option>
+                    </select>
+                </div>
+
+                <div class="form-group full">
+                    <label>Ghi chú</label>
+                    <textarea id="GhiChu" class="form-control">@Model.HocTap.FirstOrDefault()?.GhiChu</textarea>
+                </div>
+            </div>
+        }
+        else
+        {
+            <table class="styled-table">
+                <thead><tr><th>Ngày</th><th>Điểm TB</th><th>Xếp loại</th><th>Hạnh kiểm</th><th>Ghi chú</th></tr></thead>
+                <tbody>
+                    @foreach (var ht in Model.HocTap)
+                    {
+                        <tr>
+                            <td>@(ht.NamHoc.HasValue ? ht.NamHoc.Value.ToString("dd/MM/yyyy") : "-")</td>
+                            <td>@ht.DiemTrungBinh</td>
+                            <td>@ht.XepLoai</td>
+                            <td>@ht.HanhKiem</td>
+                            <td>@ht.GhiChu</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
     </div>
+
 
     <!-- TAB 3 -->
     <div class="form-step" id="tab3">
-        <h3 class="section-title">Hỗ trợ & Phúc lợi</h3>
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    <th>Loại</th>
-                    <th>Ngày cấp</th>
-                    <th>Mô tả</th>
-                    @*<th>File</th>*@
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var ht in Model.HoTro)
-                {
-                    <tr>
-                        <td>@ht.LoaiHoTro</td>
-                        <td>@(ht.NgayCap.HasValue ? ht.NgayCap.Value.ToString("dd/MM/yyyy") : "-")</td>
-                        <td>@ht.MoTa</td>
-                        <td>
-                            @*@foreach (var f in ht.FileViewModel)
-            {
-            <a href="@f" target="_blank">📄</a>
-            }*@
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <!-- TAB 4 -->
-    <div class="form-step" id="tab4">
         <h3 class="section-title">Vận động</h3>
         <table class="styled-table">
             <thead><tr><th>Ngày</th><th>Lý do</th><th>Kết quả</th><th>Số lần</th></tr></thead>
@@ -224,10 +232,10 @@
         </table>
     </div>
 
-    <!-- TAB 5 -->
-    <div class="form-step" id="tab5">
-        <h3 class="section-title">Sự kiện tham gia</h3>
-        <p>Chưa có API sự kiện tham gia. Sẽ cập nhật sau.</p>
+    <!-- TAB 4 -->
+    <div class="form-step" id="tab4">
+        <h3 class="section-title">Hỗ trợ</h3>
+        <p>Chưa có hỗ trợ</p>
     </div>
 
     <!-- NÚT HÀNH ĐỘNG ĐỘNG -->
@@ -286,33 +294,45 @@
 
     document.addEventListener("DOMContentLoaded", () => showStep(currentStep));
 
-    async function saveEdit() {
-        const model = {
-            HoTen: document.getElementById("HoTen").value,
-            NgaySinh: document.getElementById("NgaySinh").value,
-            GioiTinh: document.getElementById("GioiTinh").value,
-            DanToc: document.getElementById("DanToc").value,
-            TonGiao: document.getElementById("TonGiao").value,
-            TinhTrang: document.getElementById("TinhTrang").value,
-            KhuPhoId: 1,
-            TruongId: 1,
-            QuocTich: "Việt Nam",
-            Anh: document.getElementById("photoPreview").dataset.imagePath || "@Model.Anh"
-        };
+  async function saveEdit() {
 
-        const res = await fetch(`https://localhost:44362/api/TreEm/Update/@Model.TreEmId`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(model)
-        });
+    const hocTap = [{
+        DiemTrungBinh: parseFloat(document.getElementById("DiemTrungBinh")?.value || 0),
+        XepLoai: document.getElementById("XepLoai")?.value || "",
+        HanhKiem: document.getElementById("HanhKiem")?.value || "",
+        GhiChu: document.getElementById("GhiChu")?.value || "",
+        LopId: 1
+    }];
 
-        if (res.ok) {
-            alert("🎉 Cập nhật thành công!");
-            window.location.href = `/QuanLyTreEm/ChiTiet/@Model.TreEmId`;
-        } else {
-            alert("❌ Lỗi khi lưu dữ liệu!");
-        }
+    const model = {
+        HoTen: document.getElementById("HoTen").value,
+        NgaySinh: document.getElementById("NgaySinh").value,
+        GioiTinh: document.getElementById("GioiTinh").value,
+        DanToc: document.getElementById("DanToc").value,
+        TonGiao: document.getElementById("TonGiao").value,
+        TinhTrang: document.getElementById("TinhTrang").value,
+        KhuPhoId: 1,
+        TruongId: 1,
+        QuocTich: "Việt Nam",
+        Anh: document.getElementById("photoPreview").dataset.imagePath || "@Model.Anh",
+
+        HocTaps: hocTap
+    };
+
+    const res = await fetch(`https://localhost:44362/api/TreEm/Update/@Model.TreEmId`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(model)
+    });
+
+    if (res.ok) {
+        alert("🎉 Cập nhật thành công!");
+        window.location.href = `/QuanLyTreEm/ChiTiet/@Model.TreEmId`;
+    } else {
+        alert("❌ Lỗi khi lưu dữ liệu!");
     }
+}
+
 
     // Xử lý upload ảnh preview
     const photoInput = document.getElementById("photoInput");

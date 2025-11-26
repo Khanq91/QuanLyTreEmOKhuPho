@@ -167,11 +167,13 @@
             const start = new Date(parseInt(event.NgayBatDau.match(/\d+/)[0])).toLocaleDateString('vi-VN');
             const end =  new Date(parseInt(event.NgayKetThuc.match(/\d+/)[0])).toLocaleDateString('vi-VN');
             const statusClass = getStatusClass(event.TrangThai);
-
+            debugger
             card.innerHTML = `
-                <div class="event-image ${statusClass}">
-                    <span style="font-size: 70px;">🎉</span>
-                </div>
+    <div class="event-image ${statusClass}">
+        <img src="https://localhost:44362${event.AnhSuKien}"
+             alt="${event.TenSuKien}"
+             style="width: 100%; height: 180px; object-fit: cover; border-radius: 10px 10px 0 0;">
+    </div>
                 <div class="event-content">
                     <h3 class="event-title">${event.TenSuKien}</h3>
                     <div class="event-meta">
@@ -194,6 +196,7 @@
                     </div>
                 </div>
             `;
+
 
             grid.appendChild(card);
         });

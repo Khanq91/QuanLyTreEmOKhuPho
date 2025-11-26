@@ -4,7 +4,7 @@
 }
 <link rel="stylesheet" href="~/Content/css/media.css" />
 <link href="~/Content/css/ThemTreEm.css" rel="stylesheet" />
-
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <div class="step-container">
     <div class="step-progress">
         <div class="step-item active">
@@ -49,13 +49,8 @@
             </div>
             <div class="form-group">
                 <label class="form-label required">Khu phố</label>
-                <select class="form-control" id="area">
-                    <option value="">Chọn khu phố</option>
-                    <option value="1">Khu phố 1</option>
-                    <option value="2">Khu phố 2</option>
-                    <option value="3">Khu phố 3</option>
-                    <option value="4">Khu phố 4</option>
-                    <option value="5">Khu phố 5</option>
+                <select class="form-control" id="KhuPhoId" >
+                    <option value="">-- Chọn khu phố --</option>
                 </select>
             </div>
             <div class="form-group">
@@ -98,7 +93,7 @@
         const fullName = $("#fullName").val().trim();
         const birthDate = $("#birthDate").val();
         const gender = $("#gender").val();
-        const area = $("#area").val();
+        const area = $("#KhuPhoId").val();
 
         if (!fullName) return alert("Vui lòng nhập họ và tên!");
         if (!birthDate) return alert("Vui lòng chọn ngày sinh!");
@@ -118,6 +113,17 @@
 
         localStorage.setItem("TreEm_Basic", JSON.stringify(basicInfo));
         window.location.href = "/QuanLyTreEm/ThemTreEm_v2";
+    }
+    $(document).ready(function () {
+        loadKhuPho();
+    });
+
+    function loadKhuPho() {
+        $.get('https://localhost:44362/api/SuKien/khuPho')
+            .done(data => $('#KhuPhoId').empty().append('<option value="">-- Chọn khu phố --</option>').append(
+                data.map(k => `<option value="${k.khuPhoId}">${k.tenKhuPho}</option>`).join('')
+            ))
+            .fail(() => showNotification('Không tải được khu phố!', 'danger'));
     }
 
     // 🔸 Xử lý ảnh preview
