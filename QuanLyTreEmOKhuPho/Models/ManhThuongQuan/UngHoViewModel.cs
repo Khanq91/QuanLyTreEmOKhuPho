@@ -15,5 +15,19 @@ namespace QuanLyTreEmOKhuPho.Models.ManhThuongQuan
         public int SoLuongVatPham { get; set; }
         public string TenVatPham { get; set; }
         public string GhiChu { get; set; }
+      
     }
+    public class PhieuMinhChung
+    {
+        public string LoaiMinhChung { get; set; }
+        public string FilePath { get; set; }
+    }
+    public class FileUploadDto
+    {
+        public string FileName { get; set; }
+        public string ContentType { get; set; }
+        public string FileData { get; set; } // Base64 string
+        public string LoaiMinhChung { get; set; }
+    }
+
 }

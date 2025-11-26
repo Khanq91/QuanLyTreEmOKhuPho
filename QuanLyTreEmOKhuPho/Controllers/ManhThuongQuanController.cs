@@ -4,12 +4,14 @@ using QuanLyTreEmOKhuPho.Models;
 using QuanLyTreEmOKhuPho.Models.ManhThuongQuan;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 
 namespace QuanLyTreEmOKhuPho.Controllers
@@ -94,12 +96,10 @@ namespace QuanLyTreEmOKhuPho.Controllers
                     "application/json"
                 );
 
-            // Gửi PUT tới API (Sửa thông tin Mạnh Thường Quân)
             var response = await _client.PutAsync("ManhThuongQuan/SuaManhThuongQuan", jsonContent);
 
             if (!response.IsSuccessStatusCode)
             {
-                // Nếu API trả về lỗi, có thể log hoặc trả về null
                 var errorResponse = await response.Content.ReadAsStringAsync();
                 Console.WriteLine("Lỗi API: " + errorResponse);
                 return null;
@@ -107,7 +107,6 @@ namespace QuanLyTreEmOKhuPho.Controllers
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
 
-            // Deserialize kết quả trả về từ API
             var updatedData = JsonConvert.DeserializeObject<GhiNhanManhThuongQuan>(jsonResponse);
 
             return updatedData;
@@ -129,11 +128,9 @@ namespace QuanLyTreEmOKhuPho.Controllers
             }
             else
             {
-                // Trả về null hoặc thông báo lỗi nếu không thành công
                 return null;
             }
         }
-        // Sửa ủng hộ 
         public async Task<SuaThongTinUngHoManhThuongQuan> LayThongTinUngHo(int ungHoId)
         {
             var response = await _client.GetAsync($"ManhThuongQuan/ThongTinUngHoCuaManhThuongQuan?UngHoID={ungHoId}");
@@ -149,25 +146,20 @@ namespace QuanLyTreEmOKhuPho.Controllers
         }
         public async Task<SuaThongTinUngHoManhThuongQuan> SuaThongTinUngHo(SuaThongTinUngHoManhThuongQuan mqt)
         {
-            // Chuyển object thành JSON
             var jsonContent = new StringContent(
                 JsonConvert.SerializeObject(mqt),
                 Encoding.UTF8,
                 "application/json"
             );
 
-            // Gửi POST tới API
             var response = await _client.PostAsync("ManhThuongQuan/SuaUngHoCuaManhThuongQuan", jsonContent);
 
             if (!response.IsSuccessStatusCode)
             {
-                // Nếu lỗi, có thể log hoặc trả về null
                 return null;
             }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
-
-            // Deserialize kết quả trả về
             var updatedData = JsonConvert.DeserializeObject<SuaThongTinUngHoManhThuongQuan>(jsonResponse);
 
             return updatedData;
@@ -207,13 +199,14 @@ namespace QuanLyTreEmOKhuPho.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> GhiNhanUngHo(UngHoViewModel model)
+        public async Task<ActionResult> GhiNhanUngHo(UngHoViewModel model, HttpPostedFileBase[] Files, FormCollection form)
         {
             ViewBag.ThongTinManhThuongQuan = await ThongTinManhThuongQuan();
             ViewBag.ActivePage = "ManhThuongQuan";
             ViewBag.PageTitle = "Mạnh Thường Quân";
             ViewBag.PageDescription = "Ghi nhận ủng hộ của mạnh thường quân";
 
+            // Validation
             if (model.ManhThuongQuanId == null)
             {
                 ViewBag.MessageError = "Vui lòng chọn mạnh thường quân.";
@@ -224,7 +217,6 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 ViewBag.MessageError = "Vui lòng nhập số tiền hợp lệ.";
                 return View(model);
             }
-            // ✅ SỬA VALIDATION CHO NgayUngHo
             if (model.NgayUngHo == null || model.NgayUngHo == default(DateTime))
             {
                 ViewBag.MessageError = "Vui lòng chọn ngày ủng hộ.";
@@ -238,16 +230,69 @@ namespace QuanLyTreEmOKhuPho.Controllers
 
             try
             {
+                // Xử lý upload files với loại minh chứng
+                List<FileUploadDto> uploadedFiles = new List<FileUploadDto>();
+
+                if (Files != null && Files.Length > 0)
+                {
+                    for (int i = 0; i < Files.Length; i++)
+                    {
+                        var file = Files[i];
+                        if (file != null && file.ContentLength > 0)
+                        {
+                            // Validate file size (10MB)
+                            if (file.ContentLength > 10 * 1024 * 1024)
+                            {
+                                ViewBag.MessageError = $"File '{file.FileName}' vượt quá kích thước cho phép (10MB).";
+                                return View(model);
+                            }
+
+                            // Validate file extension
+                            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".pdf", ".doc", ".docx", ".xls", ".xlsx" };
+                            var fileExtension = Path.GetExtension(file.FileName).ToLower();
+
+                            if (!allowedExtensions.Contains(fileExtension))
+                            {
+                                ViewBag.MessageError = $"File '{file.FileName}' có định dạng không được hỗ trợ.";
+                                return View(model);
+                            }
+
+                            // Convert file to Base64
+                            byte[] fileBytes;
+                            using (var binaryReader = new BinaryReader(file.InputStream))
+                            {
+                                fileBytes = binaryReader.ReadBytes(file.ContentLength);
+                            }
+                            string base64String = Convert.ToBase64String(fileBytes);
+
+                            // Lấy loại minh chứng từ JavaScript (được gửi qua hidden fields hoặc form data)
+                            // Cách 1: Thêm hidden fields trong JS
+                            string loaiMinhChung = form[$"LoaiMinhChung_{i}"] ?? string.Empty;
+
+                            // Thêm vào danh sách
+                            uploadedFiles.Add(new FileUploadDto
+                            {
+                                FileName = file.FileName,
+                                ContentType = file.ContentType,
+                                FileData = base64String,
+                                LoaiMinhChung = loaiMinhChung
+                            });
+                        }
+                    }
+                }
+
+                // Tạo DTO để gửi API
                 var apiDto = new
                 {
                     ManhThuongQuanId = model.ManhThuongQuanId,
                     SoTien = model.SoTien,
                     LoaiUngHo = model.LoaiUngHo,
-                    DoiTuong=model.DoiTuong,
-                    SoLuongVatPham=model.SoLuongVatPham,
-                    TenVatPham= model.TenVatPham,
-                    NgayUngHo = model.NgayUngHo.Value.ToString("yyyy-MM-dd"), // ✅ Thêm .Value
-                    GhiChu = model.GhiChu
+                    DoiTuong = model.DoiTuong,
+                    SoLuongVatPham = model.SoLuongVatPham,
+                    TenVatPham = model.TenVatPham,
+                    NgayUngHo = model.NgayUngHo.Value.ToString("yyyy-MM-dd"),
+                    GhiChu = model.GhiChu,
+                    Files = uploadedFiles // Mỗi file đã có LoaiMinhChung
                 };
 
                 var json = JsonConvert.SerializeObject(apiDto);
@@ -409,7 +454,6 @@ namespace QuanLyTreEmOKhuPho.Controllers
         [HttpPost]
         public async Task<ActionResult> XoaUngHo(int UngHoId, int ManhThuongQuanId)
         {
-            // Gọi API DELETE
             var request = new HttpRequestMessage(HttpMethod.Delete, $"ManhThuongQuan/XoaUngHo?UngHoId={UngHoId}");
             var response = await _client.SendAsync(request);
 
@@ -419,7 +463,6 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 TempData["NotificationType"] = "success";
             }
 
-            // Chuyển về chi tiết mạnh thường quân với id đúng
             return RedirectToAction("ChiTietManhThuongQuan", new { ManhThuongQuanId });
         }
     }
