@@ -62,8 +62,8 @@
         <div class="table-header">
             <h3 class="table-title">Danh sách trẻ em (<span id="totalChildren">0</span>)</h3>
             <div class="table-actions">
-                <button class="btn-icon"><i class="fa-solid fa-chart-area"></i></button>
-                <button class="btn-icon"><i class="fa-solid fa-print"></i></button>
+                <button class="btn btn-success btn-sm" onclick="exportAll()">📤 Xuất Excel</button>
+                <button class="btn btn-warning btn-sm" onclick="exportFiltered()">📥 Xuất theo lọc</button>
                 <a href="@Url.Action("ThemTreEm_v1", "QuanLyTreEm")" class="btn btn-primary">
                     <i class="fa-solid fa-circle-plus"></i> Thêm trẻ em mới
                 </a>
@@ -306,7 +306,49 @@
             }
         }
 
+        function exportAll() {
+            if (!allChildren.length) {
+                showNotification("Không có dữ liệu để xuất!", "warning");
+                return;
+            }
 
+            const worksheet = XLSX.utils.json_to_sheet(allChildren);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "DanhSachTreEm");
+
+            XLSX.writeFile(workbook, "DanhSachTreEm.xlsx");
+
+            showNotification("Xuất toàn bộ dữ liệu thành công!", "success");
+        }
+
+        function exportFiltered() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const khuPho = document.getElementById('filterKhuPho').value;
+            const gender = document.getElementById('filterGender').value;
+            const hoanCanh = document.getElementById('filterHoanCanh').value.toLowerCase();
+
+            const filtered = allChildren.filter(c => {
+                const matchSearch = !search || c.hoTen.toLowerCase().includes(search);
+                const matchKhuPho = !khuPho || c.khuPho.includes(khuPho);
+                const matchGender = !gender || c.gioiTinh === gender;
+                const matchHoanCanh = !hoanCanh || (c.hoanCanh && c.hoanCanh.join(',').toLowerCase().includes(hoanCanh));
+
+                return matchSearch && matchKhuPho && matchGender && matchHoanCanh;
+            });
+
+            if (!filtered.length) {
+                showNotification("Không có dữ liệu phù hợp để xuất!", "danger");
+                return;
+            }
+
+            const worksheet = XLSX.utils.json_to_sheet(filtered);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "TreEm_Loc");
+
+            XLSX.writeFile(workbook, "DanhSachTreEm_TimKiem.xlsx");
+
+            showNotification(`Xuất ${filtered.length} dòng theo bộ lọc thành công!`, "success");
+        }
         function editChild(id) {
             window.location.href = `/QuanLyTreEm/ChiTiet/${id}?edit=true`;
         }
@@ -324,9 +366,6 @@
         }
 
 
-        // ==============================
-        // 5️⃣ Modal & Notification
-        // ==============================
         function closeModal() {
             document.getElementById('childDetailModal').classList.remove('active');
         }
@@ -362,9 +401,7 @@
             setTimeout(() => notification.remove(), 3000);
         }
 
-        // ==============================
-        // 6️⃣ Khởi tạo
-        // ==============================
+
         loadChildren();
     </script>
     <style>
