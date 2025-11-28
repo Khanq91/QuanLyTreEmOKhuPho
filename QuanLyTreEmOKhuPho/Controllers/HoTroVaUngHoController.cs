@@ -336,21 +336,21 @@ namespace QuanLyTreEmOKhuPho.Controllers
             return result ?? new SoLuongQuaConLai();
         }
         [HttpPost]
-        public async Task<ActionResult> XoaUngHo(int QuanTangUngHoId)
+        public async Task<ActionResult> XoaUngHo(int id)
         {
-            var response = await _client.PostAsync($"HoTroVaUngHo/XoaQuaTangUngHo/{QuanTangUngHoId}", null);
+            var response = await _client.DeleteAsync($"HoTroVaUngHo/XoaQuaTangUngHo/{id}");
             if (response.IsSuccessStatusCode)
             {
                 TempData["Notification"] = "Xóa thành công!";
                 TempData["NotificationType"] = "success";
-                return RedirectToAction("HoTroVaPhucLoi");
+                return RedirectToAction("HoTroVaUngHo");
             }
             else
             {
                 TempData["Notification"] = "Đã có trẻ em nhận quà không thể xóa";
                 TempData["NotificationType"] = "error";
                 var content = await response.Content.ReadAsStringAsync();
-                return RedirectToAction("HoTroVaPhucLoi");
+                return RedirectToAction("HoTroVaUngHo");
             }
         }
 

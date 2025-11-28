@@ -59,11 +59,8 @@
             <div class="stat-icon"><i class="fa-solid fa-sack-dollar"></i></div>
         </div>
         <div class="stat-value" id="totalAmount">
-            @String.Format("{0:N2} triệu", TongThongKe.TongTienUngHo / 1_000_000M)
+            @FormatMoney(TongThongKe.TongTienUngHo)
         </div>
-
-
-        @*<div class="stat-change">Tính đến tháng 10/2025</div>*@
     </div>
 
     <div class="stat-card warning">
@@ -72,11 +69,8 @@
             <div class="stat-icon"><i class="fa-solid fa-calendar-days"></i></div>
         </div>
         <div class="stat-value" id="totalAmount">
-            @String.Format("{0:N2} triệu", TongThongKe.TongTienUngHoThangNay / 1_000_000M)
+            @FormatMoney(TongThongKe.TongTienUngHoThangNay)
         </div>
-
-        @*<div class="stat-value" id="monthAmount">@TongThongKe.TongTienUngHoThangNay</div>*@
-        @*<div class="stat-change" id="monthCount">0 lượt ủng hộ</div>*@
     </div>
 
     <div class="stat-card danger">
@@ -131,7 +125,6 @@
             <input type="text" id="searchInput" placeholder="Tên, SĐT, Email..." onkeyup="filterTable()">
         </div>
         <div class="filter-actions" style="padding-top:24px; ">
-            @*<button type="submit" class="btn btn-primary" style="max-height:30px">Áp dụng</button>*@
             <button type="button" class="btn btn-secondary " style="max-height:30px" onclick="resetFilters()">Đặt lại</button>
         </div>
     </div>
@@ -161,7 +154,11 @@
                         <td>@item.SDT</td>
                         <td>@item.Email</td>
                         <td>@item.DiaChi</td>
-                        <td><strong>@String.Format("{0:N2} triệu", item.TongUngHo / 1_000_000M)</strong></td>
+                        <td>
+                            <strong>
+                                @FormatMoney(item.TongUngHo)
+                            </strong>
+                        </td>
                         <td>@item.SoLanUngHo lần</td>
                         <td>
                             @using (Html.BeginForm("ChiTietManhThuongQuan", "ManhThuongQuan", new { ManhThuongQuanId = item.ManhThuongQuanId }))
@@ -177,7 +174,6 @@
                     </tr>
                     stt++;
                 }
-
             </tbody>
         </table>
     </div>
@@ -244,3 +240,16 @@
         filterTable();
     }
 </script>
+@functions {
+    string FormatMoney(decimal amount)
+    {
+        if (amount >= 1_000_000_000) // >= 1 tỷ
+            return string.Format("{0:N2} tỉ", amount / 1_000_000_000M);
+        else if (amount >= 1_000_000) // >= 1 triệu
+            return string.Format("{0:N2} triệu", amount / 1_000_000M);
+        else if (amount >= 1_000) // >= 1 nghìn
+            return string.Format("{0:N0} nghìn", amount / 1_000M);
+        else
+            return string.Format("{0:N0}", amount); // <1 nghìn
+    }
+}
