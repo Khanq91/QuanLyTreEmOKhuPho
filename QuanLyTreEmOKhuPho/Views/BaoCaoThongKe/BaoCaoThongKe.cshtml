@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="~/Content/css/BaoCaoThongKe.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/Content/css/media.css" asp-append-version="true" />
 
+<!-- ===================== DASHBOARD TOP ===================== -->
 <div class="stats-grid">
     <div class="stat-card primary">
         <div class="stat-header">
@@ -18,6 +19,7 @@
             <span style="color: var(--gray-600);">so với tháng trước</span>
         </div>
     </div>
+
     <div class="stat-card success">
         <div class="stat-header">
             <div class="stat-title">Trẻ được hỗ trợ</div>
@@ -29,6 +31,7 @@
             <span style="color: var(--gray-600);">so với tháng trước</span>
         </div>
     </div>
+
     <div class="stat-card warning">
         <div class="stat-header">
             <div class="stat-title">Tổng tiền ủng hộ</div>
@@ -40,6 +43,7 @@
             <span style="color: var(--gray-600);">so với tháng trước</span>
         </div>
     </div>
+
     <div class="stat-card purple">
         <div class="stat-header">
             <div class="stat-title">Tình nguyện viên</div>
@@ -53,42 +57,38 @@
     </div>
 </div>
 
+<!-- ===================== CHARTS ===================== -->
 <div class="chart-grid">
+
     <div class="chart-card">
-        <div class="chart-header">
-            <h3 class="chart-title">Sự kiện theo tháng</h3>
-        </div>
-        <div class="chart-container">
-            <canvas id="eventsChart"></canvas>
-        </div>
+        <div class="chart-header"><h3 class="chart-title">Sự kiện theo tháng</h3></div>
+        <div class="chart-container"><canvas id="eventsChart"></canvas></div>
     </div>
+
     <div class="chart-card">
-        <div class="chart-header">
-            <h3 class="chart-title">Trẻ em được hỗ trợ</h3>
-        </div>
-        <div class="chart-container">
-            <canvas id="childrenChart"></canvas>
-        </div>
+        <div class="chart-header"><h3 class="chart-title">Trẻ em được hỗ trợ</h3></div>
+        <div class="chart-container"><canvas id="childrenChart"></canvas></div>
     </div>
+
     <div class="chart-card">
-        <div class="chart-header">
-            <h3 class="chart-title">Nguồn ủng hộ</h3>
-        </div>
-        <div class="chart-container">
-            <canvas id="donationsChart"></canvas>
-        </div>
+        <div class="chart-header"><h3 class="chart-title">Nguồn ủng hộ</h3></div>
+        <div class="chart-container"><canvas id="donationsChart"></canvas></div>
     </div>
+
 </div>
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="~/Scripts/BaoCaoThongKe.js" asp-append-version="true"></script>
+
     <script>
+        /* ============================================================
+           AUTO LOAD DATA
+        ============================================================ */
         $(document).ready(function () {
-            // Tải tất cả dữ liệu song song
             $.when(
                 loadTongQuan(),
+                loadSuKienTheoThang(),
                 loadTreEmTheoThang(),
                 loadNguonUngHo()
             ).fail(function () {
@@ -97,39 +97,69 @@
             });
         });
 
+        /* ============================================================
+           1) TỔNG QUAN THỐNG KÊ
+        ============================================================ */
         function loadTongQuan() {
             return $.ajax({
                 url: 'https://localhost:44362/api/BaoCaoThongKe/TongQuan',
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    debugger
                     $('#soSuKien').text(data.soSuKien || 0);
                     $('#soTreHoTro').text(data.soTreDuocHoTro || 0);
                     $('#tongUngHo').text((data.tongUngHo ? (data.tongUngHo / 1000000).toFixed(1) : 0) + 'M');
                     $('#soTinhNguyenVien').text(data.soTinhNguyenVien || 0);
-
-                    // Tạm thời để mặc định phần trăm thay đổi
-                    $('#suKienChange').text('↑ 0%');
-                    $('#treHoTroChange').text('↑ 0%');
-                    $('#ungHoChange').text('↑ 0%');
-                    $('#tnvChange').text('↑ 0%');
-                },
-                error: function (xhr, status, error) {
-                    console.error('Lỗi loadTongQuan:', error, xhr.status);
-                    throw new Error('Lỗi loadTongQuan');
                 }
             });
         }
 
-
-        function loadTreEmTheoThang() {
+        /* ============================================================
+           2) CHART: SỰ KIỆN THEO THÁNG
+        ============================================================ */
+        function loadSuKienTheoThang() {
             return $.ajax({
-                url: 'https://localhost:44362/api/BaoCaoThongKe/TreHoTroTheoKy?',
+                url: 'https://localhost:44362/api/BaoCaoThongKe/SuKienTheoKy',
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    const labels = data.map(item => item.label || 'Tháng không xác định');
+
+                    const labels = data.map(x => x.label ?? 'Tháng');
+                    const values = data.map(x => x.soLuongSuKien ?? 0);
+
+                    new Chart(document.getElementById('eventsChart'), {
+                        type: 'bar',
+                        data: {
+                            labels,
+                            datasets: [{
+                                label: 'Số sự kiện',
+                                data: values,
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    });
+
+                }
+            });
+        }
+
+        /* ============================================================
+           3) CHART: TRẺ ĐƯỢC HỖ TRỢ
+        ============================================================ */
+        function loadTreEmTheoThang() {
+            return $.ajax({
+                url: 'https://localhost:44362/api/BaoCaoThongKe/TreHoTroTheoKy',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+
+                    const labels = data.map(item => item.label || 'Tháng');
                     const values = data.map(item => item.countTreDistinct || 0);
 
                     new Chart(document.getElementById('childrenChart'), {
@@ -139,33 +169,33 @@
                             datasets: [{
                                 label: 'Trẻ được hỗ trợ',
                                 data: values,
-                                borderColor: 'rgba(255, 99, 132, 1)',
-                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                fill: true,
-                                tension: 0.4
+                                borderColor: 'rgba(255,99,132,1)',
+                                backgroundColor: 'rgba(255,99,132,0.3)',
+                                borderWidth: 2,
+                                tension: 0.4,
+                                fill: true
                             }]
                         },
                         options: {
                             responsive: true,
-                            scales: {
-                                y: { beginAtZero: true }
-                            }
+                            scales: { y: { beginAtZero: true } }
                         }
                     });
-                },
-                error: function (xhr, status, error) {
-                    console.error('Lỗi loadTreEmTheoThang:', error, xhr.status);
-                    throw new Error('Lỗi loadTreEmTheoThang');
+
                 }
             });
         }
 
+        /* ============================================================
+           4) CHART: NGUỒN ỦNG HỘ
+        ============================================================ */
         function loadNguonUngHo() {
             return $.ajax({
                 url: 'https://localhost:44362/api/BaoCaoThongKe/UngHoTheoLoai',
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
+
                     const labels = data.map(item => item.loaiUngHo || 'Không xác định');
                     const values = data.map(item => item.tongSoTien || 0);
 
@@ -184,24 +214,20 @@
                                     '#9C27B0',
                                     '#009688'
                                 ],
-                                hoverOffset: 20
+                                hoverOffset: 12
                             }]
                         },
                         options: {
                             responsive: true,
                             plugins: {
-                                legend: {
-                                    position: 'bottom'
-                                }
+                                legend: { position: 'bottom' }
                             }
                         }
                     });
-                },
-                error: function (xhr, status, error) {
-                    console.error('Lỗi loadNguonUngHo:', error, xhr.status);
-                    throw new Error('Lỗi loadNguonUngHo');
+
                 }
             });
         }
+
     </script>
 }
