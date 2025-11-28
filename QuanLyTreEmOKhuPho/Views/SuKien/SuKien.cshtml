@@ -6,6 +6,48 @@
 <link rel="stylesheet" href="~/Content/css/media.css" />
 
 <style>
+    .btn-approve {
+        background: #4CAF50;
+        border: none;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+        .btn-approve:hover {
+            background: #43a047;
+        }
+
+    .btn-reject {
+        background: #e53935;
+        border: none;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+        .btn-reject:hover {
+            background: #d32f2f;
+        }
+
+    .btn-delete {
+        background: #757575;
+        border: none;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+        .btn-delete:hover {
+            background: #616161;
+        }
+
     :root {
         --primary: #4361ee;
         --primary-hover: #3b5bcc;
@@ -360,11 +402,12 @@
                 <td>
                     <span class="badge ${getBadgeClass(item.trangThai)}">${item.trangThai}</span>
                 </td>
-                <td class="text-center">
-                    <button class="btn btn-success btn-sm me-1" onclick="approveDangKy(${item.dangKySuKienId})">Duyệt</button>
-                    <button class="btn btn-danger btn-sm me-1" onclick="rejectDangKy(${item.dangKySuKienId})">Từ chối</button>
-                    <button class="btn btn-secondary btn-sm" onclick="deleteDangKy(${item.dangKySuKienId})">Xóa</button>
-                </td>
+              <td class="text-center">
+                <button class="btn-approve me-1" onclick="approveDangKy(${item.dangKySuKienId})">Duyệt</button>
+                <button class="btn-reject me-1" onclick="rejectDangKy(${item.dangKySuKienId})">Từ chối</button>
+                <button class="btn-delete" onclick="deleteDangKy(${item.dangKySuKienId})">Xóa</button>
+            </td>
+
             `;
                 tbody.appendChild(row);
             });

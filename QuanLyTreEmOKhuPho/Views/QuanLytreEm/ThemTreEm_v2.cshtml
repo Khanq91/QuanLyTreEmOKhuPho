@@ -4,6 +4,7 @@
 }
 <link href="~/Content/css/ThemTreEm.css" rel="stylesheet" />
 <link rel="stylesheet" href="~/Content/css/media.css" />
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <div class="step-container">
     <div class="step-progress">
@@ -24,19 +25,38 @@
 
 <div class="form-container">
     <h3 class="section-title">Thông tin phụ huynh</h3>
-    <div id="parentsList" class="parent-list"></div>
 
-    <div class="form-grid">
-        <div class="form-group"><label>Họ và tên</label><input id="hoTen" class="form-control" /></div>
-        <div class="form-group"><label>Số điện thoại</label><input id="sdt" class="form-control" /></div>
-        <div class="form-group"><label>Nghề nghiệp</label><input id="ngheNghiep" class="form-control" /></div>
-        <div class="form-group"><label>Địa chỉ</label><input id="diaChi" class="form-control" /></div>
+    <!-- 🔹 Chọn phụ huynh cũ -->
+    <div class="form-group" style="margin-bottom:20px;">
+        <label>Chọn phụ huynh có sẵn</label>
+        <select id="parentSelect" class="form-control" onchange="selectOldParent()">
+            <option value="">-- Chọn phụ huynh từ hệ thống --</option>
+        </select>
     </div>
 
-    <button class="btn btn-primary" type="button" onclick="addParent()">+ Thêm phụ huynh</button>
+    <div class="form-grid">
+        <div class="form-group">
+            <label>Họ và tên</label>
+            <input id="hoTen" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Số điện thoại</label>
+            <input id="sdt" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Nghề nghiệp</label>
+            <input id="ngheNghiep" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Địa chỉ</label>
+            <input id="diaChi" class="form-control" />
+        </div>
+    </div>
 
-    <div class="result-section" id="resultSection" style="display:none;">
-        <h3 style="margin-bottom: 20px;">Danh sách đã thêm (<span id="totalCount">0</span>)</h3>
+    <button class="btn btn-primary mt-2" type="button" onclick="addParent()">+ Thêm phụ huynh</button>
+
+    <div class="result-section" id="resultSection" style="display:none; margin-top:25px;">
+        <h3>Danh sách đã thêm (<span id="totalCount">0</span>)</h3>
         <table>
             <thead>
                 <tr>
@@ -44,6 +64,7 @@
                     <th>SĐT</th>
                     <th>Nghề nghiệp</th>
                     <th>Địa chỉ</th>
+                    <th>Loại</th>
                 </tr>
             </thead>
             <tbody id="parentsTableBody"></tbody>
@@ -60,16 +81,53 @@
 <script>
     const parentList = [];
 
+    $(document).ready(function () {
+        loadOldParents();
+    });
+
+    function loadOldParents() {
+        fetch("https://localhost:44362/api/TreEm/DanhSachPhuHuynh")
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(p => {
+                    $("#parentSelect").append(`
+                        <option value="${p.phuHuynhId}"
+                                data-hotem="${p.hoTen}"
+                                data-sdt="${p.sdt}"
+                                data-nghe="${p.ngheNghiep || ''}"
+                                data-diachi="${p.diaChi || ''}">
+                            ${p.hoTen} - ${p.sdt}
+                        </option>
+                    `);
+                });
+            })
+            .catch(err => console.log("Lỗi load phụ huynh:", err));
+    }
+
+    function selectOldParent() {
+        const selected = $("#parentSelect option:selected");
+
+        if (!selected.val()) return;
+
+        $("#hoTen").val(selected.data("hotem"));
+        $("#sdt").val(selected.data("sdt"));
+        $("#ngheNghiep").val(selected.data("nghe"));
+        $("#diaChi").val(selected.data("diachi"));
+    }
+
     function addParent() {
-        const p = {
+        const selectedId = $("#parentSelect").val();
+
+        let p = {
             HoTen: $("#hoTen").val(),
             SDT: $("#sdt").val(),
             NgheNghiep: $("#ngheNghiep").val(),
             DiaChi: $("#diaChi").val(),
             MoiQuanHe: "Cha/Mẹ",
-            DanToc: "Kinh",         // ✅ Bổ sung bắt buộc cho backend
-            TonGiao: "Không",       // ✅
-            QuocTich: "Việt Nam"    // ✅
+            DanToc: "Kinh",
+            TonGiao: "Không",
+            QuocTich: "Việt Nam",
+            PhuHuynhId: selectedId || null
         };
 
         if (!p.HoTen) return alert("Vui lòng nhập họ tên phụ huynh!");
@@ -78,13 +136,15 @@
         parentList.push(p);
         renderParentList();
 
-        // Xóa input sau khi thêm
+        // Reset input
+        $("#parentSelect").val("");
         $("#hoTen, #sdt, #ngheNghiep, #diaChi").val("");
     }
 
     function renderParentList() {
         const tbody = $("#parentsTableBody");
         tbody.empty();
+
         parentList.forEach((p) => {
             tbody.append(`
                 <tr>
@@ -92,16 +152,32 @@
                     <td>${p.SDT}</td>
                     <td>${p.NgheNghiep}</td>
                     <td>${p.DiaChi}</td>
-                </tr>`);
+                    <td>${p.PhuHuynhId
+                    ? '<span class="badge bg-info text-dark">Có sẵn</span>'
+                    : '<span class="badge bg-success">Mới</span>'
+                }</td>
+                </tr>
+            `);
         });
+
         $("#resultSection").show();
         $("#totalCount").text(parentList.length);
     }
 
     function nextStepParent() {
         if (parentList.length === 0) {
-            return alert("Vui lòng thêm ít nhất 1 phụ huynh trước khi tiếp tục!");
+            const hoTen = $("#hoTen").val();
+            const sdt = $("#sdt").val();
+
+            if (hoTen && sdt) {
+                addParent();
+            }
         }
+
+        if (parentList.length === 0) {
+            return alert("Vui lòng thêm ít nhất 1 phụ huynh!");
+        }
+
         localStorage.setItem("TreEm_Parents", JSON.stringify(parentList));
         window.location.href = "/QuanLyTreEm/ThemTreEm_v3";
     }

@@ -18,7 +18,7 @@
     <!-- TAB 1: Thông tin chung -->
     <div class="form-step active" id="tab1">
         <h3 class="section-title text-primary">📋 Chỉnh sửa thông tin sự kiện</h3>
-    
+
         <div class="form-grid">
 
             <div class="form-group full">
@@ -51,39 +51,61 @@
             </div>
         </div>
     </div>
-
-    <!-- TAB 2: Tiết mục -->
     <div class="form-step" id="tab2">
-        <div class="d-flex justify-content-between align-items-center">
-            <h3 class="section-title text-primary">🎤 Chỉnh sửa danh sách tiết mục</h3>
-            <button type="button" class="btn btn-success btn-sm" onclick="addTietMuc()">➕ Thêm tiết mục</button>
-        </div>
+        <h3 class="section-title text-primary">🎤 Chỉnh sửa tiết mục theo thời gian</h3>
 
-        <table id="tableTietMuc" class="styled-table">
-            <thead><tr><th>Tên tiết mục</th><th>Người thực hiện</th><th>Chi phí (đ)</th><th></th></tr></thead>
-            <tbody>
-                @if (Model.TietMuc?.Count > 0)
-                {
-                    foreach (var t in Model.TietMuc)
-                    {
-                        <tr>
-                            <td><input class="form-control tm-name" value="@t.TenTietMuc" /></td>
-                            <td><input class="form-control tm-person" value="@t.NguoiThucHien" /></td>
-                            <td><input class="form-control tm-cost" type="number" value="@t.ChiPhiTietMuc" /></td>
-                            <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button></td>
-                        </tr>
-                    }
-                }
 
-            </tbody>
-        </table>
+        @if (Model.ThoiGianChiTiet?.Count > 0)
+        {
+            int index = 0;
+            foreach (var time in Model.ThoiGianChiTiet)
+            {
+                <div class="border p-3 mb-3 rounded bg-light">
+                    <h5>🕒 @time.MoTa (@time.ThoiGianBatDau - @time.ThoiGianKetThuc</h5>
+                    <input type="hidden" class="time-id" value="@time.ThoiGianChiTietSuKienId" />
+
+
+                    <table class="styled-table table-tietmuc" data-index="@index">
+                        <thead>
+                            <tr>
+                                <th>Tên tiết mục</th>
+                                <th>Người thực hiện</th>
+                                <th>Chi phí (đ)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var tietmuc in time.TietMuc)
+                            {
+                                <tr>
+                                    <td><input class="form-control tm-name" value="@tietmuc.TenTietMuc" /></td>
+                                    <td><input class="form-control tm-person" value="@tietmuc.NguoiThucHien" /></td>
+                                    <td><input class="form-control tm-cost" type="number" value="@tietmuc.ChiPhiTietMuc" /></td>
+                              @*      <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button></td>*@
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+
+                    @*<div class="text-end">
+                        <button class="btn btn-success btn-sm" onclick="addTietMuc(this)">➕ Thêm tiết mục</button>
+                    </div>*@
+                </div>
+                index++;
+            }
+        }
+        else
+        {
+            <div class="alert alert-warning">Không có thời gian chi tiết sự kiện nào.</div>
+        }
     </div>
 
     <!-- TAB 3: Chi phí -->
     <div class="form-step" id="tab3">
         <div class="d-flex justify-content-between align-items-center">
             <h3 class="section-title text-primary">💰 Chỉnh sửa chi phí</h3>
-            <button type="button" class="btn btn-success btn-sm" onclick="addChiPhi()">➕ Thêm khoản chi</button>
+        @*    <button type="button" class="btn btn-success btn-sm" onclick="addChiPhi()">➕ Thêm khoản chi</button>*@
         </div>
 
         <table id="tableChiPhi" class="styled-table">
@@ -97,7 +119,7 @@
                             <td><input class="form-control cp-name" value="@c.TenKhoanChi" /></td>
                             <td><input class="form-control cp-note" value="@c.GhiChu" /></td>
                             <td><input class="form-control cp-amount" type="number" value="@c.SoTien" /></td>
-                            <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button></td>
+                            @*<td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button></td>*@
                         </tr>
                     }
                 }
@@ -184,38 +206,141 @@ async function updateFullSuKien(){
     }catch(err){alert("❌ Không thể kết nối đến API!");console.error(err);}
 }
 </script>
-
 <style>
+    :root {
+        --primary: #0d6efd;
+        --light: #f8f9fa;
+        --gray: #6c757d;
+        --danger: #dc3545;
+        --success: #198754;
+        --shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
     .styled-table {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 1rem;
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        overflow: hidden;
     }
 
         .styled-table th, .styled-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 1px solid #dee2e6;
+            padding: 8px 10px;
+            font-size: 0.95rem;
         }
 
         .styled-table th {
-            background: #f5f7fb;
-            text-align: left;
+            background: var(--light);
+            font-weight: 600;
+        }
+
+        .styled-table tbody tr:hover {
+            background-color: #f1f3f5;
         }
 
     .section-title {
-        border-left: 4px solid #0d6efd;
-        padding-left: 10px;
-        margin: 1rem 0;
+        border-left: 4px solid var(--primary);
+        padding-left: 12px;
+        font-size: 1.2rem;
+        font-weight: 600;
     }
 
     .form-actions {
         display: flex;
         justify-content: space-between;
-        margin-top: 20px;
+        margin-top: 30px;
     }
 
     .btn {
         border-radius: 8px;
-        padding: 8px 16px;
+        padding: 10px 18px;
+        font-weight: 500;
+    }
+
+    .btn-primary {
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .btn-danger {
+        background-color: var(--danger);
+        border-color: var(--danger);
+    }
+
+    .btn-success {
+        background-color: var(--success);
+        border-color: var(--success);
+    }
+
+    .btn-secondary {
+        background-color: var(--gray);
+        border-color: var(--gray);
+    }
+
+    .form-control {
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
+
+    .step-container {
+        margin-bottom: 2rem;
+    }
+
+    .step-progress {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+    }
+
+    .step-item {
+        flex: 1;
+        text-align: center;
+        position: relative;
+    }
+
+    .step-circle {
+        width: 32px;
+        height: 32px;
+        background: var(--gray);
+        color: white;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 5px;
+        font-weight: bold;
+        box-shadow: var(--shadow);
+    }
+
+    .step-item.active .step-circle {
+        background: var(--primary);
+    }
+
+    .step-label {
+        font-size: 0.9rem;
+    }
+
+    .form-step {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+
+        .form-step:not(.active) {
+            display: none;
+        }
+
+    .table-tietmuc input,
+    #tableChiPhi input {
+        font-size: 0.9rem;
+        padding: 4px 8px;
+    }
+
+    .text-end .btn {
+        min-width: 120px;
+    }
+
+    .alert-warning {
+        font-size: 0.95rem;
     }
 </style>

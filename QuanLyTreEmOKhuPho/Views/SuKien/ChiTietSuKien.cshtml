@@ -119,42 +119,57 @@
             </tbody>
         </table>
     </div>
-
     <!-- TAB 2: Tiết mục -->
     <div class="form-step" id="tab2">
-        <h3 class="section-title text-primary">🎤 Danh sách tiết mục</h3>
+        <h3 class="section-title text-primary">🎤 Danh sách tiết mục theo từng thời gian</h3>
 
-        @foreach (var tg in Model.ThoiGianChiTiet)
+        @if (Model.ThoiGianChiTiet != null && Model.ThoiGianChiTiet.Count > 0)
         {
-            <h4 class="text-info">
-                @tg.MoTa - (@tg.ThoiGianBatDau)
-            </h4>
-        }
+            foreach (var tg in Model.ThoiGianChiTiet)
+            {
+                <div class="time-block">
+                    <h4 class="text-info fw-bold">
+                        ⏰ @tg.MoTa
+                        <small class="text-muted">(@tg.ThoiGianBatDau → @tg.ThoiGianKetThuc)</small>
+                    </h4>
 
-        @* ✅ Hiển thị các tiết mục không gắn thời gian *@
-        @if (Model.TietMuc != null && Model.TietMuc.Count > 0)
-        {
-            <table class="styled-table">
-                <thead>
-                    <tr>
-                        <th>Tên tiết mục</th>
-                        <th>Người thực hiện</th>
-                        <th>Chi phí tiết mục</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var tm in Model.TietMuc)
+                    @if (tg.TietMuc != null && tg.TietMuc.Count > 0)
                     {
-                        <tr>
-                            <td>@tm.TenTietMuc</td>
-                            <td>@tm.NguoiThucHien</td>
-                            <td>@string.Format("{0:N0} đ", tm.ChiPhiTietMuc ?? 0)</td>
-                        </tr>
+                        <table class="styled-table mb-4">
+                            <thead>
+                                <tr>
+                                    <th>Tên tiết mục</th>
+                                    <th>Người thực hiện</th>
+                                    <th>Chi phí</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var tm in tg.TietMuc)
+                                {
+                                    <tr>
+                                        <td>@tm.TenTietMuc</td>
+                                        <td>@tm.NguoiThucHien</td>
+                                        <td>@string.Format("{0:N0} đ", tm.ChiPhiTietMuc ?? 0)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                 
                     }
-                </tbody>
-            </table>
+                    else
+                    {
+                        <div class="alert alert-secondary">Không có tiết mục nào.</div>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-info">Không có thời gian chi tiết.</div>
         }
     </div>
+
 
 
     <!-- TAB 3: Chi phí -->
