@@ -12,7 +12,6 @@ namespace QuanLyTreEmOKhuPho.Models.HoTroVaUngHo
         public decimal PhanTrangHoanThanh { get; set; }
         public int SoLuongTreEmChuaNhanQua { get; set; }
         public int SoLuongTreEmDaNhan { get; set; }
-
         public string TenQua { get; set; }
         public string MoTa { get; set; }
         public int SoLuongTong { get; set; }
@@ -25,6 +24,7 @@ namespace QuanLyTreEmOKhuPho.Models.HoTroVaUngHo
         public string LoaiUngHo { get; set; }
         public string GhiChu { get; set; }
         public DateTime NgayUngHo { get; set; }
+        public string Anh { get; set; }
 
 
         public List<TreNhanQuaDTO> DanhSachTreNhan { get; set; }

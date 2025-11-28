@@ -126,6 +126,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HoTroVaUngHoController.cs" />
     <Compile Include="Controllers\ManhThuongQuanController.cs" />
+    <Compile Include="Controllers\PhanCumController.cs" />
     <Compile Include="Controllers\QuanLyTaiKhoanController.cs" />
     <Compile Include="Controllers\QuanLytreEmController.cs" />
     <Compile Include="Controllers\SuKienController.cs" />
@@ -155,6 +156,8 @@
     <Compile Include="Models\ManhThuongQuan\ThongTinManhThuongQuanDTO.cs" />
     <Compile Include="Models\ManhThuongQuan\UngHoViewModel.cs" />
     <Compile Include="Models\NguoiDung.cs" />
+    <Compile Include="Models\NguoiDung\NguoiDungDTO.cs" />
+    <Compile Include="Models\PhanCum\ClusteringResponse.cs" />
     <Compile Include="Models\QuanLyTaiKhoan\ApiResult.cs" />
     <Compile Include="Models\QuanLyTaiKhoan\DanhSachTaiKhoan.cs" />
     <Compile Include="Models\QuanLyTaiKhoan\DoiTrangThaiDto.cs" />
@@ -212,6 +215,7 @@
     <Content Include="Content\css\ManhThuongQuan.css" />
     <Content Include="Content\css\media.css" />
     <Content Include="Content\css\media_tnv.css" />
+    <Content Include="Content\css\PhanCum.css" />
     <Content Include="Content\css\QuanLyTaiKhoan.css" />
     <Content Include="Content\css\Site.css" />
     <Content Include="Content\css\SuKien.css" />
@@ -286,6 +290,11 @@
     <Content Include="Views\ManhThuongQuan\SuaUngHoManhThuongQuan.cshtml" />
     <Content Include="Views\HoTroVaUngHo\SuaUngHo.cshtml" />
     <Content Include="Views\HoTroVaUngHo\ThemTreEm.cshtml" />
+    <Content Include="Views\SuKien\DangKySuKien.cshtml" />
+    <Content Include="Views\SuKien\DangKySuKienChoTreEm.cshtml" />
+    <Content Include="Views\SuKien\EditSuKien.cshtml" />
+    <Content Include="Views\SuKien\CreateSuKien.cshtml" />
+    <Content Include="Views\PhanCum\PhanCum.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

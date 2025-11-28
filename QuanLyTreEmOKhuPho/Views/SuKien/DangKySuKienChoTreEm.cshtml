@@ -297,16 +297,17 @@
         }
 
         async function dangKySuKienTreEm() {
-            if (!selectedTreEmId || !selectedSuKienId)
+            var aaa = $("#selectTreEm").val();
+            if (!aaa)
                 return showToast('⚠️ Vui lòng chọn đầy đủ thông tin!', 'warning');
 
             const btn = $('button.btn-primary');
             btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin me-2"></i> Đang gửi...');
 
-            const res = await fetch(`https://localhost:44362/api/SuKien/${selectedSuKienId}/dangkytreem`, {
+            const res = await fetch(`https://localhost:44362/api/SuKien/${aaa}/dangkytreem`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(selectedTreEmId)
+                body: JSON.stringify(aaa)
             });
             debugger
             const text = await res.text(); 

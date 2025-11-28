@@ -1,0 +1,807 @@
+﻿
+@{
+    ViewBag.Title = "PhanCum";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var GetAllChildrenAnalysisAsync = ViewBag.GetAllChildrenAnalysisAsync;
+}
+<link rel="stylesheet" href="~/Content/css/PhanCum.css" />
+<style>
+    /* Modal Styles */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+        .modal-overlay.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+    .modal-content {
+        background: white;
+        border-radius: 12px;
+        max-width: 800px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #1f2937;
+        }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 28px;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .modal-close:hover {
+            color: #1f2937;
+        }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .detail-section {
+        margin-bottom: 24px;
+    }
+
+    .detail-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .detail-label {
+        font-size: 13px;
+        color: #6b7280;
+        font-weight: 500;
+    }
+
+    .detail-value {
+        font-size: 15px;
+        color: #1f2937;
+        font-weight: 500;
+    }
+
+    .features-chart {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .feature-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .feature-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        color: #374151;
+    }
+
+    .feature-bar-bg {
+        background: #f3f4f6;
+        height: 32px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .feature-bar {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 13px;
+        transition: width 0.3s ease;
+    }
+
+    .recommendations {
+        background: #f9fafb;
+        padding: 16px;
+        border-radius: 8px;
+        border-left: 4px solid #3b82f6;
+    }
+
+    .recommendations-title {
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 12px;
+        font-size: 15px;
+    }
+
+    .recommendations ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .recommendations li {
+        color: #4b5563;
+        margin-bottom: 8px;
+        line-height: 1.5;
+    }
+
+    .cluster-badge {
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .cluster-0 {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .cluster-1 {
+        background: #fce7f3;
+        color: #be185d;
+    }
+
+    .cluster-2 {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .cluster-3 {
+        background: #dcfce7;
+        color: #166534;
+    }
+</style>
+<div class="stats-grid">
+    <div class="stat-card danger">
+        <div class="stat-label">Ưu tiên khẩn cấp</div>
+        <div class="stat-value" id="statCritical">0</div>
+        <div class="stat-desc">Cần hỗ trợ ngay</div>
+    </div>
+    <div class="stat-card warning">
+        <div class="stat-label">Ưu tiên cao</div>
+        <div class="stat-value" id="statHigh">0</div>
+        <div class="stat-desc">Cần chú ý</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Ưu tiên trung bình</div>
+        <div class="stat-value" id="statMedium">0</div>
+        <div class="stat-desc">Theo dõi định kỳ</div>
+    </div>
+    <div class="stat-card success">
+        <div class="stat-label">Ưu tiên thấp</div>
+        <div class="stat-value" id="statLow">0</div>
+        <div class="stat-desc">Tình trạng ổn định</div>
+    </div>
+</div>
+<!-- Filters -->
+<div class="filters-section">
+    <div class="filters-title">Bộ lọc</div>
+    <div class="filters-grid">
+        <div class="filter-group">
+            <label class="filter-label">Mức ưu tiên</label>
+            <select class="filter-select" id="filterPriority">
+                <option value="">Tất cả</option>
+                <option value="Khẩn cấp">Khẩn cấp</option>
+                <option value="Cao">Cao</option>
+                <option value="Trung bình">Trung bình</option>
+                <option value="Thấp">Thấp</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Tìm kiếm</label>
+            <input type="text" class="filter-input" id="filterSearch" placeholder="Tên trẻ em...">
+        </div>
+    </div>
+    <div style="margin-top: 15px; display: flex; gap: 10px;">
+        <button class="btn btn-primary" onclick="applyFilters()">Áp dụng</button>
+        <button class="btn btn-secondary" onclick="resetFilters()">Đặt lại</button>
+        <button class="btn btn-primary" onclick="analyzeAll()">Phân tích tất cả</button>
+    </div>
+</div>
+<!-- Table -->
+<div class="table-section">
+    <div class="table-header">
+        <div class="table-title">Danh sách trẻ em đã phân tích</div>
+        @*<div style="display: flex; gap: 10px;">
+                <button class="btn btn-secondary" onclick="exportData()">📊 Xuất báo cáo</button>
+            </div>*@
+    </div>
+    <div id="tableContainer">
+        <table>
+            <thead>
+                <tr>
+                    <th>Họ tên</th>
+                    <th>Ngày sinh</th>
+                    <th>Giới tính</th>
+                    <th>Mức ưu tiên</th>
+                    <th>Mức độ tin cậy</th>
+                    <th>Nguy cơ bỏ học</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in GetAllChildrenAnalysisAsync.Data)
+                {
+                    <tr>
+                        <td><strong>@item.TenTre</strong></td>
+                        <td>@item.NgaySinh.ToString("dd/MM/yyyy")</td>
+                        <td>@item.GioiTinh</td>
+                        @if (item.PriorityLevel == "CAO NHẤT")
+                        {
+
+                            <td><span class="priority-badge priority-critical">@item.PriorityLevel</span></td>
+                        }
+                        else if (item.PriorityLevel == "CAO")
+                        {
+
+                            <td><span class="priority-badge priority-high">@item.PriorityLevel</span></td>
+                        }
+                        else if (item.PriorityLevel == "TRUNG BÌNH")
+                        {
+
+                            <td><span class="priority-badge priority-medium" style=" color: #06b6d4;">@item.PriorityLevel</span></td>
+                        }
+                        else
+                        {
+                            <td><span class="priority-badge priority-low">@item.PriorityLevel</span></td>
+                        }
+
+                        <td>@item.Confidence</td>
+                        <td>
+                            <div class="score-bar">
+                                <div class="score-fill" style="width: @item.Features.NguyCoBoHoc%;"></div>
+                            </div>
+                            <span style="margin-left: 8px; font-size: 12px;">@item.Features.NguyCoBoHoc%</span>
+                        </td>
+                        <td>
+                            <button class="action-btn btn-view" onclick="viewDetail(@item.TreEmId)">
+                                Xem chi tiết
+                            </button>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalChildName">Chi tiết phân tích</h3>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Nội dung sẽ được load động bằng JavaScript -->
+        </div>
+    </div>
+</div>
+<script>
+    // Chuyển dữ liệu C# sang JavaScript
+   var childrenData = @Html.Raw(ViewBag.ChildrenJsonData);
+    console.log('Children Data:', childrenData); // Kiểm tra dữ liệu
+
+    // Hàm xem chi tiết
+    function viewDetail(treEmId) {
+        console.log('View detail for:', treEmId);
+        const child = childrenData.find(c => c.treEmId === treEmId);
+        if (!child) {
+            console.error('Child not found:', treEmId);
+            return;
+        }
+
+        document.getElementById('modalChildName').textContent = `Chi tiết phân tích - ${child.hoTen}`;
+
+        const priorityClass = {
+            'CAO NHẤT': 'priority-critical',
+            'CAO': 'priority-high',
+            'TRUNG BÌNH': 'priority-medium',
+            'THẤP': 'priority-low'
+        };
+
+        const featureColors = {
+            hocTap: '#3b82f6',
+            hanhVi: '#8b5cf6',
+            tamLy: '#ec4899',
+            giaDinh: '#f59e0b',
+            nguyCoBoHoc: '#ef4444'
+        };
+
+        const modalBody = document.getElementById('modalBody');
+        modalBody.innerHTML = `
+            <div class="detail-section">
+                <div class="detail-title">Thông tin cơ bản</div>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Họ và tên</span>
+                        <span class="detail-value">${child.hoTen}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Ngày sinh</span>
+                        <span class="detail-value">${formatDate(child.ngaySinh)} (${calculateAge(child.ngaySinh)} tuổi)</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Giới tính</span>
+                        <span class="detail-value">${child.gioiTinh}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Cụm phân loại</span>
+                        <span class="detail-value"><span class="cluster-badge cluster-${child.cluster}">Cụm ${child.cluster}</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <div class="detail-title">Kết quả phân tích</div>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Mức độ ưu tiên</span>
+                        <span class="detail-value">
+                            <span class="priority-badge ${priorityClass[child.priorityLevel]}">${child.priorityLevel}</span>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Xếp hạng ưu tiên</span>
+                        <span class="detail-value"><strong>#${child.priorityRank}</strong></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Độ tin cậy</span>
+                        <span class="detail-value">${(child.confidence * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Màu nhận diện</span>
+                        <span class="detail-value">
+                            <span style="display: inline-block; width: 20px; height: 20px; background: ${child.color}; border-radius: 4px; vertical-align: middle;"></span>
+                            <span style="margin-left: 8px;">${child.color}</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <div class="detail-title">Các chỉ số đánh giá</div>
+                <div class="features-chart">
+                    <div class="feature-item">
+                        <div class="feature-label">
+                            <span>📚 Học tập</span>
+                            <span><strong>${child.features.hocTap}/100</strong></span>
+                        </div>
+                        <div class="feature-bar-bg">
+                            <div class="feature-bar" style="width: ${child.features.hocTap}%; background: ${featureColors.hocTap};">
+                                ${child.features.hocTap}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-label">
+                            <span>😊 Hành vi</span>
+                            <span><strong>${child.features.hanhVi}/100</strong></span>
+                        </div>
+                        <div class="feature-bar-bg">
+                            <div class="feature-bar" style="width: ${child.features.hanhVi}%; background: ${featureColors.hanhVi};">
+                                ${child.features.hanhVi}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-label">
+                            <span>🧠 Tâm lý</span>
+                            <span><strong>${child.features.tamLy}/100</strong></span>
+                        </div>
+                        <div class="feature-bar-bg">
+                            <div class="feature-bar" style="width: ${child.features.tamLy}%; background: ${featureColors.tamLy};">
+                                ${child.features.tamLy}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-label">
+                            <span>🏠 Gia đình</span>
+                            <span><strong>${child.features.giaDinh}/100</strong></span>
+                        </div>
+                        <div class="feature-bar-bg">
+                            <div class="feature-bar" style="width: ${child.features.giaDinh}%; background: ${featureColors.giaDinh};">
+                                ${child.features.giaDinh}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-label">
+                            <span>⚠️ Nguy cơ bỏ học</span>
+                            <span><strong>${child.features.nguyCoBoHoc}/100</strong></span>
+                        </div>
+                        <div class="feature-bar-bg">
+                            <div class="feature-bar" style="width: ${child.features.nguyCoBoHoc}%; background: ${featureColors.nguyCoBoHoc};">
+                                ${child.features.nguyCoBoHoc}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recommendations">
+                <div class="recommendations-title">💡 Khuyến nghị hỗ trợ</div>
+                <ul>
+                    ${child.recommendations && child.recommendations.length > 0
+                        ? child.recommendations.map(rec => `<li>${rec}</li>`).join('')
+                        : '<li>Chưa có khuyến nghị</li>'}
+                </ul>
+            </div>
+
+            <div style="margin-top: 30px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeModal()">
+                    Đóng
+                </button>
+            </div>
+        `;
+
+        document.getElementById('detailModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('detailModal').classList.remove('show');
+    }
+
+    // Hàm format ngày
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    // Hàm tính tuổi
+    function calculateAge(dateStr) {
+        const today = new Date();
+        const birthDate = new Date(dateStr);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    }
+
+    // Hàm xuất báo cáo cá nhân
+    function exportChildReport(treEmId) {
+        alert('Xuất báo cáo cho trẻ em ID: ' + treEmId);
+        // TODO: Implement export functionality
+    }
+
+    // Đóng modal khi click bên ngoài
+    document.getElementById('detailModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+</script>
+<script>
+    // Biến lưu trữ dữ liệu gốc và đã lọc
+let originalData = [];
+let filteredData = [];
+
+// Khởi tạo dữ liệu khi trang load
+document.addEventListener('DOMContentLoaded', function() {
+    originalData = [...childrenData];
+    filteredData = [...childrenData];
+    updateStatistics();
+});
+
+// Hàm áp dụng bộ lọc
+function applyFilters() {
+    const priorityFilter = document.getElementById('filterPriority').value;
+    const searchFilter = document.getElementById('filterSearch').value.toLowerCase().trim();
+
+    // Lọc dữ liệu
+    filteredData = originalData.filter(child => {
+        // Lọc theo mức ưu tiên
+        let matchPriority = true;
+        if (priorityFilter) {
+            const priorityMap = {
+                'Khẩn cấp': 'CAO NHẤT',
+                'Cao': 'CAO',
+                'Trung bình': 'TRUNG BÌNH',
+                'Thấp': 'THẤP'
+            };
+            matchPriority = child.priorityLevel === priorityMap[priorityFilter];
+        }
+
+        // Lọc theo tìm kiếm tên
+        let matchSearch = true;
+        if (searchFilter) {
+            matchSearch = child.hoTen.toLowerCase().includes(searchFilter);
+        }
+
+        return matchPriority && matchSearch;
+    });
+
+    // Cập nhật bảng
+    updateTable();
+    updateStatistics();
+
+    // Hiển thị thông báo
+    showNotification(`Tìm thấy ${filteredData.length} kết quả`);
+}
+
+// Hàm đặt lại bộ lọc
+function resetFilters() {
+    // Reset các input
+    document.getElementById('filterPriority').value = '';
+    document.getElementById('filterSearch').value = '';
+
+    // Reset dữ liệu
+    filteredData = [...originalData];
+
+    // Cập nhật bảng
+    updateTable();
+    updateStatistics();
+
+    showNotification('Đã đặt lại bộ lọc');
+}
+
+// Hàm cập nhật bảng
+function updateTable() {
+    const tbody = document.querySelector('tbody');
+
+    if (filteredData.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 40px; color: #6b7280;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🔍</div>
+                    <div style="font-size: 16px; font-weight: 500;">Không tìm thấy kết quả</div>
+                    <div style="font-size: 14px; margin-top: 8px;">Vui lòng thử lại với bộ lọc khác</div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = filteredData.map(child => {
+        const priorityBadgeClass = {
+            'CAO NHẤT': 'priority-critical',
+            'CAO': 'priority-high',
+            'TRUNG BÌNH': 'priority-medium',
+            'THẤP': 'priority-low'
+        };
+
+        const badgeStyle = child.priorityLevel === 'TRUNG BÌNH' ? 'style="color: #06b6d4;"' : '';
+
+        return `
+            <tr>
+                <td><strong>${child.hoTen}</strong></td>
+                <td>${formatDate(child.ngaySinh)}</td>
+                <td>${child.gioiTinh}</td>
+                <td>
+                    <span class="priority-badge ${priorityBadgeClass[child.priorityLevel]}" ${badgeStyle}>
+                        ${child.priorityLevel}
+                    </span>
+                </td>
+                <td>${(child.confidence * 100).toFixed(1)}%</td>
+                <td>
+                    <div class="score-bar">
+                        <div class="score-fill" style="width: ${child.features.nguyCoBoHoc}%;"></div>
+                    </div>
+                    <span style="margin-left: 8px; font-size: 12px;">${child.features.nguyCoBoHoc}%</span>
+                </td>
+                <td>
+                    <button class="action-btn btn-view" onclick="viewDetail(${child.treEmId})">
+                        Xem chi tiết
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Hàm cập nhật thống kê
+function updateStatistics() {
+    const stats = {
+        critical: 0,
+        high: 0,
+        medium: 0,
+        low: 0
+    };
+
+    filteredData.forEach(child => {
+        switch(child.priorityLevel) {
+            case 'CAO NHẤT':
+                stats.critical++;
+                break;
+            case 'CAO':
+                stats.high++;
+                break;
+            case 'TRUNG BÌNH':
+                stats.medium++;
+                break;
+            case 'THẤP':
+                stats.low++;
+                break;
+        }
+    });
+
+    document.getElementById('statCritical').textContent = stats.critical;
+    document.getElementById('statHigh').textContent = stats.high;
+    document.getElementById('statMedium').textContent = stats.medium;
+    document.getElementById('statLow').textContent = stats.low;
+}
+
+// Hàm hiển thị thông báo
+function showNotification(message) {
+    // Tạo element thông báo
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #10b981;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 9999;
+        font-weight: 500;
+        animation: slideIn 0.3s ease;
+    `;
+    notification.textContent = message;
+
+    // Thêm animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @@keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @@keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    document.body.appendChild(notification);
+
+    // Tự động ẩn sau 3 giây
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Hàm phân tích tất cả
+function analyzeAll() {
+    if (confirm('Bạn có chắc chắn muốn phân tích lại tất cả trẻ em?')) {
+        // Hiển thị loading
+        showNotification('Đang phân tích...');
+
+        // TODO: Gọi API phân tích
+        // Ví dụ:
+        // fetch('/api/analyze-all', { method: 'POST' })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         location.reload(); // Reload trang để cập nhật dữ liệu mới
+        //     });
+
+        setTimeout(() => {
+            showNotification('Phân tích hoàn tất!');
+        }, 2000);
+    }
+}
+
+// Hàm xuất dữ liệu
+function exportData() {
+    // Tạo CSV data
+    const headers = ['Họ tên', 'Ngày sinh', 'Giới tính', 'Mức ưu tiên', 'Độ tin cậy', 'Nguy cơ bỏ học', 'Học tập', 'Hành vi', 'Tâm lý', 'Gia đình'];
+
+    const csvData = [
+        headers.join(','),
+        ...filteredData.map(child => [
+            `"${child.hoTen}"`,
+            formatDate(child.ngaySinh),
+            child.gioiTinh,
+            child.priorityLevel,
+            `${(child.confidence * 100).toFixed(1)}%`,
+            `${child.features.nguyCoBoHoc}%`,
+            child.features.hocTap,
+            child.features.hanhVi,
+            child.features.tamLy,
+            child.features.giaDinh
+        ].join(','))
+    ].join('\n');
+
+    // Thêm BOM cho UTF-8
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvData], { type: 'text/csv;charset=utf-8;' });
+
+    // Tạo link download
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `BaoCao_PhanCum_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showNotification('Đã xuất báo cáo thành công!');
+}
+
+// Thêm sự kiện Enter cho ô tìm kiếm
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('filterSearch');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
+        });
+    }
+});
+</script>

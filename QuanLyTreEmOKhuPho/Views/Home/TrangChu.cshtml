@@ -134,7 +134,7 @@
 </div>
 
 <!-- Content Grid -->
-<div class="content-grid">
+<div class="content-grid" style="grid-template-columns:1fr;">
     <!-- Chart -->
     <div class="card">
         <div class="card-header">
@@ -156,73 +156,6 @@
         </div>
     </div>
     <!-- Priority Children -->
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Trẻ cần ưu tiên hỗ trợ</h3>
-            @*<button class="btn btn-outline" onclick="location.href='@Url.Action("VanDongTreEm", "VanDongTreEm")'">Xem tất cả</button>*@
-        </div>
-        <ul class="priority-list">
-            @*@for (int i = 0; i < Math.Min(5, KetQuaPhanCum.DanhSachTreEm.Count); i++)
-            {
-                var treEm = KetQuaPhanCum.DanhSachTreEm[i];
-                <li class="priority-item" style="cursor:pointer;"  onclick="location.href='@Url.Action("ChiTiet", "QuanLyTreEm", new { id = treEm.TreEmId })'">
-                    <div class="priority-info">
-                        <div class="priority-name">@treEm.TenTreEm</div>
-                        <div class="priority-details">
-                            @($"{treEm.Tuoi} tuổi • {treEm.KhuPho} • {string.Join(", ", treEm.LyDoChinh)}")
-                        </div>
-                    </div>
-
-                    @if (treEm.MucDo == "Cao")
-                    {
-                        <span class="priority-badge badge-high">Cao</span>
-                    }
-                    else if (treEm.MucDo == "Trung bình")
-                    {
-                        <span class="priority-badge badge-medium">Trung bình</span>
-                    }
-                    else if (treEm.MucDo == "Thấp")
-                    {
-                        <span class="priority-badge badge-low">Thấp</span>
-                    }
-                    else
-                    {
-                        <span class="priority-badge badge-stable">Ổn định</span>
-                    }
-                </li>
-            }*@
-
-
-            @*<li class="priority-item">
-            <div class="priority-info">
-                <div class="priority-name">Trần Thị B</div>
-                <div class="priority-details">10 tuổi • KP1 • Khó khăn</div>
-            </div>
-            <span class="priority-badge badge-high">Cao</span>
-        </li>
-        <li class="priority-item">
-            <div class="priority-info">
-                <div class="priority-name">Lê Văn C</div>
-                <div class="priority-details">7 tuổi • KP5 • Khuyết tật</div>
-            </div>
-            <span class="priority-badge badge-medium">TB</span>
-        </li>
-        <li class="priority-item">
-            <div class="priority-info">
-                <div class="priority-name">Phạm Thị D</div>
-                <div class="priority-details">9 tuổi • KP3 • Hộ nghèo</div>
-            </div>
-            <span class="priority-badge badge-medium">TB</span>
-        </li>
-        <li class="priority-item">
-            <div class="priority-info">
-                <div class="priority-name">Hoàng Văn E</div>
-                <div class="priority-details">6 tuổi • KP4 • Học yếu</div>
-            </div>
-            <span class="priority-badge badge-low">Thấp</span>
-        </li>*@
-        </ul>
-    </div>
 </div>
 
 <!-- Events Timeline -->

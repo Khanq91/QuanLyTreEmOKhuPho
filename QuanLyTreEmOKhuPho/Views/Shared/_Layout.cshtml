@@ -65,6 +65,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="@Url.Action("PhanCum", "PhanCum")" class="nav-link @(ViewBag.ActivePage == "PhanCum" ? "active" : "")">
+                            <span class="nav-icon"><i class="fa-solid fa-children"></i></span>
+                            <span>Phân tích trẻ em</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="@Url.Action("BaoCaoThongKe", "BaoCaoThongKe")" class="nav-link @(ViewBag.ActivePage == "BaoCaoThongKe" ? "active" : "")">
                             <span class="nav-icon"><i class="fa-solid fa-chart-area"></i></span>
                             <span>Báo cáo & Thống kê</span>
@@ -88,10 +94,17 @@
                 </div>
                 <div class="header-right">
                     <div class="user-info">
-                        <div class="user-avatar">AD</div>
+                        @if ((string)Session["VaiTro"] == "Admin")
+                        {
+                            <div class="user-avatar">AD</div>
+                        }
+                        else
+                        {
+                            <div class="user-avatar">CB</div>
+                        }
                         <div>
-                            <div style="font-weight: 600; font-size: 14px;">Nguyễn Văn D</div>
-                            <div style="font-size: 12px; color: var(--gray-600);">Cán bộ</div>
+                            <div style="font-weight: 600; font-size: 14px;">@Session["TenHienThi"]</div>
+                            <div style="font-size: 12px; color: var(--gray-600);">@Session["VaiTro"]</div>
                         </div>
                     </div>
                 </div>
