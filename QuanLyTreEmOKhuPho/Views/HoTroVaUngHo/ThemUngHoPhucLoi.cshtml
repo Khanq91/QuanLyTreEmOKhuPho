@@ -86,6 +86,159 @@
     .notification-toast.hiding {
         animation: slideOutRight 0.3s ease-in forwards;
     }
+    /* Image Upload Styles */
+    .image-upload-container {
+        margin-top: 16px;
+    }
+
+    .image-upload-wrapper {
+        position: relative;
+        width: 100%;
+        border: 2px dashed #e0e0e0;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s;
+        background: #fafafa;
+        cursor: pointer;
+    }
+
+        .image-upload-wrapper:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .image-upload-wrapper.has-image {
+            border-style: solid;
+            border-color: #667eea;
+            background: white;
+        }
+
+    .upload-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        color: #6b7280;
+    }
+
+        .upload-placeholder i {
+            font-size: 48px;
+            color: #667eea;
+            opacity: 0.6;
+        }
+
+        .upload-placeholder .upload-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .upload-placeholder .upload-hint {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+    .image-preview-container {
+        display: none;
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+        .image-preview-container.active {
+            display: block;
+        }
+
+    .image-preview {
+        width: 100%;
+        height: auto;
+        max-height: 300px;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .image-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 12px;
+    }
+
+    .btn-change-image,
+    .btn-remove-image {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+    .btn-change-image {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+        .btn-change-image:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+    .btn-remove-image {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+    }
+
+        .btn-remove-image:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+    .image-info {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #6b7280;
+        text-align: center;
+    }
+
+    /* Loading Spinner */
+    .upload-loading {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+    }
+
+        .upload-loading.active {
+            display: block;
+        }
+
+        .upload-loading .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
 <script>
     function closeToast(id) {
@@ -191,7 +344,6 @@
                         <i class="fa-solid fa-clipboard"></i> Thông tin hỗ trợ
                     </h3>
                     <div class="alert alert-warning" id="alertConLai" style="display: none;"></div>
-
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Loại hỗ trợ <span class="required">*</span></label>
@@ -240,6 +392,55 @@
                         <textarea class="form-control" id="ghiChuTNV" rows="2" placeholder="Ghi chú thêm..." disabled></textarea>
                     </div>
                 </div>
+                <div class="form-group full">
+                    <label class="form-label">
+                        <i class="fa-solid fa-image"></i> Ảnh quà tặng
+                        <span style="font-size: 12px; font-weight: normal; color: var(--gray-600); margin-left: 8px;">
+                            (Tùy chọn - Hỗ trợ JPG, PNG, tối đa 5MB)
+                        </span>
+                    </label>
+
+                    <div class="image-upload-container">
+                        <!-- Hidden file input -->
+                        <input type="file"
+                               id="imageInput"
+                               accept="image/jpeg,image/jpg,image/png,image/gif"
+                               style="display: none;"
+                               disabled />
+
+                        <!-- Upload wrapper -->
+                        <div class="image-upload-wrapper" id="imageUploadWrapper" onclick="triggerImageUpload()">
+                            <!-- Placeholder -->
+                            <div class="upload-placeholder" id="uploadPlaceholder">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <div class="upload-text">Nhấp để chọn ảnh</div>
+                                <div class="upload-hint">hoặc kéo thả ảnh vào đây</div>
+                            </div>
+
+                            <!-- Preview -->
+                            <div class="image-preview-container" id="imagePreviewContainer">
+                                <img id="imagePreview" class="image-preview" src="" alt="Preview" />
+                                <div class="image-info" id="imageInfo"></div>
+                                <div class="image-actions">
+                                    <button type="button" class="btn-change-image" onclick="event.stopPropagation(); document.getElementById('imageInput').click()">
+                                        <i class="fa-solid fa-repeat"></i> Đổi ảnh
+                                    </button>
+                                    <button type="button" class="btn-remove-image" onclick="event.stopPropagation(); removeImage()">
+                                        <i class="fa-solid fa-trash"></i> Xóa ảnh
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Loading spinner -->
+                            <div class="upload-loading" id="uploadLoading">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden input để lưu base64 -->
+                    <input type="hidden" id="anhQuaData" name="anhQua" />
+                </div>
                 <!-- PHẦN MỚI: THÔNG TIN QUÀ TẶNG (NẾU CẦN TÙY CHỈNH) -->
                 <div class="form-section">
                     <h3 class="section-title">
@@ -260,7 +461,6 @@
                                 <input type="number" class="form-control" id="donGia" placeholder="0" min="0" disabled>
                             </div>*@
                     </div>
-
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Đối tượng nhận</label>
@@ -284,6 +484,7 @@
                         <label class="form-label">Mô tả quà tặng</label>
                         <textarea class="form-control" id="moTaQua" rows="2" placeholder="Mô tả chi tiết về quà..." disabled></textarea>
                     </div>
+
                 </div>
 
                 <!-- PHẦN MỚI: THÔNG TIN PHÂN PHÁT -->
@@ -748,45 +949,9 @@
         // ============================================
         // ENABLE/DISABLE FORM
         // ============================================
-        function enableForm() {
-            document.getElementById("loaiHoTro").disabled = false;
-            document.getElementById("ngayCap").disabled = false;
-            document.getElementById("nguoiChiuTrachNhiem").disabled = false;
-            document.getElementById("trangThaiPhat").disabled = false;
-            document.getElementById("moTa").disabled = false;
-            document.getElementById("ghiChuTNV").disabled = false;
-            document.getElementById("btnChonTreEm").disabled = false;
-            document.getElementById("btnSubmit").disabled = false;
-        }
-
-        function disableForm() {
-            document.getElementById("loaiHoTro").disabled = true;
-            document.getElementById("ngayCap").disabled = true;
-            document.getElementById("nguoiChiuTrachNhiem").disabled = true;
-            document.getElementById("trangThaiPhat").disabled = true;
-            document.getElementById("moTa").disabled = true;
-            document.getElementById("ghiChuTNV").disabled = true;
-            document.getElementById("btnChonTreEm").disabled = true;
-            document.getElementById("btnSubmit").disabled = true;
-        }
-
-        // ============================================
-        // MODAL FUNCTIONS (placeholders - bạn cần implement)
-        // ============================================
-        function openChildModal() {
-            console.log("Open child modal");
-            // TODO: Implement modal logic
-        }
-
-        function closeChildModal() {
-            console.log("Close child modal");
-            // TODO: Implement modal logic
-        }
-
-        function confirmSelection() {
-            console.log("Confirm selection");
-            // TODO: Implement confirmation logic
-        }
+    // ============================================
+    // CẬP NHẬT HÀM ENABLE/DISABLE FORM
+    // ============================================
 </script>
 <script>
         // ============================================
@@ -1065,10 +1230,7 @@
             tbody.appendChild(row);
         });
 
-        // Cập nhật số lượng đã chọn
         updateSelectedCount();
-
-        console.log("✅ Đã render xong danh sách trẻ");
     }
 
     // ============================================
@@ -1485,10 +1647,9 @@
     }
 </script>
 <script>
-    // ============================================
-    // CẬP NHẬT HÀM ENABLE/DISABLE FORM
-    // ============================================
     function enableForm() {
+        console.log("🚀 BẮT ĐẦU enableForm()");
+
         // Thông tin hỗ trợ
         document.getElementById("loaiHoTro").disabled = false;
         document.getElementById("ngayCap").disabled = false;
@@ -1499,10 +1660,21 @@
 
         // Thông tin quà tặng (optional)
         document.getElementById("tenQua").disabled = false;
-        //document.getElementById("donGia").disabled = false;
         document.getElementById("doiTuongNhan").disabled = false;
         document.getElementById("suKienId").disabled = false;
         document.getElementById("moTaQua").disabled = false;
+
+        // ✅✅✅ ENABLE UPLOAD ẢNH VỚI DEBUG ✅✅✅
+        const imageInput = document.getElementById("imageInput");
+        console.log("📷 TRƯỚC KHI ENABLE - imageInput:", imageInput);
+        console.log("📷 TRƯỚC KHI ENABLE - disabled:", imageInput ? imageInput.disabled : "KHÔNG TÌM THẤY ELEMENT");
+
+        if (imageInput) {
+            imageInput.disabled = false;
+            console.log("📷 SAU KHI ENABLE - disabled:", imageInput.disabled);
+        } else {
+            console.error("❌ KHÔNG TÌM THẤY imageInput!");
+        }
 
         // Thông tin phân phát
         document.getElementById("ngayPhanPhat").disabled = false;
@@ -1522,6 +1694,8 @@
         if (!document.getElementById("ngayPhanPhat").value) {
             document.getElementById("ngayPhanPhat").value = today;
         }
+
+        console.log("✅ KẾT THÚC enableForm()");
     }
 
     function disableForm() {
@@ -1535,26 +1709,27 @@
 
         // Thông tin quà tặng
         document.getElementById("tenQua").disabled = true;
-        //document.getElementById("donGia").disabled = true;
         document.getElementById("doiTuongNhan").disabled = true;
         document.getElementById("suKienId").disabled = true;
         document.getElementById("moTaQua").disabled = true;
 
+        // ✅✅✅ DISABLE UPLOAD ẢNH ✅✅✅
+        document.getElementById("imageInput").disabled = true;
+
         // Thông tin phân phát
         document.getElementById("ngayPhanPhat").disabled = true;
         document.getElementById("nguoiPhanPhat").disabled = true;
-        document.getElementById("ghiChuPhanPat").disabled = true;
+        document.getElementById("ghiChuPhanPhat").disabled = true;
         document.getElementById("ngayHenLai").disabled = true;
 
         // Buttons
         document.getElementById("btnChonTreEm").disabled = true;
         document.getElementById("btnSubmit").disabled = true;
+
+        console.log("✅ Đã disable form");
     }
 </script>
 <script>
- // ============================================
-// TỰ ĐỘNG TÍNH ĐỠN GIÁ
-// ============================================
 function updateDonGia() {
     if (!selectedUngHo) {
         document.getElementById("donGia").value = "0";
@@ -1587,10 +1762,13 @@ function updateDonGia() {
 // ============================================
 // SUBMIT FORM
 // ============================================
-document.getElementById("formHoTro").addEventListener("submit", async function(e) {
+// ============================================
+// SUBMIT FORM - GỬI QUA MVC CONTROLLER
+// ============================================
+document.getElementById("formHoTro").addEventListener("submit", function(e) {
     e.preventDefault();
 
-    // Validate
+    // Validate cơ bản
     if (!selectedUngHo) {
         showNotification('Vui lòng chọn đợt ủng hộ!', 'error');
         return;
@@ -1601,23 +1779,21 @@ document.getElementById("formHoTro").addEventListener("submit", async function(e
         return;
     }
 
-    // Lấy giá trị ngày
-    const ngayCap = document.getElementById("ngayCap").value;
+    // Lấy giá trị
     const ngayPhanPhat = document.getElementById("ngayPhanPhat").value;
-    const ngayHenLai = document.getElementById("ngayHenLai").value;
-
-    // Validate ngày
-    if (!ngayCap) {
-        showNotification('Vui lòng chọn ngày cấp!', 'error');
-        return;
-    }
+    const nguoiPhanPhat = document.getElementById("nguoiPhanPhat").value;
 
     if (!ngayPhanPhat) {
         showNotification('Vui lòng chọn ngày phân phát!', 'error');
         return;
     }
 
-    // Tính tổng số lượng
+    if (!nguoiPhanPhat) {
+        showNotification('Vui lòng nhập người phân phát!', 'error');
+        return;
+    }
+
+    // Tính toán
     const tongSoLuong = selectedChildren.reduce((sum, c) => sum + parseInt(c.soLuong), 0);
     const soLuongConLai = getProp(selectedUngHo, 'soLuongConLai') || 0;
 
@@ -1626,75 +1802,405 @@ document.getElementById("formHoTro").addEventListener("submit", async function(e
         return;
     }
 
-    // Tính đơn giá
     const tongSoTien = parseFloat(getProp(selectedUngHo, 'soTien') || getProp(selectedUngHo, 'tongSoTien') || 0);
-    const donGiaTuDong = tongSoLuong > 0 ? (tongSoTien / tongSoLuong).toFixed(2) : "0";
-
-    // ✅ LẤY UNGHO ID
+    const donGiaTuDong = tongSoLuong > 0 ? parseFloat((tongSoTien / tongSoLuong).toFixed(2)) : 0;
     const ungHoId = getProp(selectedUngHo, 'ungHoID') || getProp(selectedUngHo, 'ungHoId');
-
-    console.log("=== DEBUG TRƯỚC KHI SUBMIT ===");
-    console.log("ungHoId:", ungHoId);
-    console.log("ngayCap:", ngayCap);
-    console.log("ngayPhanPhat:", ngayPhanPhat);
-    console.log("nguoiChiuTrachNhiem:", document.getElementById("nguoiChiuTrachNhiem").value);
-    console.log("nguoiPhanPhat:", document.getElementById("nguoiPhanPhat").value);
-    console.log("==============================");
 
     if (!ungHoId || ungHoId === 0) {
         showNotification('Lỗi: Không xác định được ID ủng hộ!', 'error');
         return;
     }
 
-    // Chuẩn bị form data
-    const formData = {
-        ungHoId: ungHoId,
-        loaiHoTro: document.getElementById("loaiHoTro").value,
-        ngayCap: ngayCap,
-        nguoiChiuTrachNhiemHoTro: document.getElementById("nguoiChiuTrachNhiem").value,
-        trangThaiPhat: document.getElementById("trangThaiPhat").value,
-        moTa: document.getElementById("moTa").value || "",
-        ghiChuTNV: document.getElementById("ghiChuTNV").value || "",
+    // ✅ LẤY ẢNH BASE64
+    const anhQuaBase64 = document.getElementById('anhQuaData').value || "";
 
-        // Quà tặng
-        tenQua: document.getElementById("tenQua").value || "",
-        donGia: donGiaTuDong,
-        doiTuongNhan: document.getElementById("doiTuongNhan").value || "",
-        suKienId: document.getElementById("suKienId").value || "",  // ✅ SỬA: null → ""
-        moTaQua: document.getElementById("moTaQua").value || "",
-        anhQua: "",
+    console.log("=== DEBUG TRƯỚC KHI SUBMIT ===");
+    console.log("ungHoId:", ungHoId);
+    console.log("Có ảnh:", anhQuaBase64 ? "CÓ" : "KHÔNG");
+    if (anhQuaBase64) {
+        console.log("Độ dài base64:", anhQuaBase64.length);
+        console.log("Base64 prefix:", anhQuaBase64.substring(0, 50));
+    }
+    console.log("==============================");
 
-        // Phân phát
-        ngayPhanPhat: ngayPhanPhat,
-        nguoiPhanPhat: document.getElementById("nguoiPhanPhat").value,
-        ghiChuPhanPhat: document.getElementById("ghiChuPhanPhat").value || "",
-        ngayHenLai: ngayHenLai || "",  // ✅ SỬA: null → ""
+    // ✅ Lấy SuKienId
+    const suKienIdValue = document.getElementById("suKienId").value;
+    const suKienId = suKienIdValue && parseInt(suKienIdValue) > 0 ? parseInt(suKienIdValue) : "";
 
-        // Danh sách trẻ
-        danhSachTreEm: JSON.stringify(selectedChildren.map(c => ({
-            TreEmId: c.treEmID || c.treEmId,
-            SoLuongNhan: parseInt(c.soLuong),
-            GhiChu: ""
-        })))
-    };
-
-    console.log("📤 FormData:", formData);
-
-    // Submit form
+    // ✅ TẠO FORM VÀ SUBMIT
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '@Url.Action("ThemUngHoPhucLoi", "HoTroVaUngHo")';
 
-    Object.keys(formData).forEach(key => {
+    // Helper function để tạo hidden input
+    function addInput(name, value) {
         const input = document.createElement('input');
         input.type = 'hidden';
-        input.name = key;
-        input.value = formData[key] !== null ? formData[key] : '';  // ✅ Convert null thành empty string
+        input.name = name;
+        input.value = value !== null && value !== undefined ? value : '';
         form.appendChild(input);
-    });
+    }
 
+    // Thêm các field vào form
+    addInput('ungHoId', ungHoId);
+    addInput('loaiHoTro', document.getElementById("loaiHoTro").value);
+    addInput('nguoiChiuTrachNhiemHoTro', document.getElementById("nguoiChiuTrachNhiem").value);
+    addInput('trangThaiPhat', document.getElementById("trangThaiPhat").value);
+    addInput('moTa', document.getElementById("moTa").value);
+    addInput('ghiChuTNV', document.getElementById("ghiChuTNV").value);
+
+    // Thông tin quà tặng
+    addInput('tenQua', document.getElementById("tenQua").value);
+    addInput('donGia', donGiaTuDong);
+    addInput('doiTuongNhan', document.getElementById("doiTuongNhan").value);
+    addInput('suKienId', suKienId);
+    addInput('moTaQua', document.getElementById("moTaQua").value);
+
+    // ✅ ẢNH BASE64 - QUAN TRỌNG!
+    addInput('anhQua', anhQuaBase64);
+
+    // Thông tin phân phát
+    addInput('ngayPhanPhat', ngayPhanPhat);
+    addInput('nguoiPhanPhat', nguoiPhanPhat);
+    addInput('ghiChuPhanPhat', document.getElementById("ghiChuPhanPhat").value);
+
+    const ngayHenLai = document.getElementById("ngayHenLai").value;
+    if (ngayHenLai) {
+        addInput('ngayHenLai', ngayHenLai);
+    }
+
+    // ✅ Danh sách trẻ em - ĐÚNG FORMAT
+    const danhSachTreEmData = selectedChildren.map(c => ({
+        TreEmId: c.treEmID || c.treEmId,
+        SoLuongNhan: parseInt(c.soLuong),
+        GhiChu: ""
+    }));
+
+    addInput('danhSachTreEm', JSON.stringify(danhSachTreEmData));
+
+    console.log("📤 Form data chuẩn bị submit:");
+    console.log("- ungHoId:", ungHoId);
+    console.log("- Số trẻ em:", selectedChildren.length);
+    console.log("- Tổng số lượng:", tongSoLuong);
+    console.log("- Có ảnh:", anhQuaBase64 ? "CÓ" : "KHÔNG");
+
+    // Disable nút submit
+    const btnSubmit = document.getElementById('btnSubmit');
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
+
+    // Append form và submit
     document.body.appendChild(form);
     form.submit();
 });
 
+// ============================================
+// XỬ LÝ UPLOAD ẢNH
+// ============================================
+let selectedImageFile = null;
+let imageBase64 = null;
+
+document.getElementById('imageInput').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+
+    if (!file) {
+        console.log('❌ Không có file');
+        return;
+    }
+
+    console.log('📁 File:', file.name, (file.size / 1024).toFixed(2), 'KB');
+
+    // Validate
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+        showNotification('Chỉ chấp nhận JPG, PNG, GIF!', 'error');
+        e.target.value = '';
+        return;
+    }
+
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+        showNotification('Ảnh quá lớn! Tối đa 5MB', 'error');
+        e.target.value = '';
+        return;
+    }
+
+    selectedImageFile = file;
+    previewImage(file);
+});
+
+function previewImage(file) {
+    const reader = new FileReader();
+    showLoading(true);
+
+    reader.onload = function (e) {
+        const base64Data = e.target.result;
+        imageBase64 = base64Data;
+
+        // Hiển thị preview
+        document.getElementById('imagePreview').src = base64Data;
+        document.getElementById('imagePreviewContainer').classList.add('active');
+        document.getElementById('uploadPlaceholder').style.display = 'none';
+        document.getElementById('imageUploadWrapper').classList.add('has-image');
+
+        // Info
+        const sizeKB = (file.size / 1024).toFixed(2);
+        document.getElementById('imageInfo').textContent = `${file.name} (${sizeKB} KB)`;
+
+        // ✅ LƯU VÀO HIDDEN INPUT
+        document.getElementById('anhQuaData').value = base64Data;
+
+        showLoading(false);
+
+        console.log('✅ Đã lưu base64 vào hidden input');
+        console.log('Độ dài:', base64Data.length, 'ký tự');
+
+        showNotification('Đã chọn ảnh thành công!', 'success');
+    };
+
+    reader.onerror = function () {
+        showLoading(false);
+        showNotification('Lỗi đọc file!', 'error');
+    };
+
+    reader.readAsDataURL(file);
+}
+
+function removeImage() {
+    selectedImageFile = null;
+    imageBase64 = null;
+
+    document.getElementById('imageInput').value = '';
+    document.getElementById('imagePreview').src = '';
+    document.getElementById('imagePreviewContainer').classList.remove('active');
+    document.getElementById('uploadPlaceholder').style.display = 'flex';
+    document.getElementById('imageUploadWrapper').classList.remove('has-image');
+    document.getElementById('anhQuaData').value = '';
+
+    console.log('🗑️ Đã xóa ảnh');
+    showNotification('Đã xóa ảnh', 'success');
+}
+
+function triggerImageUpload() {
+    if (!selectedUngHo) {
+        showNotification('Vui lòng chọn đợt ủng hộ trước!', 'warning');
+        return;
+    }
+    document.getElementById('imageInput').click();
+}
+
+function showLoading(show) {
+    const loading = document.getElementById('uploadLoading');
+    if (show) {
+        loading.classList.add('active');
+    } else {
+        loading.classList.remove('active');
+    }
+}
+
+// ============================================
+// DRAG & DROP
+// ============================================
+const uploadWrapper = document.getElementById('imageUploadWrapper');
+
+uploadWrapper.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    this.style.borderColor = '#667eea';
+    this.style.background = '#f0f4ff';
+});
+
+uploadWrapper.addEventListener('dragleave', function (e) {
+    e.preventDefault();
+    this.style.borderColor = '#e0e0e0';
+    this.style.background = '#fafafa';
+});
+
+uploadWrapper.addEventListener('drop', function (e) {
+    e.preventDefault();
+    this.style.borderColor = '#e0e0e0';
+    this.style.background = '#fafafa';
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        const file = files[0];
+
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        if (!validTypes.includes(file.type)) {
+            showNotification('Chỉ chấp nhận JPG, PNG, GIF!', 'error');
+            return;
+        }
+
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            showNotification('Ảnh quá lớn! Tối đa 5MB', 'error');
+            return;
+        }
+
+        selectedImageFile = file;
+        previewImage(file);
+    }
+});
+    // ============================================
+    // XỬ LÝ CHỌN FILE
+    // ============================================
+    document.getElementById('imageInput').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+
+        if (!file) {
+            console.log('❌ Không có file được chọn');
+            return;
+        }
+
+        console.log('📁 File được chọn:', file.name, 'Size:', (file.size / 1024).toFixed(2), 'KB');
+
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        if (!validTypes.includes(file.type)) {
+            showNotification('Chỉ chấp nhận file ảnh JPG, PNG, GIF!', 'error');
+            e.target.value = '';
+            return;
+        }
+
+        // Validate file size (5MB = 5 * 1024 * 1024 bytes)
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            showNotification('Ảnh quá lớn! Vui lòng chọn ảnh nhỏ hơn 5MB', 'error');
+            e.target.value = '';
+            return;
+        }
+
+        // Xử lý file
+        selectedImageFile = file;
+        previewImage(file);
+    });
+
+    // ============================================
+    // PREVIEW ẢNH
+    // ============================================
+    function previewImage(file) {
+        const reader = new FileReader();
+
+        // Hiển thị loading
+        showLoading(true);
+
+        reader.onload = function (e) {
+            const base64Data = e.target.result;
+            imageBase64 = base64Data;
+
+            // Hiển thị preview
+            document.getElementById('imagePreview').src = base64Data;
+            document.getElementById('imagePreviewContainer').classList.add('active');
+            document.getElementById('uploadPlaceholder').style.display = 'none';
+            document.getElementById('imageUploadWrapper').classList.add('has-image');
+
+            // Hiển thị thông tin file
+            const sizeKB = (file.size / 1024).toFixed(2);
+            document.getElementById('imageInfo').textContent = `${file.name} (${sizeKB} KB)`;
+
+            // Lưu vào hidden input
+            document.getElementById('anhQuaData').value = base64Data;
+
+            // Ẩn loading
+            showLoading(false);
+
+            console.log('✅ Preview ảnh thành công');
+            showNotification('Đã chọn ảnh thành công!', 'success');
+        };
+
+        reader.onerror = function () {
+            showLoading(false);
+            showNotification('Lỗi khi đọc file ảnh!', 'error');
+            console.error('❌ Lỗi FileReader');
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    // ============================================
+    // XÓA ẢNH
+    // ============================================
+    function removeImage() {
+        // Reset tất cả
+        selectedImageFile = null;
+        imageBase64 = null;
+
+        document.getElementById('imageInput').value = '';
+        document.getElementById('imagePreview').src = '';
+        document.getElementById('imagePreviewContainer').classList.remove('active');
+        document.getElementById('uploadPlaceholder').style.display = 'flex';
+        document.getElementById('imageUploadWrapper').classList.remove('has-image');
+        document.getElementById('anhQuaData').value = '';
+
+        console.log('🗑️ Đã xóa ảnh');
+        showNotification('Đã xóa ảnh', 'success');
+    }
+
+    // ============================================
+    // DRAG & DROP
+    // ============================================
+    uploadWrapper.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.style.borderColor = '#667eea';
+        this.style.background = '#f0f4ff';
+    });
+
+    uploadWrapper.addEventListener('dragleave', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.style.borderColor = '#e0e0e0';
+        this.style.background = '#fafafa';
+    });
+
+    uploadWrapper.addEventListener('drop', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        this.style.borderColor = '#e0e0e0';
+        this.style.background = '#fafafa';
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+
+            // Validate
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            if (!validTypes.includes(file.type)) {
+                showNotification('Chỉ chấp nhận file ảnh JPG, PNG, GIF!', 'error');
+                return;
+            }
+
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                showNotification('Ảnh quá lớn! Vui lòng chọn ảnh nhỏ hơn 5MB', 'error');
+                return;
+            }
+
+            selectedImageFile = file;
+            previewImage(file);
+        }
+    });
+    function showLoading(show) {
+        const loading = document.getElementById('uploadLoading');
+        if (show) {
+            loading.classList.add('active');
+        } else {
+            loading.classList.remove('active');
+        }
+    }
+    function triggerImageUpload() {
+        const input = document.getElementById('imageInput');
+
+        console.log("🖱️ triggerImageUpload được gọi");
+        console.log("📷 imageInput disabled:", input ? input.disabled : "KHÔNG TÌM THẤY");
+        console.log("📷 selectedUngHo:", selectedUngHo);
+        // Chỉ check đã chọn ủng hộ chưa
+        if (!selectedUngHo) {
+            showNotification('Vui lòng chọn đợt ủng hộ trước!', 'warning');
+            return;
+        }
+        // Force enable và click
+        input.disabled = false;
+        input.click();
+    }
 </script>

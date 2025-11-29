@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using QuanLyTreEmAPI.DTOs.NguoiDung;
 using QuanLyTreEmOKhuPho.Models;
 using System;
 using System.Collections.Generic;
@@ -34,15 +35,14 @@ namespace QuanLyTreEmOKhuPho.Controllers
         [HttpPost]
         public async Task<ActionResult> DangNhap(string tk, string mk)
         {
- 
+            string regex = @"^(0|\+84)\d{9,10}$";
 
-            string regex  = @"^(0|\+84)\d{9,10}$";
-            if (string.IsNullOrEmpty(tk) )
+            if (string.IsNullOrEmpty(tk))
             {
                 ViewBag.ThongBao = "Tài khoản không để trống!";
                 return View();
             }
-            else if( !Regex.IsMatch(tk, regex))
+            else if (!Regex.IsMatch(tk, regex))
             {
                 ViewBag.ThongBao = "Tài khoản không đúng định dạng!";
                 return View();
@@ -52,22 +52,36 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 ViewBag.ThongBao = "Mật khẩu đang trống!";
                 return View();
             }
-            var NguoiDung = new NguoiDung { TaiKhoan = tk, MatKhau = mk };
-            string json = JsonConvert.SerializeObject(NguoiDung);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // Gọi API
             HttpResponseMessage response = await _client.GetAsync($"NguoiDung/Login?SDT={tk}&MatKhau={mk}");
-            if (response.IsSuccessStatusCode) {
+            if (response.IsSuccessStatusCode)
+            {
                 string result = await response.Content.ReadAsStringAsync();
-                dynamic data = JsonConvert.DeserializeObject(result);
-                Session["TenHienThi"] = data.TenHienThi;
+
+                // Deserialize về class NguoiDungDTO
+                NguoiDungDTO user = JsonConvert.DeserializeObject<NguoiDungDTO>(result);
+
+                // Kiểm tra trạng thái tài khoản
+                if (user.TrangThai == "Đã bị khóa")
+                {
+                    ViewBag.ThongBao = "Tài khoản bạn đã bị khóa. Vui lòng liên hệ người có thẩm quyền!";
+                    return View();
+                }
+
+                // Lưu session
+                Session["UserId"] = user.UserId;
+                Session["TenHienThi"] = user.Ten;
+                Session["VaiTro"] = user.VaiTro;
+
                 return RedirectToAction("TrangChu", "Home");
             }
             else
             {
                 ViewBag.ThongBao = "Tài khoản hoặc mật khẩu không chính xác!";
                 return View();
-
             }
         }
+
     }
 }

@@ -267,6 +267,7 @@
     }
 
     function renderTable(data) {
+        debugger
         const tbody = $("#tableBody");
         tbody.empty();
 
@@ -292,12 +293,16 @@
                 <tr>
                     <td>${i + 1}</td>
                     <td>${item.hoTen}</td>
-                    <td>${convertJsonDate(item.ngaySinh)}</td>
+                    <td>${new Date(item.ngaySinh).toLocaleDateString('vi-VN')}</td>
                     <td>${item.hoanCanh || ""}</td>
                     <td>${badge}</td>
                     <td>${item.lanCuoi?.soLan || 0}</td>
                     <td>
-                        <button class="btn btn-sm btn-success" onclick="openGhiNhan(${item.treEmId}, '${item.hoTen}')"><i class="fa-solid fa-pen"></i></button>
+                    ${
+                       (tt === "Đã nhập học" || tt ==="Từ chối")?"":
+                         `<button class="btn btn-sm btn-success" onclick="openGhiNhan(${item.treEmId}, '${item.hoTen}')"><i class="fa-solid fa-pen"></i></button>`
+
+                    }
                         <button class="btn btn-sm btn-info" onclick="xemChiTiet(${item.treEmId}, '${item.hoTen}')"><i class="fa-solid fa-eye"></i></button>
                     </td>
                 </tr>

@@ -413,10 +413,6 @@ namespace QuanLyTreEmOKhuPho.Controllers
 
             return RedirectToAction("SuaManhThuongQuan", new { ManhThuongQuanId = mtq.ManhThuongQuanId });
         }
-
-        //Thêm mạnh thường quân
-
-        //Thong tin chi tiết 1 mạnh thường quân
         public async Task<ActionResult> ChiTietManhThuongQuan(int ManhThuongQuanId)
         {
             ViewBag.ChiTietManhThuongQuan = await ChiTietManhThuongQuan_API(ManhThuongQuanId);
@@ -457,12 +453,15 @@ namespace QuanLyTreEmOKhuPho.Controllers
             var request = new HttpRequestMessage(HttpMethod.Delete, $"ManhThuongQuan/XoaUngHo?UngHoId={UngHoId}");
             var response = await _client.SendAsync(request);
 
-            if (response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
-                TempData["Notification"] = "Xóa ủng hộ thành công";
-                TempData["NotificationType"] = "success";
-            }
+                TempData["Notification"] = "Không thể xóa! Đã có quà tặng ủng hộ được tạo từ bản ghi này.";
+                TempData["NotificationType"] = "error";
+                return RedirectToAction("ChiTietManhThuongQuan", new { ManhThuongQuanId });
 
+            }
+            TempData["Notification"] = "Xóa ủng hộ thành công";
+            TempData["NotificationType"] = "success";
             return RedirectToAction("ChiTietManhThuongQuan", new { ManhThuongQuanId });
         }
     }

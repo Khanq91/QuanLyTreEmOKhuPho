@@ -100,7 +100,6 @@
 <div class="main-tabs">
     <!-- Tab 1: Support & Welfare -->
     <div class="tab-content active">
-        <!-- Stats -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon" style="background: rgba(236, 72, 153, 0.1); color: var(--pink);"><i class="fa-solid fa-heart-pulse"></i></div>
@@ -131,7 +130,6 @@
                 </div>
             </div>
         </div>
-        <!-- Filter -->
         <div class="filter-section">
             <div class="form-group">
                 <label class="form-label">Tìm kiếm</label>
@@ -148,16 +146,11 @@
                     <option value="other">Khác</option>
                 </select>
             </div>
-            @*<div class="form-group">
-                    <label class="form-label">Thời gian</label>
-                    <input type="date" class="form-control" id="filterDate">
-                </div>*@
-            @*<button class="btn btn-primary" onclick="applyFilters()">Lọc</button>*@
-            @*<button class="btn btn-success" onclick="exportData()"><i class="fa-solid fa-chart-area"></i> Xuất Excel</button>*@
+            <button class="btn btn-secondary" onclick="resetFilters()" style="margin-top: 28px;">
+                <i class="fa-solid fa-rotate-right"></i> Đặt lại
+            </button>
         </div>
-        <!-- Support List -->
         <div class="support-grid" id="supportList">
-            <!-- Will be populated by JavaScript -->
             @foreach (var item in DSHoTroPhucLoi)
             {
                 <div class="support-card">
@@ -176,10 +169,6 @@
                             <span><i class="fa-solid fa-user"></i></span>
                             <span>@item.TenManhThuongQuan</span>
                         </div>
-                        @*<div class="meta-item">
-                                <span><i class="fa-solid fa-house-medical-circle-check"></i></span>
-                                <span>@item.TenKhuPho</span>
-                            </div>*@
                     </div>
 
                     <div>
@@ -208,10 +197,14 @@
                                 " onclick="location.href='@Url.Action("SuaUngHo", "HoTroVaUngHo", new { id = item.QuaTangUngHoId })'">
                             Sửa
                         </button>
-                        <button class="btn btn-sm" style="background: var(--danger); color: white;"
-                                onclick="location.href='@Url.Action("XoaUngHo", "HoTroVaUngHo", new { id = item.QuaTangUngHoId })'">
-                            Xóa
-                        </button>
+                        @using (Html.BeginForm("XoaUngHo", "HoTroVaUngHo", FormMethod.Post, new { @class = "inline-form" }))
+                        {
+                            <input type="hidden" name="id" value="@item.QuaTangUngHoId" />
+                            <button class="btn btn-sm" style="background: var(--danger); color: white;">
+                                Xóa
+                            </button>
+                        }
+
                     </div>
                 </div>
             }
@@ -220,85 +213,23 @@
     </div>
 </div>
 <script>
-    function renderSponsorList() {
-        const container = document.getElementById('sponsorList');
-        container.innerHTML = '';
-
-        sponsorsData.forEach(sponsor => {
-            const card = document.createElement('div');
-            card.className = 'sponsor-card';
-            card.onclick = () => viewSponsorDetail(sponsor.id);
-
-            const typeColor = sponsor.type === 'individual' ? 'var(--purple)' : 'var(--warning)';
-
-            card.innerHTML = `
-                    <div class="sponsor-header">
-                        <div class="sponsor-avatar">${sponsor.name.charAt(0)}</div>
-                        <div class="sponsor-info">
-                            <h3>${sponsor.name}</h3>
-                            <span class="sponsor-type">${sponsor.typeName}</span>
-                            <div style="font-size: 13px; color: var(--gray-600); margin-top: 5px;">
-                                <i class="fa-solid fa-phone"></i> ${sponsor.phone}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="sponsor-stats">
-                        <div class="sponsor-stat">
-                            <span class="sponsor-stat-value">${formatMoney(sponsor.totalDonation)}</span>
-                            <span class="sponsor-stat-label">Tổng ủng hộ</span>
-                        </div>
-                        <div class="sponsor-stat">
-                            <span class="sponsor-stat-value">${sponsor.donationCount}</span>
-                            <span class="sponsor-stat-label">Số lần</span>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; gap: 8px;">
-                        <button class="btn btn-sm btn-primary" style="flex: 1;" onclick="event.stopPropagation(); openRecordDonationModal()">
-                            <i class="fa-solid fa-sack-dollar"></i> Ghi nhận ủng hộ
-                        </button>
-                        <button class="btn btn-sm" style="background: var(--warning); color: white;" onclick="event.stopPropagation(); editSponsor(${sponsor.id})">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
-                    </div>
-                `;
-
-            container.appendChild(card);
-        });
-    }
-
-    // Render donation history
-    function renderDonationHistory() {
-        const tbody = document.getElementById('donationHistory');
-        tbody.innerHTML = '';
-
-        donationHistoryData.forEach(donation => {
-            const row = document.createElement('tr');
-            row.style.borderTop = '1px solid var(--gray-200)';
-            row.innerHTML = `
-                    <td style="padding: 15px;">${donation.date}</td>
-                    <td style="padding: 15px;">${donation.sponsor}</td>
-                    <td style="padding: 15px;">${donation.type}</td>
-                    <td style="padding: 15px; font-weight: 700; color: var(--success);">${donation.value}</td>
-                    <td style="padding: 15px;">${donation.target}</td>
-                    <td style="padding: 15px;">
-                        <button class="btn btn-sm btn-primary">Xem</button>
-                    </td>
-                `;
-            tbody.appendChild(row);
-        });
-    }
-
-    // Format money
     function formatMoney(amount) {
         return new Intl.NumberFormat('vi-VN', {
             style: 'currency',
             currency: 'VND'
         }).format(amount);
     }
+    document.addEventListener("DOMContentLoaded", function () {
 
-    // Switch main tabs
+        var message = '@TempData["Notification"]';
+        var type = '@TempData["NotificationType"]';
+
+        if (message && type) {
+            showNotification(message, type);
+        }
+
+    });
+
     function switchMainTab(index) {
         const tabButtons = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
@@ -310,7 +241,6 @@
         tabContents[index].classList.add('active');
     }
 
-    // Modal functions
     function openCreateSupportModal() {
         document.getElementById('createSupportModal').classList.add('active');
     }
@@ -345,40 +275,6 @@
             goodsDescription.style.display = 'block';
         }
     }
-
-    // File upload handling
-    document.getElementById('fileInput').addEventListener('change', function (e) {
-        const files = Array.from(e.target.files);
-        const container = document.getElementById('uploadedFiles');
-        container.innerHTML = '';
-
-        files.forEach((file, index) => {
-            const fileItem = document.createElement('div');
-            fileItem.className = 'file-item';
-            fileItem.innerHTML = `
-                    <div class="file-info">
-                        <span class="file-icon"><i class="fa-solid fa-file"></i></span>
-                        <div>
-                            <div style="font-weight: 600;">${file.name}</div>
-                            <div style="font-size: 12px; color: var(--gray-600);">
-                                ${(file.size / 1024 / 1024).toFixed(2)} MB
-                            </div>
-                        </div>
-                    </div>
-                    <button class="remove-file" onclick="removeFile(${index})">✕</button>
-                `;
-            container.appendChild(fileItem);
-        });
-    });
-
-    // Select all children
-    document.getElementById('selectAll').addEventListener('change', function () {
-        const checkboxes = document.querySelectorAll('.child-checkbox');
-        checkboxes.forEach(cb => cb.checked = this.checked);
-        updateSelectedCount();
-    });
-
-    // Update selected count
     document.querySelectorAll('.child-checkbox').forEach(cb => {
         cb.addEventListener('change', updateSelectedCount);
     });
@@ -388,7 +284,6 @@
         document.getElementById('selectedCount').textContent = count;
     }
 
-    // Confirm child selection
     function confirmChildSelection() {
         const selected = document.querySelectorAll('.child-checkbox:checked');
         if (selected.length === 0) {
@@ -396,7 +291,6 @@
             return;
         }
 
-        // Add to table
         const tbody = document.getElementById('selectedChildren');
         tbody.innerHTML = '';
 
@@ -409,13 +303,13 @@
 
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
-                    <td style="padding: 12px 15px;">${name}</td>
-                    <td style="padding: 12px 15px;">${khuPho}</td>
-                    <td style="padding: 12px 15px;">${circumstance}</td>
-                    <td style="padding: 12px 15px;">${formatMoney(value)}</td>
-                    <td style="padding: 12px 15px;">
-                        <button class="remove-file" onclick="this.closest('tr').remove()">✕</button>
-                    </td>
+<td style="padding: 12px 15px;">${name}</td>
+<td style="padding: 12px 15px;">${khuPho}</td>
+<td style="padding: 12px 15px;">${circumstance}</td>
+<td style="padding: 12px 15px;">${formatMoney(value)}</td>
+<td style="padding: 12px 15px;">
+    <button class="remove-file" onclick="this.closest('tr').remove()">✕</button>
+</td>
                 `;
             tbody.appendChild(newRow);
         });
@@ -423,39 +317,6 @@
         closeModal('selectChildrenModal');
         showNotification(`Đã thêm ${selected.length} trẻ em`, 'success');
     }
-
-    // Form submissions
-    document.getElementById('createSupportForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        showNotification('Đang tạo đợt hỗ trợ...', 'info');
-        setTimeout(() => {
-            showNotification('Tạo đợt hỗ trợ thành công!', 'success');
-            closeModal('createSupportModal');
-            this.reset();
-        }, 1500);
-    });
-
-    document.getElementById('addSponsorForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        showNotification('Đang thêm mạnh thường quân...', 'info');
-        setTimeout(() => {
-            showNotification('Thêm mạnh thường quân thành công!', 'success');
-            closeModal('addSponsorModal');
-            this.reset();
-        }, 1500);
-    });
-
-    document.getElementById('recordDonationForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        showNotification('Đang ghi nhận ủng hộ...', 'info');
-        setTimeout(() => {
-            showNotification('Ghi nhận ủng hộ thành công!', 'success');
-            closeModal('recordDonationModal');
-            this.reset();
-        }, 1500);
-    });
-
-    // Notification
     function showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         const icons = { success: '✓', warning: '⚠', info: 'ℹ' };
@@ -478,8 +339,8 @@
             `;
 
         notification.innerHTML = `
-                <span style="font-size: 20px;">${icons[type]}</span>
-                <span>${message}</span>
+<span style="font-size: 20px;">${icons[type]}</span>
+<span>${message}</span>
             `;
 
         document.body.appendChild(notification);
@@ -502,33 +363,13 @@
         `;
     document.head.appendChild(style);
 
-    // Filter & Export
     function applyFilters() {
         showNotification('Đang áp dụng bộ lọc...', 'info');
     }
 
-    function exportData() {
-        showNotification('Đang xuất báo cáo Excel...', 'info');
-        setTimeout(() => {
-            showNotification('Xuất báo cáo thành công!', 'success');
-        }, 1500);
-    }
-
-    // View details
     function viewSupportDetail(id) {
         showNotification(`Xem chi tiết đợt hỗ trợ #${id}`, 'info');
     }
-
-    function viewSponsorDetail(id) {
-        showNotification(`Xem chi tiết MTQ #${id}`, 'info');
-    }
-
-    // Initialize
-    renderSupportList();
-    renderSponsorList();
-    renderDonationHistory();
-
-    // Close modals on outside click
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('click', function (e) {
             if (e.target === this) {
@@ -536,42 +377,31 @@
             }
         });
     });
-</script>
-<script>
     let allSupportCards = [];
 
     document.addEventListener('DOMContentLoaded', function () {
-        // Lấy tất cả các card hiện có
         allSupportCards = Array.from(document.querySelectorAll('.support-card'));
 
-        // Thêm event listeners cho các trường filter
         document.getElementById('searchSupport').addEventListener('input', applyFilters);
         document.getElementById('filterSupportType').addEventListener('change', applyFilters);
-        document.getElementById('filterDate').addEventListener('change', applyFilters);
     });
 
     // Áp dụng bộ lọc
     function applyFilters() {
         const searchText = document.getElementById('searchSupport').value.toLowerCase().trim();
         const filterType = document.getElementById('filterSupportType').value;
-        const filterDate = document.getElementById('filterDate').value;
-
         let visibleCount = 0;
-
         allSupportCards.forEach(card => {
-            // Lấy thông tin từ card
             const title = card.querySelector('.support-title')?.textContent.toLowerCase() || '';
             const recipient = card.querySelector('.support-type')?.textContent.toLowerCase() || '';
             const donor = card.querySelector('.meta-item:nth-child(2) span:last-child')?.textContent.toLowerCase() || '';
             const dateText = card.querySelector('.meta-item:first-child span:last-child')?.textContent || '';
 
-            // Lọc theo tìm kiếm (tìm trong tên, đối tượng nhận, người ủng hộ)
             const matchSearch = !searchText ||
                 title.includes(searchText) ||
                 recipient.includes(searchText) ||
                 donor.includes(searchText);
 
-            // Lọc theo loại hỗ trợ (dựa vào từ khóa trong mô tả hoặc đối tượng nhận)
             let matchType = true;
             if (filterType) {
                 const text = (title + ' ' + recipient).toLowerCase();
@@ -594,19 +424,6 @@
                         break;
                 }
             }
-
-            // Lọc theo ngày
-            let matchDate = true;
-            if (filterDate && dateText) {
-                // Chuyển đổi định dạng ngày dd/MM/yyyy sang yyyy-MM-dd để so sánh
-                const parts = dateText.split('/');
-                if (parts.length === 3) {
-                    const cardDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-                    matchDate = cardDate === filterDate;
-                }
-            }
-
-            // Hiển thị hoặc ẩn card
             if (matchSearch && matchType && matchDate) {
                 card.style.display = '';
                 visibleCount++;
@@ -615,7 +432,6 @@
             }
         });
 
-        // Hiển thị thông báo nếu không có kết quả
         const container = document.getElementById('supportList');
         let noResultMsg = container.querySelector('.no-result-message');
 
@@ -635,9 +451,7 @@
         }
     }
 
-    // Xuất dữ liệu Excel
     function exportData() {
-        // Lấy tất cả các card đang hiển thị
         const visibleCards = Array.from(document.querySelectorAll('.support-card'))
             .filter(card => card.style.display !== 'none');
 
@@ -646,7 +460,6 @@
             return;
         }
 
-        // Tạo CSV
         let csv = 'STT,Mô tả,Đối tượng nhận,Ngày ủng hộ,Người ủng hộ,Số tiền,Số trẻ em\n';
 
         visibleCards.forEach((card, index) => {
@@ -660,7 +473,6 @@
             csv += `${index + 1},"${title}","${recipient}","${date}","${donor}","${money}",${children}\n`;
         });
 
-        // Tải file
         const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
@@ -671,4 +483,142 @@
         link.click();
         document.body.removeChild(link);
     }
+    document.addEventListener('DOMContentLoaded', function () {
+        allSupportCards = Array.from(document.querySelectorAll('.support-card'));
+
+        const searchInput = document.getElementById('searchSupport');
+        const filterTypeSelect = document.getElementById('filterSupportType');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', applyFilters);
+        }
+
+        if (filterTypeSelect) {
+            filterTypeSelect.addEventListener('change', applyFilters);
+        }
+    });
+
+    function resetFilters() {
+        const searchInput = document.getElementById('searchSupport');
+        const filterTypeSelect = document.getElementById('filterSupportType');
+
+        if (searchInput) searchInput.value = '';
+        if (filterTypeSelect) filterTypeSelect.value = '';
+
+        applyFilters();
+
+        showNotification('Đã đặt lại bộ lọc', 'info');
+    }
+
+    function applyFilters() {
+        const searchInput = document.getElementById('searchSupport');
+        const filterTypeSelect = document.getElementById('filterSupportType');
+
+        if (!searchInput || !filterTypeSelect) return;
+
+        const searchText = searchInput.value.toLowerCase().trim();
+        const filterType = filterTypeSelect.value;
+
+        let visibleCount = 0;
+
+        allSupportCards.forEach(card => {
+            const title = card.querySelector('.support-title')?.textContent.toLowerCase() || '';
+            const recipient = card.querySelector('.support-type')?.textContent.toLowerCase() || '';
+            const donor = card.querySelector('.meta-item:nth-child(2) span:last-child')?.textContent.toLowerCase() || '';
+
+            const matchSearch = !searchText ||
+                title.includes(searchText) ||
+                recipient.includes(searchText) ||
+                donor.includes(searchText);
+
+            let matchType = true;
+            if (filterType) {
+                const text = (title + ' ' + recipient).toLowerCase();
+                switch (filterType) {
+                    case 'scholarship':
+                        matchType = text.includes('học') || text.includes('bổng');
+                        break;
+                    case 'gift':
+                        matchType = text.includes('quà') || text.includes('tặng');
+                        break;
+                    case 'health':
+                        matchType = text.includes('khám') || text.includes('sức khỏe');
+                        break;
+                    case 'food':
+                        matchType = text.includes('lương thực') || text.includes('gạo') || text.includes('thực phẩm');
+                        break;
+                    case 'money':
+                        matchType = text.includes('tiền') || text.includes('mặt');
+                        break;
+                    case 'other':
+                        matchType = !text.includes('học') && !text.includes('quà') &&
+                            !text.includes('khám') && !text.includes('lương thực') &&
+                            !text.includes('tiền');
+                        break;
+                }
+            }
+
+            if (matchSearch && matchType) {
+                card.style.display = '';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        const container = document.getElementById('supportList');
+        if (!container) return;
+
+        let noResultMsg = container.querySelector('.no-result-message');
+
+        if (visibleCount === 0) {
+            if (!noResultMsg) {
+                noResultMsg = document.createElement('div');
+                noResultMsg.className = 'no-result-message';
+                noResultMsg.style.cssText = 'text-align: center; padding: 40px; color: #666; grid-column: 1/-1;';
+                noResultMsg.innerHTML = '<i class="fa-solid fa-magnifying-glass" style="font-size: 48px; opacity: 0.3; display: block; margin-bottom: 16px;"></i><div style="font-size: 18px; font-weight: 600;">Không tìm thấy kết quả</div>';
+                container.appendChild(noResultMsg);
+            }
+            noResultMsg.style.display = 'block';
+        } else {
+            if (noResultMsg) {
+                noResultMsg.style.display = 'none';
+            }
+        }
+    }
+
+    // Hàm hiển thị thông báo (optional)
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        const colors = { success: '#10b981', warning: '#f59e0b', info: '#3b82f6' };
+
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 10001;
+            border-left: 4px solid ${colors[type]};
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        `;
+
+        notification.innerHTML = `
+<i class="fa-solid fa-circle-info" style="color: ${colors[type]};"></i>
+<span>${message}</span>
+        `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 2000);
+    }
+
 </script>

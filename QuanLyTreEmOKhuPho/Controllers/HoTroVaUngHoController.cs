@@ -168,68 +168,40 @@ namespace QuanLyTreEmOKhuPho.Controllers
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("=== BẮT ĐẦU XỬ LÝ ===");
 
-                // ============================================
-                // PARSE AN TOÀN
-                // ============================================
-
-                // 1. UngHoId
                 if (!int.TryParse(form["ungHoId"], out int ungHoId))
                 {
                     throw new Exception("UngHoId không hợp lệ");
                 }
-                System.Diagnostics.Debug.WriteLine($"UngHoId: {ungHoId}");
 
-                // 2. Thông tin cơ bản
                 var loaiHoTro = form["loaiHoTro"];
                 var nguoiChiuTrachNhiem = form["nguoiChiuTrachNhiemHoTro"];
                 var trangThaiPhat = form["trangThaiPhat"];
                 var moTa = form["moTa"] ?? "";
                 var ghiChuTNV = form["ghiChuTNV"] ?? "";
 
-                System.Diagnostics.Debug.WriteLine($"LoaiHoTro: {loaiHoTro}");
-                System.Diagnostics.Debug.WriteLine($"Người chịu trách nhiệm: {nguoiChiuTrachNhiem}");
-
-                // 3. Parse NgayCap
-                System.Diagnostics.Debug.WriteLine($"NgayCap raw: '{form["ngayCap"]}'");
-                DateTime ngayCap;
-                if (!DateTime.TryParse(form["ngayCap"], out ngayCap))
-                {
-                    throw new Exception($"Ngày cấp không hợp lệ: {form["ngayCap"]}");
-                }
-                System.Diagnostics.Debug.WriteLine($"NgayCap parsed: {ngayCap:yyyy-MM-dd}");
-
-                // 4. Parse NgayPhanPhat
-                System.Diagnostics.Debug.WriteLine($"NgayPhanPhat raw: '{form["ngayPhanPhat"]}'");
-                DateTime ngayPhanPhat;
-                if (!DateTime.TryParse(form["ngayPhanPhat"], out ngayPhanPhat))
+                // Parse dates
+                if (!DateTime.TryParse(form["ngayPhanPhat"], out DateTime ngayPhanPhat))
                 {
                     throw new Exception($"Ngày phân phát không hợp lệ: {form["ngayPhanPhat"]}");
                 }
-                System.Diagnostics.Debug.WriteLine($"NgayPhanPhat parsed: {ngayPhanPhat:yyyy-MM-dd}");
 
-                // 5. Parse NgayHenLai (optional)
                 DateTime? ngayHenLai = null;
                 if (!string.IsNullOrEmpty(form["ngayHenLai"]))
                 {
-                    System.Diagnostics.Debug.WriteLine($"NgayHenLai raw: '{form["ngayHenLai"]}'");
-                    DateTime tempDate;
-                    if (DateTime.TryParse(form["ngayHenLai"], out tempDate))
+                    if (DateTime.TryParse(form["ngayHenLai"], out DateTime tempDate))
                     {
                         ngayHenLai = tempDate;
-                        System.Diagnostics.Debug.WriteLine($"NgayHenLai parsed: {ngayHenLai.Value:yyyy-MM-dd}");
                     }
                 }
 
-                // 6. Thông tin quà tặng
+                // Thông tin quà tặng
                 var tenQua = form["tenQua"] ?? "";
 
                 decimal? donGia = null;
                 if (!string.IsNullOrEmpty(form["donGia"]))
                 {
-                    decimal tempDonGia;
-                    if (decimal.TryParse(form["donGia"], out tempDonGia))
+                    if (decimal.TryParse(form["donGia"], out decimal tempDonGia))
                     {
                         donGia = tempDonGia;
                     }
@@ -240,23 +212,28 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 int? suKienId = null;
                 if (!string.IsNullOrEmpty(form["suKienId"]) && form["suKienId"] != "0")
                 {
-                    int tempSuKien;
-                    if (int.TryParse(form["suKienId"], out tempSuKien))
+                    if (int.TryParse(form["suKienId"], out int tempSuKien))
                     {
                         suKienId = tempSuKien;
                     }
                 }
 
                 var moTaQua = form["moTaQua"] ?? "";
-                var anhQua = form["anhQua"] ?? "";
 
-                // 7. Thông tin phân phát
+                var anhQuaBase64 = form["anhQua"] ?? "";
+
+                if (!string.IsNullOrEmpty(anhQuaBase64))
+                {
+                    System.Diagnostics.Debug.WriteLine($"🖼️ Độ dài base64: {anhQuaBase64.Length} ký tự");
+                    System.Diagnostics.Debug.WriteLine($"🖼️ Prefix: {anhQuaBase64.Substring(0, Math.Min(50, anhQuaBase64.Length))}");
+                }
+
+                // Thông tin phân phát
                 var nguoiPhanPhat = form["nguoiPhanPhat"];
                 var ghiChuPhanPhat = form["ghiChuPhanPhat"] ?? "";
 
-                // 8. Parse danh sách trẻ em
+                // Parse danh sách trẻ em
                 var danhSachTreEmJson = form["danhSachTreEm"];
-                System.Diagnostics.Debug.WriteLine($"DanhSachTreEm JSON: {danhSachTreEmJson}");
 
                 if (string.IsNullOrEmpty(danhSachTreEmJson))
                 {
@@ -273,20 +250,15 @@ namespace QuanLyTreEmOKhuPho.Controllers
                 System.Diagnostics.Debug.WriteLine($"Số trẻ em: {danhSachTreEm.Count}");
 
                 // ============================================
-                // TẠO DTO ĐỂ GỬI API
+                // TẠO DTO GỬI API
                 // ============================================
-                // ✅ SỬ DỤNG ANONYMOUS OBJECT thay vì PhanPhatQuaUngHoDTO
                 var apiRequest = new
                 {
                     UngHoId = ungHoId,
+                    QuaTangUngHoId = (int?)null, // Tạo mới quà tặng
+
                     LoaiHoTro = loaiHoTro,
-                    MoTa = moTa,
-                    NgayCap = ngayCap.ToString("yyyy-MM-dd"),  // ✅ Chuyển sang string format DateOnly
                     NguoiChiuTrachNhiemHoTro = nguoiChiuTrachNhiem,
-                    TrangThaiPhat = trangThaiPhat,
-                    NgayHenLai = ngayHenLai?.ToString("yyyy-MM-dd"),  // ✅ Chuyển sang string format DateOnly
-                    GhiChuTNV = ghiChuTNV,
-                    NguoiDungID = GetCurrentUserId(),
 
                     // Thông tin quà tặng
                     TenQua = tenQua,
@@ -294,32 +266,25 @@ namespace QuanLyTreEmOKhuPho.Controllers
                     DoiTuongNhan = doiTuongNhan,
                     SuKienId = suKienId,
                     MoTaQua = moTaQua,
-                    AnhQua = anhQua,
+
+                    // ✅ ẢNH BASE64
+                    AnhQua = anhQuaBase64,
 
                     // Thông tin phân phát
-                    NgayPhanPhat = ngayPhanPhat.ToString("yyyy-MM-dd"),  // ✅ Chuyển sang string format DateOnly
+                    NgayPhanPhat = ngayPhanPhat.ToString("yyyy-MM-dd"),
                     NguoiPhanPhat = nguoiPhanPhat,
+                    TrangThaiPhat = trangThaiPhat,
                     GhiChuPhanPhat = ghiChuPhanPhat,
 
                     // Danh sách trẻ nhận
                     DanhSachTreEmNhan = danhSachTreEm
                 };
 
-                System.Diagnostics.Debug.WriteLine("✅ DTO đã tạo xong");
-
-                // ============================================
-                // GỌI API
-                // ============================================
                 var json = JsonConvert.SerializeObject(apiRequest, new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore,
-                    Formatting = Formatting.Indented,
-                    // ✅ KHÔNG dùng DateFormatString vì đã convert thủ công
+                    Formatting = Formatting.Indented
                 });
-
-                System.Diagnostics.Debug.WriteLine("=== JSON GỬI ĐI ===");
-                System.Diagnostics.Debug.WriteLine(json);
-                System.Diagnostics.Debug.WriteLine("===================");
 
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _client.PostAsync(
@@ -334,31 +299,28 @@ namespace QuanLyTreEmOKhuPho.Controllers
                     var responseJson = await response.Content.ReadAsStringAsync();
                     System.Diagnostics.Debug.WriteLine($"✅ SUCCESS Response: {responseJson}");
 
-                    var result = JsonConvert.DeserializeObject<TaoHoTroVaPhanPhatResponseDTO>(responseJson);
+                    var result = JsonConvert.DeserializeObject<dynamic>(responseJson);
 
-                    TempData["SuccessMessage"] = result.Message;
-                    return RedirectToAction("ThemUngHoPhucLoi", "HoTroVaUngHo");
+                    TempData["SuccessMessage"] = $"{result.Message ?? "Thêm hỗ trợ thành công!"}";
+                    return RedirectToAction("HoTroVaUngHo", "HoTroVaUngHo");
                 }
                 else
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    System.Diagnostics.Debug.WriteLine($"❌ ERROR Response: {errorContent}");
-
-                    TempData["ErrorMessage"] = $"API Error: {errorContent}";
+                    TempData["ErrorMessage"] = $"Lỗi: {errorContent}";
 
                     ViewBag.DsUngHo = await DsUngHo();
                     ViewBag.Lst_TreEm = await Lst_TreEm();
+                    ViewBag.lst_SuKienTuongLai = await lst_SuKienTuongLai();
                     return View();
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"❌ EXCEPTION: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
-
                 TempData["ErrorMessage"] = $"Lỗi: {ex.Message}";
                 ViewBag.DsUngHo = await DsUngHo();
                 ViewBag.Lst_TreEm = await Lst_TreEm();
+                ViewBag.lst_SuKienTuongLai = await lst_SuKienTuongLai();
                 return View();
             }
         }
@@ -374,21 +336,21 @@ namespace QuanLyTreEmOKhuPho.Controllers
             return result ?? new SoLuongQuaConLai();
         }
         [HttpPost]
-        public async Task<ActionResult> XoaUngHo(int QuanTangUngHoId)
+        public async Task<ActionResult> XoaUngHo(int id)
         {
-            var response = await _client.PostAsync($"HoTroVaUngHo/XoaQuaTangUngHo/{QuanTangUngHoId}", null);
+            var response = await _client.DeleteAsync($"HoTroVaUngHo/XoaQuaTangUngHo/{id}");
             if (response.IsSuccessStatusCode)
             {
                 TempData["Notification"] = "Xóa thành công!";
                 TempData["NotificationType"] = "success";
-                return RedirectToAction("HoTroVaPhucLoi");
+                return RedirectToAction("HoTroVaUngHo");
             }
             else
             {
                 TempData["Notification"] = "Đã có trẻ em nhận quà không thể xóa";
                 TempData["NotificationType"] = "error";
                 var content = await response.Content.ReadAsStringAsync();
-                return RedirectToAction("HoTroVaPhucLoi");
+                return RedirectToAction("HoTroVaUngHo");
             }
         }
 

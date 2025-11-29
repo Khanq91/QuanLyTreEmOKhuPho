@@ -237,7 +237,7 @@
                         <div class="form-group">
                             <label class="form-label">Người nhận phát quà</label>
                             <input type="text" class="form-control" id="NguoiNhanPhat" name="NguoiNhanPhat" value="@ChiTietSuaUngHo.NguoiPhanPhat" disabled>
-                            <input type="hidden"  id="NguoiPhat" name="NguoiPhat" value="@ChiTietSuaUngHo.NguoiPhanPhat" >
+                            <input type="hidden" id="NguoiPhat" name="NguoiPhat" value="@ChiTietSuaUngHo.NguoiPhanPhat">
                         </div>
                     </div>
                     <div class="form-row">
@@ -748,10 +748,19 @@
                     <button class="close-btn" onclick="closeChildModal()">×</button>
                 </div>
                 <div class="modal-body">
+
                     <div class="form-group" style="margin-bottom: 20px;">
                         <input type="text" class="form-control" id="searchChild"
                                placeholder="Tìm kiếm trẻ em...">
                     </div>
+                         <div class="form-actions">
+                             <button type="button" class="btn btn-secondary" onclick="closeChildModal()">
+                                 Hủy
+                             </button>
+                             <button type="button" class="btn btn-primary" onclick="confirmSelection()">
+                                 <i class="fa-solid fa-check"></i> Xác nhận (<span id="selectedCount">0</span>)
+                             </button>
+                         </div>
                     <table class="table">
                         <thead>
                             <tr>
@@ -767,14 +776,7 @@
                         </thead>
                         <tbody id="childrenList"></tbody>
                     </table>
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" onclick="closeChildModal()">
-                            Hủy
-                        </button>
-                        <button type="button" class="btn btn-primary" onclick="confirmSelection()">
-                            <i class="fa-solid fa-check"></i> Xác nhận (<span id="selectedCount">0</span>)
-                        </button>
-                    </div>
+
                 </div>
             </div>
         </div>

@@ -10,5 +10,6 @@ namespace QuanLyTreEmOKhuPho.Models.TinhNguyenVien
         public string TenSuKien { get; set; }
         public DateTime NgayBatDau { get; set; }
         public string CongViec { get; set; }
+        public string DanhGiaCongViec { get; set; }
     }
 }
