@@ -286,6 +286,11 @@
     <Content Include="Views\ManhThuongQuan\SuaUngHoManhThuongQuan.cshtml" />
     <Content Include="Views\HoTroVaUngHo\SuaUngHo.cshtml" />
     <Content Include="Views\HoTroVaUngHo\ThemTreEm.cshtml" />
+    <Content Include="Views\SuKien\CreateSuKien.cshtml" />
+    <Content Include="Views\SuKien\DangKySuKien.cshtml" />
+    <Content Include="Views\SuKien\DangKySuKienChoTreEm.cshtml" />
+    <Content Include="Views\SuKien\EditSuKien.cshtml" />
+    <Content Include="Uploads\UngHo\20251124230541_c8efaf3e_chuyenkhoan_2.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
