@@ -172,8 +172,15 @@
         </div>
         <div class="modal-body">
             <input type="hidden" id="treEmId" />
+
+            <label>Người vận động</label>
+            <select id="nguoiVanDong" class="form-control">
+                <option value="">-- Chọn tình nguyện viên --</option>
+            </select>
+
             <label>Lý do vận động</label>
             <textarea id="lyDo" rows="2" placeholder="Nhập lý do..."></textarea>
+
             <label>Kết quả</label>
             <select id="ketQua">
                 <option value="">-- Chọn kết quả --</option>
@@ -182,6 +189,7 @@
                 <option value="Từ chối">Từ chối</option>
             </select>
         </div>
+
         <div class="modal-footer">
             <button class="btn btn-secondary" onclick="closeModal('#ghiNhanModal')">Hủy</button>
             <button class="btn btn-success" onclick="submitGhiNhan()">Lưu</button>
@@ -205,7 +213,33 @@
 <script>
     let originalData = [];
 
-    $(document).ready(function () { loadTreEmDenTuoi(); });
+    $(document).ready(function () { loadTreEmDenTuoi(); loadTinhNguyenVien(); });
+    function loadTinhNguyenVien() {
+        $.ajax({
+            url: "https://localhost:44362/api/SuKien/nguoiDung",
+            method: "GET",
+            success: function (data) {
+                const select = $("#nguoiVanDong");
+                select.empty();
+                select.append(`<option value="">-- Chọn tình nguyện viên --</option>`);
+
+                data.forEach(tnv => {
+                    select.append(`<option value="${tnv.userId}">${tnv.hoTen}</option>`);
+                });
+            }
+        });
+    }
+    function openGhiNhan(id, ten) {
+        loadTinhNguyenVien();  // ← thêm dòng này
+
+        $("#treEmId").val(id);
+        $("#lyDo").val('');
+        $("#ketQua").val('');
+        $("#nguoiVanDong").val('');
+
+        $("#ghiNhanModal .modal-header h3").text(`📝 Ghi nhận vận động - ${ten}`);
+        $("#ghiNhanModal").addClass("active");
+    }
 
     function loadTreEmDenTuoi() {
         $.ajax({
@@ -288,8 +322,10 @@
         const data = {
             TreEmId: $("#treEmId").val(),
             LyDo: $("#lyDo").val(),
-            KetQua: $("#ketQua").val()
+            KetQua: $("#ketQua").val(),
+            NguoiVanDongId: $("#nguoiVanDong").val()   // ← thêm dòng này
         };
+
         $.ajax({
             url: "https://localhost:44362/api/VanDong/ghinhan",
             method: "POST",
@@ -303,6 +339,7 @@
             error: () => alert("❌ Ghi nhận thất bại!")
         });
     }
+
 
     function xemChiTiet(id, ten) {
         $("#chiTietModal").addClass("active");

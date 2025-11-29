@@ -237,6 +237,7 @@ $(document).ready(() => {
 
 async function loadDanhSachUser() {
     try {
+        debugger
         const res = await fetch('https://localhost:44362/api/SuKien/nguoiDung');
         const data = await res.json();
         const select = $('#selectUser');

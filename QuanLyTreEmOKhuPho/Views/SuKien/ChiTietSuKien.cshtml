@@ -5,6 +5,7 @@
 }
 <link rel="stylesheet" href="~/Content/css/media.css" />
 <link rel="stylesheet" href="~/Content/css/ThemTreEm.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <div class="step-container">
     <div class="step-progress">
@@ -118,6 +119,34 @@
                 <tr><td colspan="6" class="text-center text-muted">⏳ Đang tải dữ liệu...</td></tr>
             </tbody>
         </table>
+
+        <h4 class="section-title text-warning mt-4">🤝 Danh sách tình nguyện viên</h4>
+
+        <div class="d-flex mb-2">
+            <input id="searchTNV" type="text" class="form-control" placeholder="🔍 Tìm tên tình nguyện viên..." oninput="filterTNV()" style="max-width:250px;">
+        </div>
+
+        <table class="styled-table" id="tnvTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Ảnh</th>
+                    <th>Họ tên</th>
+                    <th>Công việc</th>
+                    <th>Ghi chú</th>
+                    <th>Đánh giá</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="tnvBody">
+                <tr><td colspan="7" class="text-center text-muted">⏳ Đang tải dữ liệu...</td></tr>
+            </tbody>
+        </table>
+
+        <div id="paginationTNV" class="d-flex justify-content-center mt-3"></div>
+
+
+
     </div>
     <!-- TAB 2: Tiết mục -->
     <div class="form-step" id="tab2">
@@ -155,7 +184,7 @@
                             </tbody>
                         </table>
 
-                 
+
                     }
                     else
                     {
@@ -226,6 +255,215 @@
 </div>
 
 <script>
+
+    $(document).ready(() => {
+        loadTinhNguyenVien();
+
+    });
+
+
+    let TNV_FULL_DATA = [];
+    let TNV_FILTERED = [];
+    let TNV_PAGE = 1;            // Bắt đầu từ trang 1
+    const TNV_PAGE_SIZE = 5;
+
+async function loadTinhNguyenVien() {
+    const suKienId = "@Model.SuKienId";
+    const baseUrl = "https://localhost:44362";
+    const tbody = document.getElementById("tnvBody");
+
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">⏳ Đang tải dữ liệu...</td></tr>`;
+
+    try {
+        const res = await fetch(`${baseUrl}/api/SuKien/${suKienId}/tinhnguyenvien`);
+        const data = await res.json();
+
+        TNV_FULL_DATA = data;
+        TNV_FILTERED = [...TNV_FULL_DATA];
+        TNV_PAGE = 1;   // <<< FIX BUG TẠI ĐÂY
+
+        renderTNVPage();
+
+    } catch (err) {
+        console.error(err);
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">❌ Lỗi tải dữ liệu</td></tr>`;
+    }
+}
+
+    function renderTNVPage() {
+        const tbody = document.getElementById("tnvBody");
+        const baseUrl = "https://localhost:44362";
+
+        tbody.innerHTML = "";
+
+        const start = (TNV_PAGE - 1) * TNV_PAGE_SIZE;
+        const end = start + TNV_PAGE_SIZE;
+        const pageData = TNV_FILTERED.slice(start, end);
+
+        const danhGiaList = [
+            "Hoàn thành tốt",
+            "Chưa hoàn thành tốt",
+            "Không hoàn thành tốt",
+            "Không hoàn thành",
+            "Vắng"
+        ];
+
+        if (pageData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">Không có tình nguyện viên.</td></tr>`;
+            return;
+        }
+
+        pageData.forEach((tnv, i) => {
+            const pc = tnv.phanCong;
+            const row = document.createElement("tr");
+            row.innerHTML = `
+            <td>${start + i + 1}</td>
+            <td><img src="${tnv.anh ? baseUrl + tnv.anh : '/img/no-avatar.png'}"
+                     style="width:45px;height:45px;border-radius:50%;object-fit:cover;"></td>
+            <td>${tnv.hoTen}</td>
+
+            <td><input class="form-control pc-congviec" value="${pc?.congViec || ''}"></td>
+            <td><input class="form-control pc-ghichu" value="${pc?.ghiChu || ''}"></td>
+
+            <td>
+                <select class="form-control pc-danhgia">
+                    <option value="">-- Chọn --</option>
+                    ${danhGiaList.map(x =>
+                `<option value="${x}" ${pc?.danhGiaCongViec === x ? "selected" : ""}>${x}</option>`
+            ).join("")}
+                </select>
+            </td>
+
+            <td>
+                ${pc == null
+                    ? `<button class="btn btn-success btn-sm" onclick="createPhanCong(${tnv.tinhNguyenVienId})">Giao việc</button>`
+                    : `<button class="btn btn-primary btn-sm" onclick="updatePhanCong(${pc.phanCongId}, this)">Lưu</button>
+                       <button class="btn btn-danger btn-sm" onclick="deletePhanCong(${pc.phanCongId})">Xóa</button>`
+                }
+            </td>
+        `;
+            tbody.appendChild(row);
+        });
+
+        renderPaginationButtons();
+    }
+    function renderPaginationButtons() {
+        const container = document.getElementById("paginationTNV");
+        container.innerHTML = "";
+
+        const totalPages = Math.ceil(TNV_FILTERED.length / TNV_PAGE_SIZE);
+        if (totalPages <= 1) return;
+
+        let html = `<ul class="pagination">`;
+
+        // Prev
+        html += `
+        <li class="page-item ${TNV_PAGE === 1 ? 'disabled' : ''}">
+            <a class="page-link" onclick="goToPage(${TNV_PAGE - 1})">Prev</a>
+        </li>
+    `;
+
+        // các nút trang (hiển thị tối đa 5)
+        const maxButtons = 5;
+        let start = Math.max(1, TNV_PAGE - 2);
+        let end = Math.min(totalPages, start + maxButtons - 1);
+
+        if (end - start < maxButtons - 1) {
+            start = Math.max(1, end - maxButtons + 1);
+        }
+
+        for (let i = start; i <= end; i++) {
+            html += `
+            <li class="page-item ${i === TNV_PAGE ? 'active' : ''}">
+                <a class="page-link" onclick="goToPage(${i})">${i}</a>
+            </li>
+        `;
+        }
+
+        // Next
+        html += `
+        <li class="page-item ${TNV_PAGE === totalPages ? 'disabled' : ''}">
+            <a class="page-link" onclick="goToPage(${TNV_PAGE + 1})">Next</a>
+        </li>
+    `;
+
+        html += `</ul>`;
+
+        container.innerHTML = html;
+    }
+    function goToPage(page) {
+        const totalPages = Math.ceil(TNV_FILTERED.length / TNV_PAGE_SIZE);
+        if (page < 1 || page > totalPages) return;
+
+        TNV_PAGE = page;
+        renderTNVPage();
+    }
+
+    function filterTNV() {
+        const keyword = document.getElementById("searchTNV").value.toLowerCase();
+
+        TNV_FILTERED = TNV_FULL_DATA.filter(t =>
+            t.hoTen.toLowerCase().includes(keyword)
+        );
+
+        TNV_PAGE = 1; // reset
+        renderTNVPage();
+    }
+
+
+async function createPhanCong(tnvId) {
+    const suKienId = "@Model.SuKienId";
+    const row = event.target.closest("tr");
+
+    const model = {
+        suKienID: parseInt(suKienId),
+        tinhNguyenVienID: tnvId,
+        congViec: row.querySelector(".pc-congviec").value,
+        ghiChu: row.querySelector(".pc-ghichu").value
+    };
+
+    const res = await fetch("https://localhost:44362/api/SuKien/phancong", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(model)
+    });
+
+    const data = await res.json();
+
+    alert(data.message);
+    loadTinhNguyenVien();
+}
+    async function updatePhanCong(phanCongId, btn) {
+        const row = btn.closest("tr");
+
+        const model = {
+            congViec: row.querySelector(".pc-congviec").value,
+            ghiChu: row.querySelector(".pc-ghichu").value,
+            danhGiaCongViec: row.querySelector(".pc-danhgia").value
+        };
+
+        const res = await fetch(`https://localhost:44362/api/SuKien/phancong/${phanCongId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(model)
+        });
+
+        const data = await res.json();
+        alert(data.message);
+    }
+    async function deletePhanCong(phanCongId) {
+        if (!confirm("Bạn có chắc muốn xóa phân công này?")) return;
+
+        const res = await fetch(`https://localhost:44362/api/SuKien/phancong/${phanCongId}`, {
+            method: "DELETE"
+        });
+
+        const data = await res.json();
+        alert(data.message);
+
+        loadTinhNguyenVien();
+    }
+
     let currentStep = 1;
     const totalSteps = 3;
 
@@ -291,6 +529,34 @@
 </script>
 
 <style>
+    .pagination {
+        list-style: none;
+        display: flex;
+        gap: 6px;
+    }
+
+    .page-item {
+        cursor: pointer;
+    }
+
+        .page-item.disabled .page-link {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+    .page-link {
+        padding: 6px 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+    }
+
+    .page-item.active .page-link {
+        background: #0d6efd;
+        color: white;
+        border-color: #0d6efd;
+    }
+
     .styled-table img {
         border: 2px solid #eee;
         box-shadow: 0 1px 4px rgba(0,0,0,0.1);
