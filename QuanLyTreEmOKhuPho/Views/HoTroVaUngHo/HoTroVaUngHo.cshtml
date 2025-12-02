@@ -176,13 +176,13 @@
                     <div>
                         <div class="support-value">
                             @{
-                                if (item.SoTien >= 1_000_000)
+                                if (item.TongGiaTri >= 1_000_000)
                                 {
-                                    @($"{item.SoTien / 1_000_000M:0.##} triệu")
+                                    @($"{item.TongGiaTri / 1_000_000M:0.##} triệu")
                                 }
                                 else
                                 {
-                                    @($"{item.SoTien / 1_000M:0.##} nghìn")
+                                    @($"{item.TongGiaTri / 1_000M:0.##} nghìn")
                                 }
                             }
                         </div>

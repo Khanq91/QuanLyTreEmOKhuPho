@@ -246,18 +246,28 @@ async function loadDanhSachUser() {
     } catch { showToast('Không thể tải danh sách người dùng!', 'danger'); }
 }
 
-async function loadDanhSachSuKien() {
-    try {
-        const res = await fetch('https://localhost:44362/api/SuKien/all');
-        const data = await res.json();
-        const select = $('#selectSuKien');
-        select.html('<option value="">-- Chọn sự kiện --</option>');
-        data.forEach(sk => {
-            const start = new Date(sk.ngayBatDau).toLocaleDateString('vi-VN');
-            select.append(`<option value="${sk.suKienId}" data-name="${sk.tenSuKien}">${sk.tenSuKien} (${start})</option>`);
-        });
-    } catch { showToast('Không thể tải danh sách sự kiện!', 'danger'); }
-}
+        async function loadDanhSachSuKien() {
+            try {
+                const res = await fetch('https://localhost:44362/api/SuKien/all');
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                const select = $('#selectSuKien');
+                select.html('<option value="">-- Chọn sự kiện --</option>');
+
+                console.log('📋 Dữ liệu sự kiện:', data);
+
+                data.forEach(sk => {
+                    const start = new Date(sk.ngayBatDau).toLocaleDateString('vi-VN');
+                    // ✅ SỬA: Dùng SuKienID (chữ hoa)
+                    select.append(`<option value="${sk.suKienID}" data-name="${sk.tenSuKien}">${sk.tenSuKien} (${start})</option>`);
+                });
+
+                console.log(`✅ Loaded ${data.length} sự kiện`);
+            } catch (err) {
+                console.error('❌ Lỗi load sự kiện:', err);
+                showToast('Không thể tải danh sách sự kiện!', 'danger');
+            }
+        }
 
 function nextStep(step) {
     if (step === 2) {

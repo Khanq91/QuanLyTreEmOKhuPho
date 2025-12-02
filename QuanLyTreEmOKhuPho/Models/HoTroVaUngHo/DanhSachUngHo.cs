@@ -12,7 +12,7 @@ namespace QuanLyTreEmOKhuPho.Models.HoTroVaUngHo
         public string MoTa { get; set; }
         public string DoiTuongNhan  {get; set; }
         public int SoLuongTreEmDuocUngHo { get; set; }
-        public decimal SoTien { get; set; }
+        public decimal TongGiaTri { get; set; }
         public DateTime NgayUngHo { get; set; }
         public string TenManhThuongQuan { get; set; }
     }

@@ -161,6 +161,9 @@ namespace QuanLyTreEmOKhuPho.Controllers
         [HttpGet]
         public async Task<ActionResult> ThongTinChiTietTinhNguyenVien(int? UserID)
         {
+            ViewBag.ActivePage = "TinhNguyenVien";
+            ViewBag.PageTitle = "Tình Nguyện Viên";
+            ViewBag.PageDescription = "Quản lý thông tin tình nguyện viên";
             ViewBag.TTChiTietTinhNguyenVien = await fun_ThongTinChiTietTinhNguyenVien(UserID);
             ViewBag.LichRanhTNV= await LichRanhTNV(UserID);
             ViewBag.SuKienDaThamGia = await LaySuKienDaThamGia(UserID);

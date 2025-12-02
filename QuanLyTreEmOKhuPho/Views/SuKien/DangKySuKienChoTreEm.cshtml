@@ -181,6 +181,39 @@
         right: 20px;
         z-index: 1100;
     }
+
+    /* CUSTOM TOAST ANIMATION */
+    @@keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .btn-close {
+        background: transparent;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        opacity: 0.5;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        line-height: 1;
+    }
+
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+        .btn-close::before {
+            content: '×';
+        }
 </style>
 
 <div class="page-container">
@@ -244,99 +277,179 @@
 </div>
 
 @section scripts {
-    <script>
-        let selectedTreEmId = null, selectedSuKienId = null, selectedTreEmName = null, selectedSuKienName = null;
+        <script>
+            let selectedTreEmId = null, selectedSuKienId = null, selectedTreEmName = null, selectedSuKienName = null;
+            let isLoading = false;
 
-        $(document).ready(() => {
-            loadDanhSachTreEm();
-            loadDanhSachSuKien();
-        });
-
-        async function loadDanhSachTreEm() {
-            try {
-                const res = await fetch('https://localhost:44362/api/TreEm/DanhSach');
-                const data = await res.json();
-                const select = $('#selectTreEm');
-                select.html('<option value="">-- Chọn trẻ em --</option>');
-                data.forEach(t => select.append(`<option value="${t.treEmId}" data-name="${t.hoTen}">${t.hoTen} (${t.gioiTinh})</option>`));
-            } catch { showToast('Không thể tải danh sách trẻ em!', 'danger'); }
-        }
-
-        async function loadDanhSachSuKien() {
-            try {
-                const res = await fetch('https://localhost:44362/api/SuKien/all');
-                const data = await res.json();
-                const select = $('#selectSuKien');
-                select.html('<option value="">-- Chọn sự kiện --</option>');
-                data.forEach(sk => {
-                    const start = new Date(sk.ngayBatDau).toLocaleDateString('vi-VN');
-                    select.append(`<option value="${sk.suKienId}" data-name="${sk.tenSuKien}">${sk.tenSuKien} (${start})</option>`);
-                });
-            } catch { showToast('Không thể tải danh sách sự kiện!', 'danger'); }
-        }
-
-        function nextStep(step) {
-            if (step === 2) {
-                const tre = $('#selectTreEm option:selected');
-                if (!tre.val()) return showToast('Vui lòng chọn trẻ em!', 'warning');
-                selectedTreEmId = tre.val();
-                selectedTreEmName = tre.data('name');
-                $('#infoTreEmName').text(selectedTreEmName);
-            }
-            if (step === 3) {
-                const sk = $('#selectSuKien option:selected');
-                if (!sk.val()) return showToast('Vui lòng chọn sự kiện!', 'warning');
-                selectedSuKienId = sk.val();
-                selectedSuKienName = sk.data('name');
-                $('#infoTenSuKien').text(selectedSuKienName);
-            }
-
-            $('.card').addClass('d-none');
-            $('#step' + step).removeClass('d-none');
-            $('.step-item').removeClass('active').slice(0, step).addClass('active');
-        }
-
-        async function dangKySuKienTreEm() {
-            var aaa = $("#selectTreEm").val();
-            if (!aaa)
-                return showToast('⚠️ Vui lòng chọn đầy đủ thông tin!', 'warning');
-
-            const btn = $('button.btn-primary');
-            btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin me-2"></i> Đang gửi...');
-
-            const res = await fetch(`https://localhost:44362/api/SuKien/${aaa}/dangkytreem`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(aaa)
+            $(document).ready(async () => {
+                isLoading = true;
+                await Promise.all([
+                    loadDanhSachTreEm(),
+                    loadDanhSachSuKien()
+                ]);
+                isLoading = false;
+                console.log('✅ Đã load xong dữ liệu');
             });
-            debugger
-            const text = await res.text(); 
-            let data = {};
-            try { data = JSON.parse(text); } catch { data = { message: text }; }
 
-            if (res.ok) {
-                window.location.href = "https://localhost:44389/SuKien/SuKien";
+            async function loadDanhSachTreEm() {
+                try {
+                    const res = await fetch('https://localhost:44362/api/TreEm/DanhSach');
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const data = await res.json();
+                    const select = $('#selectTreEm');
+                    select.html('<option value="">-- Chọn trẻ em --</option>');
+                    data.forEach(t => select.append(`<option value="${t.treEmId}" data-name="${t.hoTen}">${t.hoTen} (${t.gioiTinh})</option>`));
+                    console.log(`✅ Loaded ${data.length} trẻ em`);
+                } catch (err) {
+                    console.error('❌ Lỗi load trẻ em:', err);
+                    showToast('Không thể tải danh sách trẻ em!', 'danger');
+                }
             }
-            else {
-                showToast(data.text || 'Đăng ký thất bại!', 'danger');
+
+            async function loadDanhSachSuKien() {
+                try {
+                    const res = await fetch('https://localhost:44362/api/SuKien/all');
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    const data = await res.json();
+                    const select = $('#selectSuKien');
+                    select.html('<option value="">-- Chọn sự kiện --</option>');
+
+                    console.log('📋 Dữ liệu sự kiện:', data); // ← Thêm log để kiểm tra
+
+                    data.forEach(sk => {
+                        const start = new Date(sk.ngayBatDau).toLocaleDateString('vi-VN');
+                        // ✅ QUAN TRỌNG: Kiểm tra property name đúng
+                        const id = sk.suKienId || sk.suKienID || sk.SuKienID; // Thử cả 3 case
+                        select.append(`<option value="${id}" data-name="${sk.tenSuKien}">${sk.tenSuKien} (${start})</option>`);
+                    });
+
+                    console.log(`✅ Loaded ${data.length} sự kiện`);
+                } catch (err) {
+                    console.error('❌ Lỗi load sự kiện:', err);
+                    showToast('Không thể tải danh sách sự kiện!', 'danger');
+                }
+            }
+            // ✅ HÀM nextStep - QUAN TRỌNG
+            function nextStep(step) {
+                if (step === 2) {
+                    const tre = $('#selectTreEm option:selected');
+                    if (!tre.val()) return showToast('Vui lòng chọn trẻ em!', 'warning');
+                    selectedTreEmId = tre.val();
+                    selectedTreEmName = tre.data('name');
+                    $('#infoTreEmName').text(selectedTreEmName);
+                }
+                if (step === 3) {
+                    const sk = $('#selectSuKien option:selected');
+                    if (!sk.val()) return showToast('Vui lòng chọn sự kiện!', 'warning');
+                    selectedSuKienId = sk.val();
+                    selectedSuKienName = sk.data('name');
+                    $('#infoTenSuKien').text(selectedSuKienName);
+                }
+
+                $('.card').addClass('d-none');
+                $('#step' + step).removeClass('d-none');
+                $('.step-item').removeClass('active').slice(0, step).addClass('active');
             }
 
-        }
+            // ✅ HÀM dangKySuKienTreEm
+            async function dangKySuKienTreEm() {
+                if (isLoading) {
+                    return showToast('⏳ Vui lòng đợi dữ liệu tải xong!', 'warning');
+                }
 
+                if (!selectedTreEmId || !selectedSuKienId) {
+                    return showToast('⚠️ Vui lòng chọn đầy đủ thông tin!', 'warning');
+                }
 
-        function showToast(message, type = 'info') {
-            const icons = { success: 'check-circle', warning: 'triangle-exclamation', danger: 'circle-xmark', info: 'info-circle' };
-            const toast = $(`<div class="toast align-items-center border-0 shadow-lg rounded-3 mb-2" style="min-width: 320px;" role="alert">
-            <div class="d-flex p-3" style="background: #fff;">
-                <i class="fa-solid fa-${icons[type]} me-2 text-${type}" style="font-size:1.2rem;"></i>
-                <div class="fw-semibold flex-grow-1">${message}</div>
-                <button type="button" class="btn-close ms-2" data-bs-dismiss="toast"></button>
-            </div>
-        </div>`);
-            $('#toastContainer').append(toast);
-            const bsToast = new bootstrap.Toast(toast[0], { delay: 3000 });
-            bsToast.show();
-            toast.on('hidden.bs.toast', () => toast.remove());
-        }
-    </script>
-}
+                const btn = $('button.btn-primary');
+                btn.prop('disabled', true).html('<i class="fa-solid fa-spinner fa-spin me-2"></i> Đang gửi...');
+
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                try {
+                    console.log('📤 Đang gửi:', { TreEmId: selectedTreEmId, SuKienId: selectedSuKienId });
+
+                    const res = await fetch(`https://localhost:44362/api/SuKien/${selectedSuKienId}/dangkytreem`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ TreEmId: parseInt(selectedTreEmId) })
+                    });
+
+                    const text = await res.text();
+                    console.log('📥 Response:', text);
+
+                    let data = {};
+                    try {
+                        data = JSON.parse(text);
+                    } catch {
+                        data = { message: text };
+                    }
+
+                    if (res.ok) {
+                        showToast('✅ ' + (data.message || 'Đăng ký thành công!'), 'success');
+                        await new Promise(resolve => setTimeout(resolve, 1500));
+                        window.location.href = "/SuKien/SuKien";
+                    } else {
+                        console.error('❌ Lỗi API:', data);
+                        showToast('❌ ' + (data.message || `Lỗi ${res.status}`), 'danger');
+                        btn.prop('disabled', false).html('<i class="fa-solid fa-paper-plane me-2"></i> Gửi đăng ký');
+                    }
+
+                } catch (error) {
+                    console.error('❌ Lỗi kết nối:', error);
+                    showToast('❌ Không thể kết nối đến server!', 'danger');
+                    btn.prop('disabled', false).html('<i class="fa-solid fa-paper-plane me-2"></i> Gửi đăng ký');
+                }
+            }
+
+            // ✅ HÀM showToast - QUAN TRỌNG
+            function showToast(message, type = 'info') {
+                const icons = {
+                    success: 'check-circle',
+                    warning: 'triangle-exclamation',
+                    danger: 'circle-xmark',
+                    info: 'info-circle'
+                };
+
+                const colors = {
+                    success: '#10b981',
+                    warning: '#f59e0b',
+                    danger: '#ef4444',
+                    info: '#3b82f6'
+                };
+
+                const toast = $(`
+                        <div class="custom-toast" style="
+                            min-width: 320px;
+                            background: white;
+                            border-radius: 12px;
+                            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+                            margin-bottom: 10px;
+                            border-left: 4px solid ${colors[type]};
+                            animation: slideIn 0.3s ease;
+                        ">
+                            <div class="d-flex align-items-center p-3">
+                                <i class="fa-solid fa-${icons[type]} me-2" style="font-size:1.2rem; color:${colors[type]};"></i>
+                                <div class="fw-semibold flex-grow-1">${message}</div>
+                                <button type="button" class="btn-close ms-2" onclick="$(this).closest('.custom-toast').fadeOut(300, function(){ $(this).remove(); })"></button>
+                            </div>
+                        </div>
+                    `);
+
+                $('#toastContainer').append(toast);
+
+                setTimeout(() => {
+                    toast.fadeOut(300, function () {
+                        $(this).remove();
+                    });
+                }, 3000);
+            }
+
+            // ✅ Gán hàm vào window để HTML có thể gọi
+            window.nextStep = nextStep;
+            window.dangKySuKienTreEm = dangKySuKienTreEm;
+        </script>
+    }
