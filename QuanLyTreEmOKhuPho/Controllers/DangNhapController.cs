@@ -15,7 +15,6 @@ namespace QuanLyTreEmOKhuPho.Controllers
     public class DangNhapController : Controller
     {
         private readonly HttpClient _client;
-        //QuanLyTreEmDataContext db = new QuanLyTreEmDataContext();
 
         public DangNhapController()
         {

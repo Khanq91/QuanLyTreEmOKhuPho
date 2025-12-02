@@ -255,7 +255,6 @@
 </div>
 
 <script>
-
     $(document).ready(() => {
         loadTinhNguyenVien();
 
@@ -264,7 +263,7 @@
 
     let TNV_FULL_DATA = [];
     let TNV_FILTERED = [];
-    let TNV_PAGE = 1;            // Bắt đầu từ trang 1
+    let TNV_PAGE = 1;            
     const TNV_PAGE_SIZE = 5;
 
 async function loadTinhNguyenVien() {
@@ -280,7 +279,7 @@ async function loadTinhNguyenVien() {
 
         TNV_FULL_DATA = data;
         TNV_FILTERED = [...TNV_FULL_DATA];
-        TNV_PAGE = 1;   // <<< FIX BUG TẠI ĐÂY
+        TNV_PAGE = 1;   
 
         renderTNVPage();
 
@@ -332,7 +331,7 @@ async function loadTinhNguyenVien() {
                 `<option value="${x}" ${pc?.danhGiaCongViec === x ? "selected" : ""}>${x}</option>`
             ).join("")}
                 </select>
-            </td>
+            </td> 
 
             <td>
                 ${pc == null

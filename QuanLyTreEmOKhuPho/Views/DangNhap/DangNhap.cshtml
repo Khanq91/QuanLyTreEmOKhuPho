@@ -65,7 +65,7 @@
                 <div class="form-group">
                     <label class="form-label">Tên đăng nhập (Số điện thoại)</label>
                     <div class="input-wrapper">
-                        <span class="input-icon"><i class="fa-solid fa-user"></i></span>
+                        <span class="input-icon"> <i class="fa-solid fa-user" style="color: #007bff;"></i></span>
                         @Html.TextBox("tk", null, new
                         {
                             @class = "form-input",
@@ -79,7 +79,7 @@
                 <div class="form-group">
                     <label class="form-label">Mật khẩu</label>
                     <div class="input-wrapper">
-                        <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+                        <span class="input-icon"><i class="fa-solid fa-lock" style="color: #dc3545;"></i> </span>
                         @Html.Password("mk", null, new
                         {
                             @class = "form-input",
@@ -103,10 +103,11 @@
                 </div>
                 if (ViewBag.ThongBao != null)
                 {
-                    <div class="error-message" id="errorMessage" style="display:block;">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <span id="errorText">@ViewBag.ThongBao</span>
-                    </div>
+                <div class="error-message" id="errorMessage" style="display:block;">
+                    <i class="fa-solid fa-triangle-exclamation" style="color: #ffc107;"></i>
+                    <span id="errorText">@ViewBag.ThongBao</span>
+                    <span id="errorText">@ViewBag.ThongBao</span>
+                </div>
                 }
                 <!-- Login Button -->
                 <button type="submit" class="btn-login">
