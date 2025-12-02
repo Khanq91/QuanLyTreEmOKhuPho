@@ -86,11 +86,6 @@
                             }
                         </tbody>
                     </table>
-
-
-                    @*<div class="text-end">
-                        <button class="btn btn-success btn-sm" onclick="addTietMuc(this)">➕ Thêm tiết mục</button>
-                    </div>*@
                 </div>
                 index++;
             }
@@ -119,7 +114,6 @@
                             <td><input class="form-control cp-name" value="@c.TenKhoanChi" /></td>
                             <td><input class="form-control cp-note" value="@c.GhiChu" /></td>
                             <td><input class="form-control cp-amount" type="number" value="@c.SoTien" /></td>
-                            @*<td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button></td>*@
                         </tr>
                     }
                 }
@@ -129,12 +123,20 @@
 
     <!-- Buttons -->
     <div class="form-actions">
-        <button class="btn btn-secondary" type="button" onclick="prevStep()">⬅ Quay lại</button>
-        <button class="btn btn-primary" type="button" onclick="nextStep()">Tiếp ➡</button>
+        <button class="btn btn-secondary" type="button" onclick="prevStep()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+            </svg> Quay lại
+        </button>
+        <button class="btn btn-primary" type="button" onclick="nextStep()">
+            Tiếp  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-left: 5px;">
+                <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z" />
+            </svg>
+        </button>
     </div>
 
     <div class="text-end mt-4">
-        <button class="btn btn-success" onclick="updateFullSuKien()">💾 Lưu thay đổi</button>
+        <button class="btn btn-success" onclick="updateFullSuKien()"> <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi</button>
         <a href="@Url.Action("ChiTiet", "SuKien", new { id = Model.SuKienId })" class="btn btn-secondary">Hủy</a>
     </div>
 </div>

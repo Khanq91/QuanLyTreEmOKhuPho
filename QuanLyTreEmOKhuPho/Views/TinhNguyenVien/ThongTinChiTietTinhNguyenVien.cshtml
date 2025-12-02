@@ -25,15 +25,20 @@
             <h2 class="profile-name" id="profileName">@TTChiTietTinhNguyenVien.TenTinhNguyenVien</h2>
             <div class="profile-meta">
                 <div class="meta-item">
-                    <span>📱</span>
+                    <span> <i class="fa-solid fa-user" style="color: #007bff;"></i></span>
                     <span id="profilePhone">@TTChiTietTinhNguyenVien.SDT</span>
                 </div>
                 <div class="meta-item">
-                    <span>📍</span>
+                    <span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#dc3545" stroke="#dc3545" stroke-width="2" style="vertical-align: middle;">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3" fill="#fff"></circle>
+                        </svg>
+                    </span>
                     <span id="profileLocation">@TTChiTietTinhNguyenVien.TenKhuPho</span>
                 </div>
                 <div class="meta-item">
-                    <span>👤</span>
+                    <span> <i class="fa-solid fa-phone" style="color: #28a745;"></i></span>
                     <span id="profileRole">@TTChiTietTinhNguyenVien.ChucVu</span>
                 </div>
             </div>
@@ -67,15 +72,15 @@
 
 <!-- Tabs -->
 <div class="tabs">
-    <button class="tab active" onclick="switchTab(0)">📋 Thông tin cá nhân</button>
-    <button class="tab" onclick="switchTab(1)">📆 Lịch trống</button>
-    <button class="tab" onclick="switchTab(2)">🎉 Sự kiện tham gia</button>
-    <button class="tab" onclick="switchTab(3)">💝 Hỗ trợ & Vận động</button>
+    <button class="tab active" onclick="switchTab(0)">  <i class="fa-solid fa-user" style="color: #007bff;"></i>  Thông tin cá nhân</button>
+    <button class="tab" onclick="switchTab(1)"> <i class="fa-solid fa-calendar-days" style="color: #28a745;"></i> Lịch trống</button>
+    <button class="tab" onclick="switchTab(2)"> <i class="fa-solid fa-calendar-check" style="color: #ffc107;"></i> Sự kiện tham gia</button>
+    <button class="tab" onclick="switchTab(3)"><i class="fa-solid fa-hand-holding-heart" style="color: #e83e8c;"></i> Hỗ trợ & Vận động</button>
 </div>
 
 <!-- Tab 1: Personal Info -->
 <div class="tab-content active" id="tabPersonal">
-    <h3 class="section-title">📝 Thông tin cơ bản</h3>
+    <h3 class="section-title"><i class="fa-solid fa-user" style="color: #007bff;"></i> Thông tin cơ bản</h3>
     <div class="info-grid">
         <div class="info-item">
             <span class="info-label">Họ và tên</span>
@@ -114,11 +119,11 @@
 
 <!-- Tab 2: Schedule -->
 <div class="tab-content" id="tabSchedule">
-    <h3 class="section-title">📆 Lịch trống trong tuần</h3>
+    <h3 class="section-title"> <i class="fa-solid fa-calendar-days" style="color: #28a745;"></i> Lịch trống trong tuần</h3>
     <div class="schedule-grid" id="scheduleGrid">
         <div class="schedule-header">Thứ / Buổi</div>
-        <div class="schedule-header">🌅 Sáng</div>
-        <div class="schedule-header">🌆 Chiều</div>
+        <div class="schedule-header">  <i class="fa-solid fa-sun" style="color: #ffc107;"></i> Sáng</div>
+        <div class="schedule-header"><i class="fa-solid fa-cloud-sun" style="color: #fd7e14;"></i> Chiều</div>
 
         <div class="schedule-day">Thứ 2</div>
         <div class="schedule-cell"></div>
@@ -152,7 +157,7 @@
 
 <!-- Tab 3: Events -->
 <div class="tab-content" id="tabEvents">
-    <h3 class="section-title">🎉 Sự kiện đã tham gia</h3>
+    <h3 class="section-title">  <i class="fa-solid fa-calendar-check" style="color: #ffc107;"></i>  Sự kiện đã tham gia</h3>
     <div class="events-list">
         @foreach (var item in SuKienDaThamGia)
         {
@@ -160,7 +165,7 @@
                 <div class="event-header">
                     <div>
                         <div class="event-title">@item.TenSuKien</div>
-                        <div class="event-date">📅 @item.NgayBatDau</div>
+                        <div class="event-date"><i class="fa-solid fa-calendar-days" style="color: #28a745;"></i>  @item.NgayBatDau</div>
                     </div>
                     @if (@item.DanhGiaCongViec == "Hoàn thành tốt")
                     {
@@ -178,9 +183,13 @@
                     {
                         <span class="event-badge" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">@item.DanhGiaCongViec</span>
                     }
-                    else
+                    else if (@item.DanhGiaCongViec == "Vắng")
                     {
                         <span class="event-badge" style="background: rgba(148, 163, 184, 0.1); color: #94a3b8;">Vắng</span>
+                    }
+                    else
+                    {
+                        <span class="event-badge" style="background: rgba(148, 163, 184, 0.1); color: #94a3b8;">Chưa đánh giá</span>
                     }
                 </div>
                 <div class="event-assignment">
@@ -193,7 +202,7 @@
 </div>
 <!-- Tab 4: Support -->
 <div class="tab-content" id="tabSupport">
-    <h3 class="section-title">💝 Hỗ trợ & Vận động đã thực hiện</h3>
+    <h3 class="section-title"> <i class="fa-solid fa-hand-holding-heart" style="color: #e83e8c;"></i> Hỗ trợ & Vận động đã thực hiện</h3>
 
     @if (DSTNV_HoTroVanDong != null && DSTNV_HoTroVanDong.Count > 0)
     {
@@ -204,7 +213,7 @@
                     <div class="support-header">
                         <div class="support-info">
                             <div class="support-title">
-                                <span class="support-icon">👶</span>
+                                <span class="support-icon"> <i class="fa-solid fa-baby" style="color: #17a2b8;"></i></span>
                                 <strong>@item.TenTreEm</strong>
                             </div>
                             <div class="support-badge">
@@ -212,7 +221,7 @@
                             </div>
                         </div>
                         <div class="support-date">
-                            <span>📅</span>
+                            <span>  <i class="fa-solid fa-calendar-days" style="color: #28a745;"></i></span>
                             <span>@item.NgayVanDong.ToString("dd/MM/yyyy")</span>
 
                         </div>
@@ -220,23 +229,23 @@
 
                     <div class="support-body">
                         <div class="support-detail">
-                            <span class="detail-label">🏠 Hoàn cảnh:</span>
+                            <span class="detail-label"> <i class="fa-solid fa-house" style="color: #6f42c1;"></i> Hoàn cảnh:</span>
                             <span class="detail-value">@item.MoTaHoanCanh</span>
                         </div>
 
                         <div class="support-detail">
-                            <span class="detail-label">📝 Lý do hỗ trợ:</span>
+                            <span class="detail-label"><i class="fa-solid fa-clipboard-list" style="color: #17a2b8;"></i> Lý do hỗ trợ:</span>
                             <span class="detail-value">@item.LyDo</span>
                         </div>
 
                         <div class="support-detail">
-                            <span class="detail-label">✨ Kết quả:</span>
+                            <span class="detail-label"><i class="fa-solid fa-star" style="color: #ffc107;"></i> Kết quả:</span>
                             <span class="detail-value">@item.KetQua</span>
                         </div>
 
                         <div class="support-stats">
                             <div class="stat-item">
-                                <span class="stat-icon">🔄</span>
+                                <span class="stat-icon"><i class="fa-solid fa-check-circle" style="color: #28a745;"></i></span>
                                 <span class="stat-text">Đã hỗ trợ <strong>@item.SoLan lần</strong></span>
                             </div>
                         </div>
@@ -248,7 +257,7 @@
     else
     {
         <div class="empty-state">
-            <div class="empty-state-icon">📭</div>
+            <div class="empty-state-icon">  <i class="fa-solid fa-inbox" style="color: #6c757d; font-size: 3rem;"></i></div>
             <p style="font-size: 16px; margin-bottom: 10px;">Chưa có hoạt động hỗ trợ</p>
             <p style="font-size: 14px;">Thông tin về hoạt động hỗ trợ và vận động sẽ được hiển thị tại đây</p>
         </div>

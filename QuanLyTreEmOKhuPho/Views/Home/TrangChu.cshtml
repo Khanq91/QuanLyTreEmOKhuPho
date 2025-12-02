@@ -175,7 +175,7 @@
                     <div class="timeline-date"><i class="fa-solid fa-calendar-days"></i> @item.NgayBatDau</div>
                     <div class="timeline-desc">@item.DiaDiem • @item.SoLuongTinhNguyenVien Tình nguyện viên •@item.SoLuongTreEm Số lượng trẻ em</div>
                     <button class="btn btn-primary"
-                            onclick="location.href='@Url.Action("ChiTietSuKien", "SuKien", new { SuKienID  = item.SuKienId })'"
+                            onclick="location.href='@Url.Action("ChiTiet", "SuKien", new { id   = item.SuKienId })'"
                             style="margin-top:12px">
                         Xem chi tiết
                     </button>
@@ -185,27 +185,6 @@
     }
 
 </div>
-
-<!-- Alerts -->
-<!--<div class="alerts-section">
-    <div class="alert alert-warning">
-        <div class="alert-icon">⚠️</div>
-        <div class="alert-content">
-            <div class="alert-title">Cảnh báo: Trẻ nghỉ học nhiều</div>
-            <div class="alert-text">Có 15 trẻ em nghỉ học quá 5 ngày trong tháng này. Cần liên hệ phụ huynh để nắm tình hình.</div>
-        </div>
-        <button class="btn btn-outline">Xem chi tiết</button>
-    </div>
-    <div class="alert alert-danger">
-        <div class="alert-icon">🚨</div>
-        <div class="alert-content">
-            <div class="alert-title">Trẻ đến tuổi nhưng chưa vào lớp 1</div>
-            <div class="alert-text">Có 8 trẻ em đủ 6 tuổi nhưng chưa đăng ký vào lớp 1. Cần vận động gia đình.</div>
-        </div>
-        <button class="btn btn-outline">Xem chi tiết</button>
-    </div>
-</div>-->
-
 <script>
 
     // Priority list interaction

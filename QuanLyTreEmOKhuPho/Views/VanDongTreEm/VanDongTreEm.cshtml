@@ -94,22 +94,35 @@
 <!-- ==================== STATS ==================== -->
 <div class="stats-grid">
     <div class="stat-card">
-        <div class="stat-header"><div class="stat-title">Tổng số trẻ đến tuổi</div><i class="fa-solid fa-children"></i></div>
+        <div class="stat-header">
+            <div class="stat-title">Tổng số trẻ đến tuổi</div>  <i class="fa-solid fa-baby" style="color: #17a2b8;"></i>
+        </div>
         <div class="stat-value" id="totalTre">0</div>
         <div class="stat-change">Trẻ sinh năm 2019 (6 tuổi)</div>
     </div>
     <div class="stat-card">
-        <div class="stat-header"><div class="stat-title">Chưa vận động</div><i class="fa-solid fa-hourglass-half"></i></div>
+        <div class="stat-header">
+            <div class="stat-title">Chưa vận động</div>
+            <i class="fa-solid fa-hourglass-half" style="color: #ffc107;"></i>
+        </div>
         <div class="stat-value" id="chuaVD">0</div>
         <div class="stat-change">Cần liên hệ gia đình</div>
     </div>
     <div class="stat-card">
-        <div class="stat-header"><div class="stat-title">Đã nhập học</div><i class="fa-solid fa-check-double"></i></div>
+
+        <div class="stat-header">
+            <div class="stat-title">Đã nhập học</div>
+            <i class="fa-solid fa-check-double" style="color: #28a745;"></i>
+        </div>
+
         <div class="stat-value" id="daHoc">0</div>
         <div class="stat-change">Hoàn thành</div>
     </div>
     <div class="stat-card">
-        <div class="stat-header"><div class="stat-title">Từ chối/Hoãn</div><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="stat-header">
+            <div class="stat-title">Từ chối/Hoãn</div>
+            <i class="fa-solid fa-triangle-exclamation" style="color: #dc3545;"></i>
+        </div>
         <div class="stat-value" id="tuChoi">0</div>
         <div class="stat-change">Cần theo dõi đặc biệt</div>
     </div>
@@ -267,7 +280,6 @@
     }
 
     function renderTable(data) {
-        debugger
         const tbody = $("#tableBody");
         tbody.empty();
 
@@ -328,7 +340,7 @@
             TreEmId: $("#treEmId").val(),
             LyDo: $("#lyDo").val(),
             KetQua: $("#ketQua").val(),
-            NguoiVanDongId: $("#nguoiVanDong").val()   // ← thêm dòng này
+            UserID: $("#nguoiVanDong").val()   // ← thêm dòng này
         };
 
         $.ajax({

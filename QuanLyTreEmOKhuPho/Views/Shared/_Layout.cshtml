@@ -10,6 +10,39 @@
     <title>Hệ Thống Quản Lý Trẻ Em Khu Phố</title>
     @RenderSection("styles", required: false)
 </head>
+<style>
+    .nav-menu .nav-icon i {
+        transition: transform 0.3s ease;
+    }
+
+    .nav-menu .nav-link:hover .nav-icon i {
+        transform: scale(1.2);
+    }
+
+    /* Nếu muốn icon sáng hơn khi active */
+    .nav-menu .nav-link.active .nav-icon i {
+        filter: brightness(1.2);
+        transform: scale(1.1);
+    }
+    .logout-btn {
+        margin-left: 20px;
+        color: #e03131;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        transition: 0.2s ease;
+        font-size: 14px;
+    }
+
+        .logout-btn:hover {
+            background: #ffe3e3;
+            color: #c92a2a;
+        }
+</style>
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -24,61 +57,61 @@
                 <ul class="nav-menu">
                     <li class="nav-item">
                         <a href="@Url.Action("TrangChu", "Home")" class="nav-link @(ViewBag.ActivePage == "TrangChu" ? "active" : "")">
-                            <span class="nav-icon"><i class="fa-solid fa-table-columns"></i></span>
+                            <span class="nav-icon"><i class="fa-solid fa-table-columns" style="color: #4dabf7;"></i></span>
                             <span>Trang chủ</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="@Url.Action("TreEm", "QuanLytreEm")" class="nav-link @(ViewBag.ActivePage == "TreEm" ? "active" : "")">
-                            <span class="nav-icon"><i class="fa-solid fa-children"></i></span>
+                            <span class="nav-icon"><i class="fa-solid fa-children" style="color: #ff6b6b;"></i></span>
                             <span>Quản lý trẻ em</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="@Url.Action("SuKien", "SuKien")" class="nav-link @(ViewBag.ActivePage == "SuKien" ? "active" : "")">
-                            <span class="nav-icon"><i class="fa-solid fa-star"></i></span>
+                            <span class="nav-icon"><i class="fa-solid fa-star" style="color: #ffd43b;"></i></span>
                             <span>Sự kiện</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="@Url.Action("TinhNguyenVien", "TinhNguyenVien")" class="nav-link @(ViewBag.ActivePage == "TinhNguyenVien" ? "active" : "")">
-                            <span class="nav-icon"><i class="fa-solid fa-hand-holding-heart"></i></span>
+                            <span class="nav-icon"><i class="fa-solid fa-hand-holding-heart" style="color: #ff8787;"></i></span>
                             <span>Tình nguyện viên</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="@Url.Action("HoTroVaUngHo", "HoTroVaUngHo")" class="nav-link @(ViewBag.ActivePage == "HoTroVaUngHo" ? "active" : "")">
-                            <span class="nav-icon"><i class="fa-solid fa-heart-circle-check"></i></span>
+                            <span class="nav-icon"><i class="fa-solid fa-heart-circle-check" style="color: #51cf66;"></i></span>
                             <span>Hỗ trợ & Phúc lợi</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="@Url.Action("VanDongTreEm", "VanDongTreEm")" class="nav-link @(ViewBag.ActivePage == "VanDongTreEm" ? "active" : "")">
-                            <span class="nav-icon"><i class="fa-solid fa-school"></i></span>
+                            <span class="nav-icon"><i class="fa-solid fa-school" style="color: #845ef7;"></i></span>
                             <span>Vận động trẻ</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="@Url.Action("ManhThuongQuan", "ManhThuongQuan")" class="nav-link @(ViewBag.ActivePage == "ManhThuongQuan" ? "active" : "")">
-                            <span class="nav-icon"><i class="fa-solid fa-comments-dollar"></i></span>
+                            <span class="nav-icon"><i class="fa-solid fa-comments-dollar" style="color: #74c0fc;"></i></span>
                             <span>Mạnh thường quân</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="@Url.Action("PhanCum", "PhanCum")" class="nav-link @(ViewBag.ActivePage == "PhanCum" ? "active" : "")">
-                            <span class="nav-icon"><i class="fa-solid fa-children"></i></span>
+                            <span class="nav-icon"><i class="fa-solid fa-chart-pie" style="color: #f783ac;"></i></span>
                             <span>Phân tích trẻ em</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="@Url.Action("BaoCaoThongKe", "BaoCaoThongKe")" class="nav-link @(ViewBag.ActivePage == "BaoCaoThongKe" ? "active" : "")">
-                            <span class="nav-icon"><i class="fa-solid fa-chart-area"></i></span>
+                            <span class="nav-icon"><i class="fa-solid fa-chart-area" style="color: #20c997;"></i></span>
                             <span>Báo cáo & Thống kê</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="@Url.Action("QuanLyTaiKhoan","QuanLyTaiKhoan")" class="nav-link @(ViewBag.ActivePage == "QuanLyTaiKhoan" ? "active" : "")">
-                            <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+                            <span class="nav-icon"><i class="fa-solid fa-gear" style="color: #868e96;"></i></span>
                             <span>Quản trị hệ thống</span>
                         </a>
                     </li>
@@ -107,6 +140,9 @@
                             <div style="font-size: 12px; color: var(--gray-600);">@Session["VaiTro"]</div>
                         </div>
                     </div>
+                    <a href="@Url.Action("Logout", "DangNhap")" class="logout-btn">
+                        <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+                    </a>
                 </div>
             </div>
             @RenderBody()

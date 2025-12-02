@@ -30,7 +30,7 @@
                      style="background-image:url('@(string.IsNullOrEmpty(Model.Anh) ? "/images/default-avatar.png" : Model.Anh)');
             cursor:@(isEdit ? "pointer" : "default");"
                      @(isEdit ? "onclick=document.getElementById('photoInput').click()" : "" )>
-                    <span id="photoIcon" style="display:@(isEdit ? " block" : "none" );"><i class="fa-solid fa-camera"></i></span>
+                    <span id="photoIcon" style="display:@(isEdit ? " block" : "none" );"><i class="fa-solid fa-camera" style="color: #339af0;"></i></span>
                 </div>
                 @if (isEdit)
                 {
@@ -262,17 +262,31 @@
         let html = "";
 
         if (step > 1) {
-            html += `<button class="btn btn-secondary" type="button" onclick="prevStep()">⬅ Quay lại</button>`;
+            html += `
+              <button class="btn btn-secondary" type="button" onclick="prevStep()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;">
+                  <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Quay lại
+              </button>
+`;
         }
 
         if (isEdit && (step === 1 || step === totalSteps || (step > 1 && step < totalSteps))) {
-            html += `<button class="btn btn-success" type="button" onclick="saveEdit()">💾 Lưu thay đổi</button>`;
+            html += `<button class="btn btn-success" type="button" onclick="saveEdit()">   <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi</button>`;
         } else if (!isEdit && step === 1) {
            // html += `<a class="btn btn-primary" href="@Url.Action("ChiTiet","QuanLyTreEm", new { id=Model.TreEmId, edit=true })">✏️ Chỉnh sửa</a>`;
         }
 
         if (step < totalSteps) {
-            html += `<button class="btn btn-primary" type="button" onclick="nextStep()">Tiếp theo ➡</button>`;
+            html += `
+              <button class="btn btn-primary" type="button" onclick="nextStep()">
+                Tiếp theo
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-left: 5px;">
+                  <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+                </svg>
+              </button>
+`;
         }
 
         actions.innerHTML = html;

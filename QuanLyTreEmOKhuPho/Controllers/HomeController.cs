@@ -51,7 +51,7 @@ namespace QuanLyTreEmOKhuPho.Controllers
         public async Task<List<SuKien>> LaySuKienSapToiAsync(int? khuPhoId)
         {
             string query = khuPhoId.HasValue ? $"?KhuPhoID={khuPhoId.Value}" : "";
-            HttpResponseMessage response = await _client.GetAsync("SuKien/SapToi" + query);
+            HttpResponseMessage response = await _client.GetAsync("KhuPho/SapToi" + query);
 
             if (!response.IsSuccessStatusCode)
                 return new List<SuKien>();

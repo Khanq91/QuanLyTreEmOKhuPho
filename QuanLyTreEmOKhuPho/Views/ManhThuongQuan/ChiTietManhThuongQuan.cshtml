@@ -68,7 +68,7 @@
 <!-- Thông tin chi tiết -->
 <div class="card">
     <h3 class="card-title">
-        <span><i class="fa-solid fa-file"></i></span> Thông tin chi tiết
+        <span><i class="fa-solid fa-file" style="color: #007bff;"></i></span> Thông tin chi tiết
     </h3>
     <div class="info-grid">
         <div class="info-item">
@@ -147,7 +147,7 @@
                         <td>
                             <a href="@Url.Action("SuaUngHoManhThuongQuan", "ManhThuongQuan", new { UngHoID = item.UngHoId })"
                                class="btn btn-outline btn-sm">
-                                ✏️ Sửa
+                                <i class="fa-solid fa-pen-to-square" style="color: #17a2b8;"></i> Sửa
                             </a>
                             @using (Html.BeginForm("XoaUngHo", "ManhThuongQuan", FormMethod.Post, new { @class = "inline-form" }))
                             {
@@ -170,7 +170,7 @@
     </div>
 
     <div id="emptyState" class="empty-state" style="display: none;">
-        <div class="empty-state-icon"><i class="fa-regular fa-message"></i></div>
+        <div class="empty-state-icon"><i class="fa-regular fa-hourglass" style="color: #ffc107;"></i></div>
         <p>Chưa có lịch sử ủng hộ</p>
     </div>
 </div>

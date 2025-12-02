@@ -2,7 +2,83 @@
     ViewBag.Title = "TreEm";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    /* Style cho table actions */
+.table-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
 
+.table-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.table-actions .btn i {
+    font-size: 16px;
+}
+
+/* Màu cho từng button */
+.table-actions .btn-success {
+    background: linear-gradient(135deg, #51cf66 0%, #37b24d 100%);
+    color: white;
+}
+
+.table-actions .btn-success:hover {
+    background: linear-gradient(135deg, #37b24d 0%, #2b8a3e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(55, 178, 77, 0.3);
+}
+
+.table-actions .btn-warning {
+    background: linear-gradient(135deg, #ffd43b 0%, #fab005 100%);
+    color: white;
+}
+
+.table-actions .btn-warning:hover {
+    background: linear-gradient(135deg, #fab005 0%, #f59f00 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(250, 176, 5, 0.3);
+}
+
+.table-actions .btn-primary {
+    background: linear-gradient(135deg, #4dabf7 0%, #339af0 100%);
+    color: white;
+}
+
+.table-actions .btn-primary:hover {
+    background: linear-gradient(135deg, #339af0 0%, #228be6 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(51, 154, 240, 0.3);
+}
+
+/* Animation khi click */
+.table-actions .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .table-actions {
+        flex-direction: column;
+    }
+
+    .table-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -61,13 +137,19 @@
     <div class="table-container">
         <div class="table-header">
             <h3 class="table-title">Danh sách trẻ em (<span id="totalChildren">0</span>)</h3>
+
             <div class="table-actions">
-                <button class="btn btn-success btn-sm" onclick="exportAll()">📤 Xuất Excel</button>
-                <button class="btn btn-warning btn-sm" onclick="exportFiltered()">📥 Xuất theo lọc</button>
-                <a href="@Url.Action("ThemTreEm_v1", "QuanLyTreEm")" class="btn btn-primary">
-                    <i class="fa-solid fa-circle-plus"></i> Thêm trẻ em mới
+                <button class="btn btn-success btn-sm" onclick="exportAll()">
+                    <i class="fa-solid fa-file-excel" style="color: #ffffff;"></i> Xuất Excel
+                </button>
+                <button class="btn btn-warning btn-sm" onclick="exportFiltered()">
+                    <i class="fa-solid fa-filter" style="color: #ffffff;"></i> Xuất theo lọc
+                </button>
+                <a href="@Url.Action("ThemTreEm_v1", "QuanLyTreEm")" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-circle-plus" style="color: #ffffff;"></i> Thêm trẻ em mới
                 </a>
             </div>
+
         </div>
 
         <table>
@@ -133,7 +215,6 @@
                     : 'Không có';
                 const img = child.anh || '/Anh/default-avatar.png';
                 const genderClass = child.gioiTinh === 'Nam' ? 'male' : 'female';
-
                 const row = `
                             <tr>
                                 <td style="font-weight: 600; color: var(--primary);">${child.treEmId}</td>
@@ -141,10 +222,10 @@
                                     <div class="child-info">
 
                                           <div class="child-avatar ${genderClass}">
-                <img src="${child.anh || '/images/treem/default-child.png'}"
-                     alt="${child.hoTen}"
-                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-            </div>
+                                            <img src="${child.anh || '/images/treem/default-child.png'}"
+                                                 alt="${child.hoTen}"
+                                                 style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                        </div>
                                         <div class="child-details">
                                             <h4>${child.hoTen}</h4>
                                             <p>${child.gioiTinh}</p>
