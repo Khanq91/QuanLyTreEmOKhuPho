@@ -454,12 +454,12 @@
                 <div class="step-circle">1</div>
                 <div class="step-label">Thông tin chung</div>
             </div>
-            <div class="step-item">
+            @*<div class="step-item">
                 <div class="step-circle">2</div>
                 <div class="step-label">Tiết mục</div>
-            </div>
+            </div>*@
             <div class="step-item">
-                <div class="step-circle">3</div>
+                <div class="step-circle">2</div>
                 <div class="step-label">Chi phí</div>
             </div>
         </div>
@@ -550,13 +550,13 @@
                 </div>
 
                 <!-- TAB 2 -->
-                <div class="form-step" id="tab2">
+                @*<div class="form-step" id="tab2">
                     <h3 class="section-title">Tiết mục biểu diễn</h3>
                     <div id="tietMucList"></div>
                     <div class="add-btn" onclick="addTietMuc()">
                         Thêm tiết mục
                     </div>
-                </div>
+                </div>*@
 
                 <!-- TAB 3 -->
                 <div class="form-step" id="tab3">
@@ -643,7 +643,7 @@
 
 <script>
     let currentStep = 1;
-    const totalSteps = 3;
+    const totalSteps = 2;
     let anhSuKienBase64 = null;
 
     $(document).ready(function () {
